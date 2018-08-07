@@ -1,0 +1,2 @@
+# freeMock.js
+mock data
