@@ -18,6 +18,11 @@ class FreeMock {
         this.responseError = err => err
     }
 
+    setState(newState) {
+        let state = this.state 
+        this.state = Object.assign({}, state, newState)
+    }
+
     request(success, error) {
         this.requestSucess = success
         this.requestError = error 
@@ -51,6 +56,8 @@ class FreeMock {
     }
 
     getData(url, params, config, method) {
+        let regular = -1
+        let data = null
         if(typeof url != 'string') {
             return Promise.reject('url is string')
         }
@@ -65,15 +72,24 @@ class FreeMock {
         }
         if(config && config.transformRequest) {
             for(let fnc of config.transformRequest) {
-                params = fnc(params)
+                params = fnc.call(this, params, this.setState.bind(this), this.state)
             }
         }
-        const mock = new Mock(params)
-        const data = mock.object(mockData.data)
+        if(config && config.regular) {
+            regular = config.regular.findIndex((fn) => {
+                return !fn(this.state)
+            })
+        }
+
+        if(regular < 0) {
+            const mock = new Mock(params)
+            data = mock.object(mockData.data)
+        }
+        
         return new Promise(function(resolve) {
             if(config && config.transformResponse) {
                 for(let fnc of config.transformResponse) {
-                    data = fnc(data)
+                    data = fnc.call(this, data, this.setState.bind(this), this.state)
                 }
             }
             resolve({
