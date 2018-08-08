@@ -145,7 +145,7 @@ class Mock {
 	}
 	time() {
 		let date = new Date()
-		date = date - Math.floor(Math.random()*36000)
+		date = date
 		return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
 	}
 	email() {

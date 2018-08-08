@@ -7,13 +7,13 @@ class FreeMock {
         this.state = arguments[1]
         this.interceptors = {
             request: {
-                use: me.request
+                use: me.request.bind(me)
             },
             response: {
-                use: me.response
+                use: me.response.bind(me)
             }
         }
-        this.requestSucess = res => res
+        this.requestSuccess = res => res
         this.responseSuccess = res => res   
         this.responseError = err => err
     }
@@ -24,7 +24,7 @@ class FreeMock {
     }
 
     request(success, error) {
-        this.requestSucess = success
+        this.requestSuccess = success
         this.requestError = error 
     }
     
@@ -34,7 +34,7 @@ class FreeMock {
     }
 
     get(url, params, config) {
-        config = this.requestSucess(config)
+        config = this.requestSuccess(config)
         return this.getData(url, params, config, 'GET')
         .then((res) => {
             return this.responseSuccess(res)
@@ -45,7 +45,7 @@ class FreeMock {
     }
 
     post(url, params, config) {
-        config = this.requestSucess(config)
+        config = this.requestSuccess(config)
         return this.getData(url, params, config, 'POST')
         .then((res) => {
             return this.responseSuccess(res)
@@ -80,10 +80,20 @@ class FreeMock {
                 return !fn(this.state)
             })
         }
-
         if(regular < 0) {
             const mock = new Mock(params)
-            data = mock.object(mockData.data)
+            let isArray = false
+            for(let key in mockData) {
+                if(key.indexOf('data|') >= 0) {
+                    let keys = key.split('|')
+                    let l = keys[1]
+                    data = mock.array(mockData[key], l)
+                    isArray = true
+                } 
+            }
+            if(!isArray) {
+                data = mock.object(mockData.data)
+            }
         }
         
         return new Promise(function(resolve) {
@@ -103,17 +113,5 @@ class FreeMock {
 }
 
 
-const fm = new FreeMock([{
-    url: 'test',
-    data: {
-        people: {
-            name: "@name()",
-            age: "@number()",
-        }
-    }
-}])
 
-
-fm.get('test').then((data) => {
-    console.log(data)
-})
+module.exports = FreeMock
