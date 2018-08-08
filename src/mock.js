@@ -1,3 +1,4 @@
+const util = require('./util')
 
 class Mock {
 	constrcutor(ctx) {
