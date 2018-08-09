@@ -34,6 +34,8 @@ class FreeMock {
     }
 
     get(url, params, config) {
+        config = config || {}
+        config.url = url 
         config = this.requestSuccess(config)
         return this.getData(url, params, config, 'GET')
         .then((res) => {
@@ -45,6 +47,8 @@ class FreeMock {
     }
 
     post(url, params, config) {
+        config = config || {}
+        config.url = url 
         config = this.requestSuccess(config)
         return this.getData(url, params, config, 'POST')
         .then((res) => {
@@ -64,22 +68,32 @@ class FreeMock {
         const mockData = this.mockData.find((val) => {
             return val.url === url
         })
+
         if(mockData.method && mockData.method != method) {
             return Promise.reject(`this·s method is ${mockData.method}`)
         }
+
         if(config && config.params) {
             params = Object.assign({}, params, config.params)
         }
+
         if(config && config.transformRequest) {
             for(let fnc of config.transformRequest) {
-                params = fnc.call(this, params, this.setState.bind(this), this.state)
+                params = fnc.call(
+                    this, 
+                    params, 
+                    this.setState.bind(this), 
+                    this.state
+                )
             }
         }
+
         if(config && config.regular) {
             regular = config.regular.findIndex((fn) => {
                 return !fn(this.state)
             })
         }
+        
         if(regular < 0) {
             const mock = new Mock(params)
             let isArray = false
@@ -99,7 +113,12 @@ class FreeMock {
         return new Promise(function(resolve) {
             if(config && config.transformResponse) {
                 for(let fnc of config.transformResponse) {
-                    data = fnc.call(this, data, this.setState.bind(this), this.state)
+                    data = fnc.call(
+                        this, 
+                        data, 
+                        this.setState.bind(this), 
+                        this.state
+                    )
                 }
             }
             resolve({
