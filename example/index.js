@@ -19,6 +19,10 @@ const fm = new FreeMock([{
             time: "@time()"
         }
     }
+}, {
+    url:'login',
+    method: 'GET',
+    data: {}
 }], {
     username: 'chenxuehui',
     password: '123',
@@ -26,21 +30,28 @@ const fm = new FreeMock([{
 })
 
 fm.interceptors.request.use(function(config) {
-    return Object.assign({}, config, {
-        transformRequest: [function(params, setState, state) {
+    if(config.url == 'login') {
+        config.transformRequest = [function(params, setState, state) {
             if(state.username === params.username && state.password === params.password) {
                 setState({
                     logined: true 
                 })
             }
             return params
-        }],
-        regular: [function(state) {
-            return state.logined
-
         }]
-    })
+    } else {
+        config.regular = [function(state) {
+            return state.logined
+        }]
+    }
+    return config
 })
-fm.get('test1', {username: 'chenxuehui', password: '123'}).then((res) => {
+
+fm.get('test1').then(res => {
     console.log(res)
 })
+
+fm.get('login', {username: 'chenxuehui', password: '123'}).then((res) => {
+    console.log(res)
+})
+
