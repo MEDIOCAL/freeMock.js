@@ -47,11 +47,12 @@ fm.interceptors.request.use(function(config) {
     return config
 })
 
-fm.get('test1').then(res => {
-    console.log(res)
-})
 
 fm.get('login', {username: 'chenxuehui', password: '123'}).then((res) => {
     console.log(res)
 })
 
+
+fm.get('test').then(res => {
+    console.log(res)
+})
