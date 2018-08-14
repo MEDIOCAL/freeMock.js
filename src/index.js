@@ -1,65 +1,54 @@
 const Mock = require("./mock") 
 
 class FreeMock {
-    constructor() {
+    constructor(...rest) {
         const me = this
-        this.mockData = arguments[0]
-        this.state = arguments[1]
+        this.mockData = rest[0]
+        this.state = rest[1]
+        this.methods = ['GET', 'POST']
         this.interceptors = {
             request: {
-                use: me.request.bind(me)
+                use(success, error) {
+                    me.requestSuccess = success
+                    me.requestError = error 
+                }
             },
             response: {
-                use: me.response.bind(me)
+                use(success, error) {
+                    me.requestSuccess = success
+                    me.requestError = error 
+                }
             }
         }
         this.requestSuccess = res => res
         this.responseSuccess = res => res   
         this.responseError = err => err
+        this._setMethods()
     }
 
-    setState(newState) {
-        let state = this.state 
-        this.state = Object.assign({}, state, newState)
+    _setState(newState) {
+        this.state = Object.assign({}, this.state, newState)
     }
 
-    request(success, error) {
-        this.requestSuccess = success
-        this.requestError = error 
-    }
-    
-    response(success, error) {
-        this.responseSuccess = success 
-        this.responseError = error 
-    }
-
-    get(url, params, config) {
-        config = config || {}
-        config.url = url 
-        config = this.requestSuccess(config)
-        return this.getData(url, params, config, 'GET')
-        .then((res) => {
-            return this.responseSuccess(res)
-        })
-        .catch( (error) => {
-            return this.responseError(error)
+    _setMethods() {
+        const methods = this.methods
+        methods.forEach((method) => {
+            this[method.toLowerCase()] = (url, params, config) => {
+                config = config || {}
+                config.url = url 
+                config = this.requestSuccess(config)
+                return this._getData(url, params, config, method)
+                .then((res) => {
+                    return this.responseSuccess(res)
+                })
+                .catch( (error) => {
+                    return this.responseError(error)
+                })
+            }
         })
     }
 
-    post(url, params, config) {
-        config = config || {}
-        config.url = url 
-        config = this.requestSuccess(config)
-        return this.getData(url, params, config, 'POST')
-        .then((res) => {
-            return this.responseSuccess(res)
-        })
-        .catch( (error) => {
-            return this.responseError(error)
-        })
-    }
-
-    getData(url, params, config, method) {
+    _getData(url, params, config, method) {
         let regular = -1
         let data = null
         if(typeof url != 'string') {
@@ -82,7 +71,7 @@ class FreeMock {
                 params = fnc.call(
                     this, 
                     params, 
-                    this.setState.bind(this), 
+                    this._setState.bind(this), 
                     this.state
                 )
             }
@@ -116,7 +105,7 @@ class FreeMock {
                     data = fnc.call(
                         this, 
                         data, 
-                        this.setState.bind(this), 
+                        this._setState.bind(this), 
                         this.state
                     )
                 }

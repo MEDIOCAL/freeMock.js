@@ -47,7 +47,6 @@ fm.interceptors.request.use(function(config) {
     return config
 })
 
-
 fm.get('login', {username: 'chenxuehui', password: '123'}).then((res) => {
     console.log(res)
 })
