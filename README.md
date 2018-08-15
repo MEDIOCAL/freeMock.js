@@ -3,8 +3,11 @@
 #### What can you do with freeMock
 
 Automatically refresh the data every time the API is called
+
 Generating data from the user's params
+
 Analog login operation
+
 
 ##### Quick get start
 
@@ -72,17 +75,18 @@ getTest = async () => {
 
 ##### config
 
-params： 调用api的时候，传递的parmas会合并config的params
+params： 调用api的时候，传递的parmas会合并config的params。
 
 transformRequest：[function]
     在请求之前，会调用该方法。该方法有3个参数:
     1.params: api传递的值 
     2.setState：一个可以用来设置state的function
-    3.state：当前state
-
+    3.state：当前state。
+    
 regular：[function]
     用户可以设置若干个规则来打断api的调用。
     只有所有的function都返回true的时候，才会继续生成数据，否则数据为null。
+
 
 transformResponse:
     和transformRequest一样，只是在响应阶段调用
