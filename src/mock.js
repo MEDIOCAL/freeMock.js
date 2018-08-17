@@ -1,7 +1,7 @@
 const util = require('./util')
 
 class Mock {
-	constrcutor(ctx) {
+	constructor(ctx) {
 		this.ctx = ctx
 	}
     name() {
@@ -13,44 +13,44 @@ class Mock {
 		return String.fromCodePoint(Math.round(Math.random() * 20901) + 19968)
 	}
 	number() {
+		let rest = this.getReq(arguments)
 		if(arguments.length === 0) {
 			return Math.floor(Math.random()*100+1)
-		} else if(arguments.length === 1) {
-			return (Math.random()*100).toFixed(arguments[0])
-		} else if(arguments.length === 3) {
-			return arguments[1]+(Math.random()*(arguments[2]-arguments[1])).toFixed(arguments[0])
+		} else if(rest.length === 1) {
+			return (Math.random()*100).toFixed(rest[0])
+		} else if(rest.length === 3) {
+			return rest[1] + (Math.random() * (rest[2] - rest[1])).toFixed(rest[0])
 		}
-		
 	}
 	string() {
 		let chart = 'ABCDEFGHIGKLMNOPQRSTUVWXYZ'
 		let chartLowser = 'abcdefghigklmnopqrstuvwxyz'
 		let pwd = ''
-
+		let rest = this.getReq(arguments)
 		if(arguments.length === 0) {
 			chart = chart + chartLowser
 			for (let i = 0; i < Math.floor(Math.random()*10)+2; i++) {
 		　　　　pwd += chart.charAt(Math.floor(Math.random() * chart.length))
 		　　}
 		　　return pwd
-		} else if (arguments.length === 1) {
-			if(Number(arguments[0]) != NaN) {
+		} else if (rest.length === 1) {
+			if(Number(rest[0]) != NaN) {
 				chart = chart + chartLowser
-				for (let i = 0; i < Number(arguments[0]); i++) {
+				for (let i = 0; i < Number(rest[0]); i++) {
 			　　　　pwd += chart.charAt(Math.floor(Math.random() * chart.length))
 			　　}
 			　　return pwd
 			} else {
 				throw new Error('The type of a parameter should be a number')
 			}
-		} else if(arguments.length === 2) {
-			if(arguments[0] === 'true') {
-				for (let i = 0; i < Number(arguments[1]); i++) {
+		} else if(rest.length === 2) {
+			if(rest[0] === 'true') {
+				for (let i = 0; i < Number(rest[1]); i++) {
 			　　　　pwd += chart.charAt(Math.floor(Math.random() * chart.length))
 			　　}
 			　　return pwd
 			} else {
-				for (let i = 0; i < Number(arguments[1]); i++) {
+				for (let i = 0; i < Number(rest[1]); i++) {
 			　　　　pwd += chartLowser.charAt(Math.floor(Math.random() * chartLowser.length))
 			　　}
 			　　return pwd
@@ -59,19 +59,21 @@ class Mock {
 		return 'sdsa'
 	}
 	boolean() {
+		let rest = this.getReq(arguments)
 		if(arguments.length === 0) {
 			return Math.random() * 10 > 5 && true || false
 		} else {
-			return arguments[0] === 'true' && true || false
+			return rest[0] === 'true' && true || false
 		}
 	}
 	object() {
+		let rest = this.getReq(arguments)
 		if(arguments.length === 0) {
 			throw new Error('Parameters can not be empty')
 		} else {
-			let object = arguments[0]
-			if(typeof arguments[0] === 'string') {
-				object = JSON.parse(arguments[0])
+			let object = rest[0]
+			if(typeof rest[0] === 'string') {
+				object = JSON.parse(rest[0])
 			}
 			let result = {}
 			for(let key in object) {
@@ -103,38 +105,41 @@ class Mock {
 		}
 	}
 	array() {
+		let rest = this.getReq(arguments)
 		if(arguments.length === 0) {
 			return ''
 		}
-		if(arguments.length === 2) {
-			let obj = arguments[0]
-			let len = arguments[1]
+		if(rest.length === 2) {
+			let obj = rest[0]
+			let len = rest[1]
 			let result = []
-
-			if(arguments[1].indexOf('>') >=0 ) {
-				len = arguments[1].substring(1, arguments[1].length)
+			
+			if(typeof len === "string" && len.indexOf('>') >=0 ) {
+				len = rest[1].substring(1, rest[1].length)
+				len = this.getReq(len)
 				len = Math.floor(Math.random()*10+1) + len
-			} else if(arguments[1].indexOf('<') >=0 ) {
-				len = arguments[1].substring(1, arguments[1].length)
+			} else if(typeof len === "string" && len.indexOf('<') >=0 ) {
+				len = rest[1].substring(1, rest[1].length)
+				len = this.getReq(len)
 				len = Math.floor(Math.random()*len)
 			}
 
 			for(let i = 0; i < Math.max(len, 1); i++) {
 				if(
-					typeof arguments[0] === 'string' && 
-					arguments[0].indexOf('@') === 0
+					typeof rest[0] === 'string' && 
+					rest[0].indexOf('@') === 0
 				) {
-					let str = arguments[0]
+					let str = rest[0]
 					let strLength = str.length
 					let argument = str.substring(str.indexOf('(') + 1, strLength - 1)
 					let fn = str.substring(1, str.indexOf('('))
 					argument = argument === '' && [] || argument.split(',')
 					const func = this[fn] || this.string
 					result.push(func.apply(this, argument))
-				} else if(typeof arguments[0] === 'object') {
+				} else if(typeof rest[0] === 'object') {
 					result.push(this.object(obj))
 				} else {
-					result.push(arguments[0])
+					result.push(rest[0])
 				}
 			}
 			return result
@@ -164,26 +169,46 @@ class Mock {
 		return countys[Math.floor(Math.random()*countys.length)]
 	}
 	url() {
-		if(arguments.length === 1) {
-			return 'http://'+arguments[0]
-		} else if(arguments.length === 2) {
-			return 'http://'+arguments[0]+'?'+arguments[1]+'='+Math.floor(Math.random()*20+1000)
+		let rest = this.getReq(arguments)
+		if(rest.length === 1) {
+			return 'http://'+rest[0]
+		} else if(rest.length === 2) {
+			return 'http://'+rest[0]+'?'+rest[1]+'='+Math.floor(Math.random()*20+1000)
 		} else {
 			return 'http://www.'+this.string(4)+'.com'
 		}
 	}
 	choice () {
+		let rest = this.getReq(arguments)
 		if(arguments.length === 0) {
 			return ''
 		} 
-		if(arguments.length === 1) {
-			return arguments[0]
+		if(rest.length === 1) {
+			return rest[0]
 		}
-		if(arguments.length > 1) {
-			let length = arguments.length 
+		if(rest.length > 1) {
+			let length = rest.length 
 			let index = Math.floor(Math.random()*length)
-			return arguments[index] || arguments[0]
+			return rest[index] || rest[0]
 		}
+	}
+
+	getReq(str) {
+		let result = undefined
+		if( typeof str === "string" && str.indexOf('req') === 0 ) {
+			let params = str.split('.')
+			result = this.ctx
+			for(let i = 1; i < params.length; i++) {
+				result = result ? result[params[i]] : ''
+			}
+		}
+		if(typeof str === "object" && str.length > 0) {
+			result = []
+			for(let arg of str) {
+				result.push(this.getReq(arg))
+			}
+		}
+		return result || str
 	}
 }
 module.exports = Mock

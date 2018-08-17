@@ -1,22 +1,22 @@
 const FreeMock = require('../src')
 
-
 const fm = new FreeMock([{
     url: 'test',
     data: {
         people: {
             name: "@name()",
-            age: "@number()",
+            age: "@number(req.fixed)",
         }
     }
 }, {
     url:'test1',
     method:'GET',
-    "data|2": {
+    "data|<2": {
         name: "@name()",
-        "list|10": {
+        "list|<req.size": {
             title:"@title()",
-            time: "@time()"
+            time: "@time()",
+            height: "@number(2)"
         }
     }
 }, {
@@ -48,10 +48,16 @@ fm.interceptors.request.use(function(config) {
 })
 
 fm.get('login', {username: 'chenxuehui', password: '123'}).then((res) => {
+    // console.log(res)
+})
+
+fm.get('test', {fixed: 2}).then(res => {
+    console.log('----test----')
     console.log(res)
 })
 
-
-fm.get('test').then(res => {
+fm.get('test1', {size: 5}).then(res => {
+    console.log('----test1----')
     console.log(res)
+    console.log(res.data[0])
 })
