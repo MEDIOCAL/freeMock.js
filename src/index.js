@@ -1,5 +1,4 @@
 const Mock = require("./mock") 
-
 class FreeMock {
     constructor(...rest) {
         const me = this
