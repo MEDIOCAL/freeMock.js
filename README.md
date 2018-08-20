@@ -217,3 +217,8 @@ title()：随机生成一串字符
 number()：随机生成一个数字
 number(n)：随机生成精确到小数点后n位的数字
 number(a,b,c)：在a，b的范围内随机生成精确到小数点后c位数字
+string()：随机生成一串字符串
+string(2)：随机生成2个英文字符
+string(a, b)：a=true，随机生成b个大写英文字符
+boolean()：随机生成一个boolean值
+boolean(a)：如果a=true则返回true，否则返回false
