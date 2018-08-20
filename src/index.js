@@ -118,7 +118,4 @@ class FreeMock {
         })
     }
 }
-
-
-
 module.exports = FreeMock
