@@ -70,7 +70,36 @@ getTest = async () => {
 }
 
 ```
+### Req
 
+```
+const fm = new FreeMock([{
+    url: 'test',
+    data: {
+        people: {
+            name: "@name()",
+            age: "@number(req.fixed)",
+        }
+    }
+}, {
+    url:'test1',
+    method:'GET',
+    "data|<2": {
+        name: "@name()",
+        "list|<req.size": {
+            title:"@title()",
+            time: "@time()",
+            height: "@number(2)"
+        }
+    }
+}])
+```
+调用：
+
+```
+fm.get('test', {fixed: 2}).then(res => {})
+fm.get('test1', {size: 5}).then(res => {})
+```
 #### API
 
 ##### config
@@ -182,3 +211,9 @@ fm.get('test').then(res => {
     console.log(res)
 })
 ```
+### 基础语法
+name()： 随机生成人名
+title()：随机生成一串字符
+number()：随机生成一个数字
+number(n)：随机生成精确到小数点后n位的数字
+number(a,b,c)：在a，b的范围内随机生成精确到小数点后c位数字
