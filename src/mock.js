@@ -1,8 +1,9 @@
 const util = require('./util')
 
 class Mock {
-	constructor(ctx) {
+	constructor(ctx, state) {
 		this.ctx = ctx
+		this.state = state
 	}
     name() {
 		const surname = util.surname
@@ -96,12 +97,14 @@ class Mock {
 						result[key] = func.apply(this, argument)
 					} else if (typeof object[key] === 'object') {
 						result[key] = this.object(object[key])
+					} else if (typeof object[key] === 'function') {
+						result[key] = object[key](this.ctx, this.state)
 					} else {
 						result[key] = object[key]
 					}
 				}
 			}
-			return result
+			return result || {}
 		}
 	}
 	array() {
@@ -138,11 +141,13 @@ class Mock {
 					result.push(func.apply(this, argument))
 				} else if(typeof rest[0] === 'object') {
 					result.push(this.object(obj))
+				} else if(typeof rest[0] === 'function') {
+					result.push(rest[0](this.ctx, this.state))
 				} else {
 					result.push(rest[0])
 				}
 			}
-			return result
+			return result || {}
 		}
 	}
 	date() {
@@ -150,7 +155,6 @@ class Mock {
 	}
 	time() {
 		let date = new Date()
-		date = date
 		return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
 	}
 	email() {
@@ -192,12 +196,41 @@ class Mock {
 			return rest[index] || rest[0]
 		}
 	}
-
+	parse(data) {
+		if(typeof data === 'string') {
+			try {
+				data = JSON.parse(daata)
+			} catch(err) {
+				throw new Error('Not a JSON string')
+			}
+		}
+		return data
+	}
+	parseData(data) {
+		let result = {}
+		for(let key in data) {
+			if(typeof data[key] === 'object') {
+				result[key] = this.parseData(data[key])
+			} else {
+				result[key] = data[key]
+			}
+		}
+		return result
+	}
+	mockData (data) {
+		data = this.parse(data)
+		data = this.parseData(data)
+		if(Array.isArray(data)) {
+			return this.array(data[0], data.length)
+		} else {
+			return this.object(data)
+		}
+	}
 	getReq(str) {
 		let result = undefined
 		if( typeof str === "string" && str.indexOf('req') === 0 ) {
 			let params = str.split('.')
-			result = this.ctx
+			result = this.ctx.query || this.ctx.body
 			for(let i = 1; i < params.length; i++) {
 				result = result ? result[params[i]] : ''
 			}

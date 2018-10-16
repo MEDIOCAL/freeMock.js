@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <button id="app">按钮</button>
+    <script>
+        var d = document.getElementById("app")
+        d.addEventListener('click', function() {
+            fetch("/huihui", {
+                method: 'POST',
+                body: JSON.stringify({
+                    name: 'cxh'
+                })
+            }, function(res) {
+                console.log(res)
+            })
+        })
+    </script>
+</body>
+</html>
