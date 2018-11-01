@@ -6,7 +6,7 @@ const protocol = {
     http,
     https
 }
-module.exports = function({ mockData, state }) {
+module.exports = function({ mockData, state = {} }) {
     return async function (req, res, next) {
         const params = req.query || req.body
         let error = '没有配置该路由'
@@ -17,7 +17,12 @@ module.exports = function({ mockData, state }) {
         }
 
         const md = mockData.find((val) => {
-            if(!val.proxy && val.url === req.path && val.method) {
+            if(
+                !val.proxy && 
+                !state.proxy && 
+                val.url === req.path && 
+                val.method
+            ) {
                 error = 'method 错误'
                 return  val.method.toUpperCase() === req.method.toUpperCase()
             }
@@ -48,17 +53,20 @@ module.exports = function({ mockData, state }) {
         
         if(md.proxy) {
             let postdata = querystring.stringify(params)
-            let protocolName = md.proxy.indexOf('https') >= 0 ? 'https' : 'http'
+            let proxy = typeof md.proxy === 'string' ? md.proxy : state.proxy
+            let port = md.port || state.port
+            let protocolName = proxy.indexOf('https') >= 0 ? 'https' : 'http'
+            let headers = Object.assign({}, state.headers, md.headers)
             let options = {
-                hostname: md.proxy.replace(`${protocolName}://`,''),
-                port: md.port || (protocolName === 'http' ? 80 : 443),
+                hostname: proxy.replace(`${protocolName}://`,''),
+                port: port || (protocolName === 'http' ? 80 : 443),
                 path: req.path,
                 method: md.method || req.method,
                 headers: Object.assign(
                     {
                         Cookie: state.Cookie
                     },
-                    md.headers,
+                    headers,
                     {
                         'Content-Length': postdata.length,
                     },
