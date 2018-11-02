@@ -19,7 +19,6 @@ module.exports = function({ mockData, state = {} }) {
         const md = mockData.find((val) => {
             if(
                 !val.proxy && 
-                !state.proxy && 
                 val.url === req.path && 
                 val.method
             ) {

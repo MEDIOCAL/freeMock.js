@@ -12,205 +12,84 @@ Analog login operation
 ##### Quick get start
 
 ```
-mock.js
+server.js
 
-import FreeMock from "freemock"
+```
+app.use(freeMock(config))
+```
+config.js
 
-export default const freeMocl = new FreeMock([{
-    url: 'test',
-    data: {
-        people: {
+```
+module.exports = {
+    mockData: [{
+        url:'/test1',
+        method:'GET',
+        "data|<2": {
             name: "@name()",
-            age: "@number()",
+            "list|<req.size": {
+                title:"@title()",
+                time: "@time()",
+                height: "@number(2)"
+            }
         }
-    }
-}, {
-    url:'test1',
-    method:'GET',
-    "data|2": {
-        name: "@name()",
-        "list|10": {
-            title:"@title()",
-            time: "@time()"
+    }, {
+        url: '/wolong',
+        method: 'GET',
+        data: {
+            name: "123",
+            template: "456"
         }
+    }, {
+        url:'/wolongweb/plan/listNaive',
+        proxy: 'https://ad-test1.sm.cn',
+        method: 'GET',
+        port: '443',
+        headers: {
+            'Accept': '*/*',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept-Language': 'zh-CN,zh;q=0.9',
+            'Connection': 'keep-alive',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Host': 'ad-test1.sm.cn',
+            'Referer': 'https://ad-test1.sm.cn/cpc/static/index.html?uid=1061',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
+            'Cookie': '3428.1539223421.'
+        }
+    }],
+    state: {
+        
     }
-}, {
-    url:'login',
-    method: 'GET',
-    data: {}
-}])
-```
-use.js
-```
-import freeMock from "mock.js"
-
-...
-
-getTest = async () => {
-    let res = await freeMock.get('test')
 }
-
-...
-
 ```
 
-##### Result
-
+### 配置文件
+config 是一个对象：
 ```
-{ 
-    data: { 
-        people: { 
-            name: '张云龙', 
-            age: 83
-        } 
-    },
-    status: 200,
-    statusText: 'ok',
-    config: {}
+{
+    mockData //代表需要配置的接口，以及返回的数据
+    state  //接口需要的公共属性
 }
-
 ```
-### Req
-
+#### mockData：
+mockData 是一个对象数组。
 ```
-const fm = new FreeMock([{
-    url: 'test',
-    data: {
-        people: {
-            name: "@name()",
-            age: "@number(req.fixed)",
-        }
+[
+    {
+        url //必需，接口的路径。例如 /A 注意前面要加 “/”
+        data //默认为 {}。代表接口返回的数据。是一个 json 数据。
+        method  // 不设代表 get Post 都可以
+        proxy   // 代理开关，当为 true 时，将使用state里配置的代理方式。当为字符串时，使用当前方式。不设，代表不走代理
+        port    // 代理的 port
+        headers // 代理请求的 headers
     }
-}, {
-    url:'test1',
-    method:'GET',
-    "data|<2": {
-        name: "@name()",
-        "list|<req.size": {
-            title:"@title()",
-            time: "@time()",
-            height: "@number(2)"
-        }
-    }
-}])
-```
-调用：
-
-```
-fm.get('test', {fixed: 2}).then(res => {})
-fm.get('test1', {size: 5}).then(res => {})
+]
 ```
 #### API
 
-##### config
-
-params： 调用api的时候，传递的parmas会合并config的params。
-
-transformRequest：[function]
-    在请求之前，会调用该方法。该方法有3个参数:
-    1.params: api传递的值 
-    2.setState：一个可以用来设置state的function
-    3.state：当前state。
-    
-regular：[function]
-    用户可以设置若干个规则来打断api的调用。
-    只有所有的function都返回true的时候，才会继续生成数据，否则数据为null。
-
-
-transformResponse:
-    和transformRequest一样，只是在响应阶段调用
-
-##### interceptors
-
-```
-interceptors.request.use(function(config) {
-    ...
-    return config
-})
-
-interceptors.response.use(function(data) {
-    ...
-    return data
-})
-
-```
 
 #### State
- 可以设置state作为一个全局变量，用户可以通过transformRequest设置它，并且regular可以拿到state。因此我们可以通过state做一些验证操作
-```
-fm = new FreeMock([...], State)
-
-config.transformRequest = [function(params, setState, state) {
-    if(state.username === params.username && state.password === params.password) {
-        setState({
-            logined: true 
-        })
-    }
-    return params
-}]
-
-...
-
-config.regular = [function(state) {
-    return state.logined
-}]
-
-```
-
-Demo，来模拟登录
-
-```
-const fm = new FreeMock([{
-    url:'test',
-    method:'GET',
-    "data|2": {
-        name: "@name()",
-        "list|10": {
-            title:"@title()",
-            time: "@time()"
-        }
-    }
-}, {
-    url:'login',
-    method: 'GET',
-    data: {}
-}], {
-    username: 'chenxuehui',
-    password: '123',
-    logined: false
-})
-
-fm.interceptors.request.use(function(config) {
-    if(config.url == 'login') {
-        config.transformRequest = [function(params, setState, state) {
-            if(state.username === params.username && state.password === params.password) {
-                setState({
-                    logined: true 
-                })
-            }
-            return params
-        }]
-    } else {
-        config.regular = [function(state) {
-            return state.logined
-        }]
-    }
-    return config
-})
-
-```
-
-调用：
-```
-fm.get('login', {username: 'chenxuehui', password: '123'}).then((res) => {
-    console.log(res)
-})
 
 
-fm.get('test').then(res => {
-    console.log(res)
-})
-```
 ### 基础语法
 
 name()： 随机生成人名
