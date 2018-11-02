@@ -4,6 +4,14 @@ class Mock {
 	constructor(ctx, state) {
 		this.ctx = ctx
 		this.state = state
+		
+		if(state && state.plugin) {
+            for(let key in state.plugin) {
+                if(typeof state.plugin[key] === 'function') {
+                    this[key] = state.plugin[key]
+                } 
+            }
+        }
 	}
     name() {
 		const surname = util.surname
@@ -117,7 +125,15 @@ class Mock {
 			let len = rest[1]
 			let result = []
 			
-			if(typeof len === "string" && len.indexOf('>') >=0 ) {
+			if(typeof len === "string" && len.indexOf('>=') >=0 ) {
+				len = rest[1].substring(2, rest[1].length)
+				len = this.getReq(len)
+				len = Math.floor(Math.random()*10) + len
+			} else if(typeof len === "string" && len.indexOf('<=') >=0 ) {
+				len = rest[1].substring(2, rest[1].length)
+				len = this.getReq(len)
+				len = Math.floor(Math.random()*len) + 1
+			} else if(typeof len === "string" && len.indexOf('>') >=0 ) {
 				len = rest[1].substring(1, rest[1].length)
 				len = this.getReq(len)
 				len = Math.floor(Math.random()*10+1) + len
@@ -205,6 +221,10 @@ class Mock {
 			}
 		}
 		return data
+	}
+	params(key) {
+		const ctx = this.ctx.query || this.ctx.body
+		return ctx[key] || ''
 	}
 	parseData(data) {
 		let result = {}

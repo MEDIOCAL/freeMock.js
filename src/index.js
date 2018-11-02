@@ -2,6 +2,8 @@ const Mock = require("./mock")
 const http = require("http")
 const https = require('https')
 const querystring = require("querystring")
+const zlib = require("zlib")
+console.log(zlib)
 const protocol = {
     http,
     https
@@ -9,6 +11,7 @@ const protocol = {
 module.exports = function({ mockData, state = {} }) {
     return async function (req, res, next) {
         const params = req.query || req.body
+        let isInterceptors = false
         let error = '没有配置该路由'
         let data = null
 
@@ -32,8 +35,27 @@ module.exports = function({ mockData, state = {} }) {
             return 
         }
 
-        const mock = new Mock(req, state)
+        if(
+            md.interceptors &&
+            typeof md.interceptors === 'function' ||
+            state.interceptors && 
+            typeof state.interceptors === 'function'
+        ) {
+            const interceptors = md.interceptors || state.interceptors
+            isInterceptors = interceptors(state, req)
+        }
 
+        if(isInterceptors) {
+            let data = typeof isInterceptors === "object" ? 
+                        isInterceptors : 
+                        { status: '400', msg:'is Interrupted'}
+
+            res.json && res.json(data) || (res.body = data)
+            return 
+        } 
+
+        const mock = new Mock(req, state)
+        
         for(let key in md) {
             if(key.indexOf('data|') >= 0) {
                 let keys = key.split('|')
@@ -72,12 +94,20 @@ module.exports = function({ mockData, state = {} }) {
                 )
             }
             data = ''
-            let request = protocol[protocolName].request(options, function(response){
-                response.setEncoding('utf8')
-                response.on('data', function(chunk) {
+            let request = protocol[protocolName].request(options, function(response) {
+                var output = response
+                if(response.headers['content-encoding']=='gzip'){
+                    var gzip = zlib.createGunzip()
+                    response.pipe(gzip);
+                    output = gzip
+                } 
+
+                output.on('data', function(chunk) {
+                    chunk = chunk.toString('utf-8')
                     data = data + chunk
                 })
-                response.on('end', function() {
+                
+                output.on('end', function() {
                     try {
                         data = JSON.parse(data)
                     } catch(err) {
