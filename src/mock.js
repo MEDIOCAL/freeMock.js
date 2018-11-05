@@ -222,9 +222,13 @@ class Mock {
 		}
 		return data
 	}
-	params(key) {
-		const ctx = this.ctx.query || this.ctx.body
-		return ctx[key] || ''
+	params(...rest) {
+		const req = this.ctx.query || this.ctx.body
+		let result = req
+		for(let val of rest) {
+			result = result[val]
+		}
+		return result
 	}
 	parseData(data) {
 		let result = {}
