@@ -1,13 +1,7 @@
 const Mock = require("./mock") 
-const http = require("http")
-const https = require('https')
 const querystring = require("querystring")
-const zlib = require("zlib")
-console.log(zlib)
-const protocol = {
-    http,
-    https
-}
+const proxyRequire = require("./proxyRequire")
+
 module.exports = function({ mockData, state = {} }) {
     return async function (req, res, next) {
         const params = req.query || req.body
@@ -74,55 +68,8 @@ module.exports = function({ mockData, state = {} }) {
         
         if(md.proxy) {
             let postdata = querystring.stringify(params)
-            let proxy = typeof md.proxy === 'string' ? md.proxy : state.proxy
-            let port = md.port || state.port
-            let protocolName = proxy.indexOf('https') >= 0 ? 'https' : 'http'
-            let headers = Object.assign({}, state.headers, md.headers)
-            let options = {
-                hostname: proxy.replace(`${protocolName}://`,''),
-                port: port || (protocolName === 'http' ? 80 : 443),
-                path: req.path,
-                method: md.method || req.method,
-                headers: Object.assign(
-                    {
-                        Cookie: state.Cookie
-                    },
-                    headers,
-                    {
-                        'Content-Length': postdata.length,
-                    },
-                )
-            }
-            data = ''
-            let request = protocol[protocolName].request(options, function(response) {
-                var output = response
-                if(response.headers['content-encoding']=='gzip'){
-                    var gzip = zlib.createGunzip()
-                    response.pipe(gzip);
-                    output = gzip
-                } 
 
-                output.on('data', function(chunk) {
-                    chunk = chunk.toString('utf-8')
-                    data = data + chunk
-                })
-                
-                output.on('end', function() {
-                    try {
-                        data = JSON.parse(data)
-                    } catch(err) {
-                        console.log(err)
-                    }
-                    res.json && res.json(data) || (res.body = data)
-                })
-            })
-
-            request.on('error', function(e) {
-                console.log('Error', e)
-            })
-            request.write(postdata)
-            request.end()
-            return 
+            return proxyRequire(md, state, req, res)
         }
 
         if(md && md.plot) {

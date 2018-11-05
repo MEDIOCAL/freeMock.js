@@ -1,6 +1,7 @@
 {
     "scripts": {
-        "start": "node server.js"
+        "start": "node server.js",
+        "inspect": "node --inspect server.js"
     },
     "dependencies": {
         "ejs": "^2.6.1",

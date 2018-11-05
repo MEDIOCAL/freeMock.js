@@ -4,6 +4,7 @@ var path = require('path')
 var app = express()
 var freeMock = require('./src')
 var config = require('./example/config')
+var axios = require("axios")
 
 app.engine("html",require("ejs").__express)
 app.set('view engine', 'html')
@@ -16,6 +17,7 @@ app.use(freeMock(config))
 app.use('/', function(req, res){
     res.render('index.html')
 })
+
 
 app.use(function(err, req, res, next) {
     // set locals, only providing error in development
