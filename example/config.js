@@ -108,7 +108,7 @@ module.exports = {
         }
     }, {
         url:'/yingxiao/*',
-        proxy: 'https://crm.uc.cn',
+        proxy: 'https://ad-test2.sm.cn',
         method: 'GET',
         port: '443',
         headers: {
@@ -117,8 +117,8 @@ module.exports = {
             'Accept-Language': 'zh-CN,zh;q=0.9',
             'Connection': 'keep-alive',
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Host': 'crm.uc.cn',
-            'Referer': 'https://crm.uc.cn/',
+            'Host': 'ad-test2.sm.cn',
+            'Referer': 'https://ad-test2.sm.cn',
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
             'Cookie': 'SSO_IDT_V2=eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.Z0m80iGdshY1qT-4iantHdqo2DSM31JQ0FbYlu54YGbyWKHOoj2CEA.eWaLYydNm-Dt3IJT5V-bRA.DykRx1yzeiJ9hUcJUEoU6cofv5GJGQv2PIE3xzUkCseg0EQO4WdO0kPGfY84oMUfzo1W5TjuKLj2l-yHJzh9AF8VZUCeVIKUEy5JjkfQerquVgJwKJAxXT1flD7liH2JO9_G2DPArP6RKMqVGMBmDRGI9KmnikG3QQAcUVxhU2aVaUB-07MUIFUvnZqltOtRjQGpqlbLUCCQoBoTy0s_QVjtyAlPunoHMpkWIQSw453MiEaazL8QQhDa8neV-f9K0Cr3MVVR_mesRvzVQHgcJXeyIPXPfmayKOJUO-gK_y_4OdmGyG5vVsNJwacT6WFTn7edT0upsWQr8Ty04sELTSH74aWgMFgPatOowYEFBQtXVd2JjHxG6Ab6xFhE0QELtT4WQalEtsI9cE2yDPhyPMnEQMM1DWAjo0K87bZrzSw.ov2v-IDvy-yBJIHyH08z2w; SSO_IDT="Bearer eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.Z0m80iGdshY1qT-4iantHdqo2DSM31JQ0FbYlu54YGbyWKHOoj2CEA.eWaLYydNm-Dt3IJT5V-bRA.DykRx1yzeiJ9hUcJUEoU6cofv5GJGQv2PIE3xzUkCseg0EQO4WdO0kPGfY84oMUfzo1W5TjuKLj2l-yHJzh9AF8VZUCeVIKUEy5JjkfQerquVgJwKJAxXT1flD7liH2JO9_G2DPArP6RKMqVGMBmDRGI9KmnikG3QQAcUVxhU2aVaUB-07MUIFUvnZqltOtRjQGpqlbLUCCQoBoTy0s_QVjtyAlPunoHMpkWIQSw453MiEaazL8QQhDa8neV-f9K0Cr3MVVR_mesRvzVQHgcJXeyIPXPfmayKOJUO-gK_y_4OdmGyG5vVsNJwacT6WFTn7edT0upsWQr8Ty04sELTSH74aWgMFgPatOowYEFBQtXVd2JjHxG6Ab6xFhE0QELtT4WQalEtsI9cE2yDPhyPMnEQMM1DWAjo0K87bZrzSw.ov2v-IDvy-yBJIHyH08z2w"',
             'X-Requested-With': 'XMLHttpRequest',
