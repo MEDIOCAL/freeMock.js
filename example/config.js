@@ -126,9 +126,11 @@ module.exports = {
         }
     }],
     state: {
+        proxy: 'https://crm.uc.cn',
         username:'cxh',
         password:'123456',
         isLogin: true,
+        Cookie: 'SSO_IDT_V2=eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.Z0m80iGdshY1qT-4iantHdqo2DSM31JQ0FbYlu54YGbyWKHOoj2CEA.eWaLYydNm-Dt3IJT5V-bRA.DykRx1yzeiJ9hUcJUEoU6cofv5GJGQv2PIE3xzUkCseg0EQO4WdO0kPGfY84oMUfzo1W5TjuKLj2l-yHJzh9AF8VZUCeVIKUEy5JjkfQerquVgJwKJAxXT1flD7liH2JO9_G2DPArP6RKMqVGMBmDRGI9KmnikG3QQAcUVxhU2aVaUB-07MUIFUvnZqltOtRjQGpqlbLUCCQoBoTy0s_QVjtyAlPunoHMpkWIQSw453MiEaazL8QQhDa8neV-f9K0Cr3MVVR_mesRvzVQHgcJXeyIPXPfmayKOJUO-gK_y_4OdmGyG5vVsNJwacT6WFTn7edT0upsWQr8Ty04sELTSH74aWgMFgPatOowYEFBQtXVd2JjHxG6Ab6xFhE0QELtT4WQalEtsI9cE2yDPhyPMnEQMM1DWAjo0K87bZrzSw.ov2v-IDvy-yBJIHyH08z2w; SSO_IDT="Bearer eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.Z0m80iGdshY1qT-4iantHdqo2DSM31JQ0FbYlu54YGbyWKHOoj2CEA.eWaLYydNm-Dt3IJT5V-bRA.DykRx1yzeiJ9hUcJUEoU6cofv5GJGQv2PIE3xzUkCseg0EQO4WdO0kPGfY84oMUfzo1W5TjuKLj2l-yHJzh9AF8VZUCeVIKUEy5JjkfQerquVgJwKJAxXT1flD7liH2JO9_G2DPArP6RKMqVGMBmDRGI9KmnikG3QQAcUVxhU2aVaUB-07MUIFUvnZqltOtRjQGpqlbLUCCQoBoTy0s_QVjtyAlPunoHMpkWIQSw453MiEaazL8QQhDa8neV-f9K0Cr3MVVR_mesRvzVQHgcJXeyIPXPfmayKOJUO-gK_y_4OdmGyG5vVsNJwacT6WFTn7edT0upsWQr8Ty04sELTSH74aWgMFgPatOowYEFBQtXVd2JjHxG6Ab6xFhE0QELtT4WQalEtsI9cE2yDPhyPMnEQMM1DWAjo0K87bZrzSw.ov2v-IDvy-yBJIHyH08z2w"',
         interceptors: function(state) {
             if(!state.isLogin) {
                 return {

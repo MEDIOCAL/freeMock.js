@@ -9,6 +9,8 @@ module.exports = function({ mockData, state = {} }) {
         let error = '没有配置该路由'
         let data = null
 
+        state.params = params
+        
         if(!Array.isArray(mockData)) {
             mockData = [].push(mockData)
         }
@@ -24,6 +26,11 @@ module.exports = function({ mockData, state = {} }) {
             }
             return val.url === req.path
         })
+
+        if(!md && state.proxy) {
+            return proxyRequire({}, state, req, res)
+        }
+
         if(!md) {
             res.json && res.json({error}) || (res.body = {error})
             return 

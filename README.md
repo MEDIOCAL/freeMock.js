@@ -195,28 +195,26 @@ ctx 可以理解成 node 的 req。函数的返回值就是生成的 mock 数据
     url:'/wolong123/plan/list',
     proxy: 'https://ad-test1.ok.cn', 
     method: 'GET',
-    port: '443',
     headers: {
         Cookie: "asdsads"
     }
 }
 ```
 proxy 有两种值。
-当 proxy 为 true 的时候，表示此 api 走代理。会使用公共的 state.proxy。同样的，假如你的 port、headers 都没有设置，都会去state里找。
+当 proxy 为 true 的时候，表示此 api 走代理。会使用公共的 state.proxy。同样的，假如你的 headers 没有设置，都会去state里找。
 当设置为字符串的时候（如上）优先使用。
 不设置就直接返回 data 生成的数据。
 在 api 配置的对象里设置的属性优先级要高。
 state 
 ```
 {
-    port: '443',
     headers: {
         Cookie: "asdsads"
     }
 }
 ```
 ### state
-state 可以配置 proxy、port、headers、Cookie、plugin 等。
+state 可以配置 proxy、headers、Cookie、plugin 等。
 因为我们可以再配置 data 的 function 里面使用 state，例如：
 ```
 {
