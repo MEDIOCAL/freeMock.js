@@ -192,7 +192,7 @@ ctx 可以理解成 node 的 req。函数的返回值就是生成的 mock 数据
 
 ```
 {
-    url:'/wolong123/plan/list',
+    url:'/wolong123/*',
     proxy: 'https://ad-test1.ok.cn', 
     method: 'GET',
     headers: {
@@ -200,6 +200,7 @@ ctx 可以理解成 node 的 req。函数的返回值就是生成的 mock 数据
     }
 }
 ```
+url:可以设置具体的path，也可以设置 * 代表此路由下所有的 url。
 proxy 有两种值。
 当 proxy 为 true 的时候，表示此 api 走代理。会使用公共的 state.proxy。同样的，假如你的 headers 没有设置，都会去state里找。
 当设置为字符串的时候（如上）优先使用。
@@ -217,9 +218,11 @@ state
 state 可以配置 proxy、headers、Cookie、plugin 等。
 因为我们可以再配置 data 的 function 里面使用 state，例如：
 ```
-{
-    id: function(ctx, state) {}
-}
+mockData: [{
+    id: function(ctx, state) {
+        return state.id
+    }
+}]
 ```
 在 plugin 里面也可以使用：
 

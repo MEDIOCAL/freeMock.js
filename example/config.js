@@ -107,7 +107,7 @@ module.exports = {
             'X-Requested-With': 'XMLHttpRequest',
         }
     }, {
-        url:'/yingxiao/web/init/operator',
+        url:'/yingxiao/*',
         proxy: 'https://crm.uc.cn',
         method: 'GET',
         port: '443',

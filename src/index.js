@@ -2,7 +2,7 @@ const Mock = require("./mock")
 const querystring = require("querystring")
 const proxyRequire = require("./proxyRequire")
 
-module.exports = function({ mockData, state = {} }) {
+module.exports = function({ mockData = [], state = {} }) {
     return async function (req, res, next) {
         const params = req.query || req.body
         let isInterceptors = false
@@ -18,24 +18,25 @@ module.exports = function({ mockData, state = {} }) {
         const md = mockData.find((val) => {
             if(
                 !val.proxy && 
-                val.url === req.path && 
+                ( 
+                    val.url === req.path ||
+                    val.url.indexOf("/*") >= 0 &&
+                    req.path.indexOf(val.url.replace("/*","")) == 0
+                ) && 
                 val.method
             ) {
                 error = 'method 错误'
                 return  val.method.toUpperCase() === req.method.toUpperCase()
+            } else if(val.url.indexOf("/*") >= 0) {
+                return req.path.indexOf(val.url.replace("/*","")) == 0
             }
             return val.url === req.path
         })
 
-        if(!md && state.proxy) {
-            return proxyRequire({}, state, req, res)
-        }
-
         if(!md) {
-            res.json && res.json({error}) || (res.body = {error})
-            return 
+            return next()
         }
-
+        
         if(
             md.interceptors &&
             typeof md.interceptors === 'function' ||

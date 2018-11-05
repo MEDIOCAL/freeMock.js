@@ -1,7 +1,6 @@
-
 const axios = require("axios")
 
-module.exports = function proxyRequire(md, state, req, res) {
+module.exports = function proxyRequire(md = {} , state, req, res) {
     let proxy = typeof md.proxy === 'string' ? md.proxy : state.proxy
     let url = `${proxy}${req.path}`
     let method = (md.method || req.method).toLowerCase()
@@ -13,14 +12,14 @@ module.exports = function proxyRequire(md, state, req, res) {
         state.headers, 
         md.headers
     )
-    console.log(method, url)
     axios[method](url, { params, headers })
     .then(function(response) {
         res.json(response.data)
     })
     .catch( err => {
         res.json({
-            err
+            err,
+            msg: "发现未知错误"
         })
     })
 }
