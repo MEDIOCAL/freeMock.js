@@ -8,6 +8,7 @@ var axios = require("axios")
 
 app.engine("html",require("ejs").__express)
 app.set('view engine', 'html')
+app.set('views', path.join(__dirname, '/'));
 app.use(express.static(path.join(__dirname, '/')))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))

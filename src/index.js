@@ -1,9 +1,18 @@
 const Mock = require("./mock") 
-const querystring = require("querystring")
+const proxyHttp = require("./proxyHttp")
 const proxyRequire = require("./proxyRequire")
+
+const proxyMethods = [
+    proxyHttp,
+    proxyRequire
+]
 
 module.exports = function({ mockData = [], state = {} }) {
     return async function (req, res, next) {
+        if(mockData.length === 0 && state === {}) {
+            return next()
+        }
+        
         const params = req.query || req.body
         let isInterceptors = false
         let error = '没有配置该路由'
@@ -28,7 +37,8 @@ module.exports = function({ mockData = [], state = {} }) {
                 error = 'method 错误'
                 return  val.method.toUpperCase() === req.method.toUpperCase()
             } else if(val.url.indexOf("/*") >= 0) {
-                return req.path.indexOf(val.url.replace("/*","")) == 0
+                let newUrl = val.url.replace("/*","")
+                return req.path.indexOf(newUrl) == 0 && req.path != newUrl
             }
             return val.url === req.path
         })
@@ -75,9 +85,8 @@ module.exports = function({ mockData = [], state = {} }) {
         }
         
         if(md.proxy) {
-            let postdata = querystring.stringify(params)
-
-            return proxyRequire(md, state, req, res)
+            let proxymethod = state.proxymethod || 0
+            return proxyMethods[proxymethod](md, state, req, res)
         }
 
         if(md && md.plot) {

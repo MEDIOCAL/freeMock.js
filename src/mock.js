@@ -103,6 +103,8 @@ class Mock {
 						argument = argument === '' && [] || argument.split(',')
 						const func = this[fn] || this.string
 						result[key] = func.apply(this, argument)
+					} else if(Array.isArray(object[key])) {
+						result[key] = this.array(object[key])
 					} else if (typeof object[key] === 'object') {
 						result[key] = this.object(object[key])
 					} else if (typeof object[key] === 'function') {
