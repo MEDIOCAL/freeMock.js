@@ -19,6 +19,8 @@ module.exports = function(md = {}, state = {},  req, res) {
         path: req.path,
         method: md.method || req.method,
         headers: Object.assign(
+            {},
+            req.headers,
             {
                 Cookie: state.Cookie,
                 encoding : null 

@@ -6,11 +6,13 @@ module.exports = function proxyRequire(md = {} , state, req, res) {
     let method = (md.method || req.method).toLowerCase()
     let params = state.params
     let headers = Object.assign(
+        {},
+        req.headers,
         {
             Cookie: state.Cookie
         }, 
         state.headers, 
-        md.headers
+        md.headers,
     )
     axios[method](url, { params, headers })
     .then(function(response) {
