@@ -118,10 +118,14 @@ class Mock {
 		}
 	}
 	array() {
-		let rest = this.getReq(arguments)
 		if(arguments.length === 0) {
 			return ''
+		} else if(arguments.length === 1 && Array.isArray(arguments[0])) {
+			return arguments[0]
 		}
+
+		let rest = this.getReq(arguments)
+		
 		if(rest.length === 2) {
 			let obj = rest[0]
 			let len = rest[1]
