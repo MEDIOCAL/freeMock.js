@@ -12,8 +12,7 @@ module.exports = function({ mockData = [], state = {} }) {
         if(mockData.length === 0 && state === {}) {
             return next()
         }
-        
-        const params = req.query || req.body
+        const params = req.method.toUpperCase() === 'GET' ? req.query :  req.body
         let isInterceptors = false
         let error = '没有配置该路由'
         let data = null

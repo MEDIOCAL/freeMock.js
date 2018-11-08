@@ -19,8 +19,9 @@ module.exports = function(md = {}, state = {},  req, res) {
         path: req.path,
         method: md.method || req.method,
         headers: Object.assign(
-            {},
-            req.headers,
+            {
+                'content-type': req.headers['content-type'] || 'application/json; charset=utf-8'
+            },
             {
                 Cookie: state.Cookie,
                 encoding : null 

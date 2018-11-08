@@ -120,8 +120,39 @@ class Mock {
 	array() {
 		if(arguments.length === 0) {
 			return ''
-		} else if(arguments.length === 1 && Array.isArray(arguments[0])) {
-			return arguments[0]
+		}
+
+		let result = []
+
+		function dealwith(arg, result) {
+			if(Array.isArray(arg)) {
+				result.push(this.array(arg))
+			} else if(typeof arg === "object") {
+				result.push(this.object(arg))
+			} else if(typeof arg === 'function') {
+				result.push(arg(this.ctx, this.state))
+			} else if(typeof arg === 'string' && arg.indexOf('@') === 0) {
+				let str = arg
+				let strLength = str.length
+				let argument = str.substring(str.indexOf('(') + 1, strLength - 1)
+				let fn = str.substring(1, str.indexOf('('))
+				argument = argument === '' && [] || argument.split(',')
+				const func = this[fn] || this.string
+				result.push(func.apply(this, argument))
+			} else {
+				result.push(arg)
+			}
+			return result
+		}
+		
+		if(
+			arguments.length === 1 && 
+			Array.isArray(arguments[0])
+		) {
+			for(let arg of arguments[0]) {
+				result = dealwith.call(this, arg, result)
+			}
+			return result
 		}
 
 		let rest = this.getReq(arguments)
@@ -129,7 +160,6 @@ class Mock {
 		if(rest.length === 2) {
 			let obj = rest[0]
 			let len = rest[1]
-			let result = []
 			
 			if(typeof len === "string" && len.indexOf('>=') >=0 ) {
 				len = rest[1].substring(2, rest[1].length)
@@ -150,24 +180,7 @@ class Mock {
 			}
 
 			for(let i = 0; i < Math.max(len, 1); i++) {
-				if(
-					typeof rest[0] === 'string' && 
-					rest[0].indexOf('@') === 0
-				) {
-					let str = rest[0]
-					let strLength = str.length
-					let argument = str.substring(str.indexOf('(') + 1, strLength - 1)
-					let fn = str.substring(1, str.indexOf('('))
-					argument = argument === '' && [] || argument.split(',')
-					const func = this[fn] || this.string
-					result.push(func.apply(this, argument))
-				} else if(typeof rest[0] === 'object') {
-					result.push(this.object(obj))
-				} else if(typeof rest[0] === 'function') {
-					result.push(rest[0](this.ctx, this.state))
-				} else {
-					result.push(rest[0])
-				}
+				result = dealwith.call(this, obj, result)
 			}
 			return result || {}
 		}

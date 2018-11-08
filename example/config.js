@@ -41,13 +41,72 @@ module.exports = {
                     return ctx.query.size
                 },
                 pageNo: "@params(pageNo)",
-                name: "@getName(chenxuehui)"
+                name: "@getName(chenxuehui)",
+                lists: [
+                    {
+                        name: "chenxuhui"
+                    },
+                    {
+                        name: "mingjie"
+                    }
+                ],
+                met: {
+                    title: "nihao",
+                    list: [
+                        'nihao',
+                        {
+                            color: "#fff"
+                        }
+                    ]
+                }
             }
         }
     }, {
-        url:'/login',
-        method: 'GET',
-        data: {}
+        url: '/test2',
+        method: 'get',
+        data: {
+            status: 0,
+            result: [
+                {
+                    name: "zhaohang"
+                }, {
+                    name: "minjie"
+                }
+            ],
+            tag: {
+                title: "biaoqian",
+                options: [
+                    {
+                        name: "biaoqian1"
+                    }, {
+                        name: "biaoqian2"
+                    },
+                    "niaho"
+                ]
+            }
+        }
+    }, {
+        url: '/test3',
+        method: 'get',
+        data: {
+            status: 1,
+            name: "@name()",
+            list: [
+                {
+                    name: "@name",
+                    age: "@number()"
+                },
+                "nihao",
+                "@name()",
+                [
+                    "nihaoya",
+                    "@title()",
+                    {
+                        age: "@date()"
+                    }
+                ]
+            ]
+        }
     }, {
         url:'/huihui',
         proxy: 'http://localhost',
@@ -120,17 +179,18 @@ module.exports = {
             'Host': 'crm.uc.cn',
             'Referer': 'https://crm.uc.cn',
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
-            'Cookie': 'SSO_IDT_V2=eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.YG2gG0ZOJWYi2ajxGBjiuUMG1heCuDyCJUGRM8fwwfibtOeIGHrgcQ.AtXgEu9C7-fDj036erqiuw.baeVfnQ2daWkUDZxpV3nSgTalrIZevZapoIe5TF0g31rwit_QKEXPH1QMqdnIdIHokJ0s42RoIJGWlEO1RSskdhSJf7sRuJibmQr94ZPmW08EOtrThO-dMGGc-8PuaDKMl0HVn9aTN4fFc1DIb0kK3bLzSRyl2TlZlSjFNayZn8T_fecTmXlZofz0aIZVNYdb9JWk2K6RModb9qE0ioXQpqZLI9XLLKqZYfOLC5KFK73mxwFeH4IhpLdcYStzQn-Ap9JNmE7rEJDbpa5-mMi1m3XDRU-aKZ6yAFt0WwQVwid39b-IjkxaXMppmm3qrpBEbS_SZ4sCzJKTNNxRs5Xq9_C5hhS-BVkpytSWeDLbD5q7bs7KmV0LqTDKIpq74Bf4n9urOsPbHSD4Rom6UcozQDPuPTZqyN_sfZvlK5v7kY.dxSweQEd0U4GGTWDfY3T-w; SSO_IDT="Bearer eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.YG2gG0ZOJWYi2ajxGBjiuUMG1heCuDyCJUGRM8fwwfibtOeIGHrgcQ.AtXgEu9C7-fDj036erqiuw.baeVfnQ2daWkUDZxpV3nSgTalrIZevZapoIe5TF0g31rwit_QKEXPH1QMqdnIdIHokJ0s42RoIJGWlEO1RSskdhSJf7sRuJibmQr94ZPmW08EOtrThO-dMGGc-8PuaDKMl0HVn9aTN4fFc1DIb0kK3bLzSRyl2TlZlSjFNayZn8T_fecTmXlZofz0aIZVNYdb9JWk2K6RModb9qE0ioXQpqZLI9XLLKqZYfOLC5KFK73mxwFeH4IhpLdcYStzQn-Ap9JNmE7rEJDbpa5-mMi1m3XDRU-aKZ6yAFt0WwQVwid39b-IjkxaXMppmm3qrpBEbS_SZ4sCzJKTNNxRs5Xq9_C5hhS-BVkpytSWeDLbD5q7bs7KmV0LqTDKIpq74Bf4n9urOsPbHSD4Rom6UcozQDPuPTZqyN_sfZvlK5v7kY.dxSweQEd0U4GGTWDfY3T-w"',
+            'Cookie': 'SSO_IDT_V2=eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.fJgGf2Fp0MNT20iAs_p3CCj6yY2NTlnrjlcIAxXwMSzugdLRvS79aQ.6DgQyxnSQtCxJkVzDvl6RQ.JdUlC7y-1HjTLzrzgYLje0OXy95YbJ8U8Nzbf1FNE5Gfe5JNfeB5fhG7ZthHpc4z3eLDvSHxD36Z2XpsdhGIdA_rpBGhwJ8BwhLqV0ljljSkcP8bK1zBFT9b0nttNwWya7TiHHEIQgwbUvx832BjZwb6r70-UVS4tj1IYidRK8WqV35OpowjsuYCAf1wgdSvTi-ox2XIW-iJP7PHjHyPiLqyWmg4xunQVs3FF8p9frK-bnEa0FhSGevM8XBUZNO1-o22pRNrhOOOs_6Fc0Le_vuurhPcDB-XmsBL96HEAjX3CX2L3ML5FpXstPOucHtZUhiJm6kow720Zum4rvP7u0E-YU-sHiCYvEndd6Tn_7dAB0oCLvzeHjIRFr498Zft3_rhz6N4vrH201way-QLb-sj4ID8EvCF7K9yEUUXLEk.uh5o1CJwszO8YtHXydODYg; SSO_IDT="Bearer eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.fJgGf2Fp0MNT20iAs_p3CCj6yY2NTlnrjlcIAxXwMSzugdLRvS79aQ.6DgQyxnSQtCxJkVzDvl6RQ.JdUlC7y-1HjTLzrzgYLje0OXy95YbJ8U8Nzbf1FNE5Gfe5JNfeB5fhG7ZthHpc4z3eLDvSHxD36Z2XpsdhGIdA_rpBGhwJ8BwhLqV0ljljSkcP8bK1zBFT9b0nttNwWya7TiHHEIQgwbUvx832BjZwb6r70-UVS4tj1IYidRK8WqV35OpowjsuYCAf1wgdSvTi-ox2XIW-iJP7PHjHyPiLqyWmg4xunQVs3FF8p9frK-bnEa0FhSGevM8XBUZNO1-o22pRNrhOOOs_6Fc0Le_vuurhPcDB-XmsBL96HEAjX3CX2L3ML5FpXstPOucHtZUhiJm6kow720Zum4rvP7u0E-YU-sHiCYvEndd6Tn_7dAB0oCLvzeHjIRFr498Zft3_rhz6N4vrH201way-QLb-sj4ID8EvCF7K9yEUUXLEk.uh5o1CJwszO8YtHXydODYg"',
             'X-Requested-With': 'XMLHttpRequest',
             'Transfer-Encoding': 'chunked'
         }
     }],
     state: {
         proxy: 'https://crm.uc.cn',
+        proxymethod: 1,
         username:'cxh',
         password:'123456',
         isLogin: true,
-        Cookie: 'SSO_IDT_V2=eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.Z0m80iGdshY1qT-4iantHdqo2DSM31JQ0FbYlu54YGbyWKHOoj2CEA.eWaLYydNm-Dt3IJT5V-bRA.DykRx1yzeiJ9hUcJUEoU6cofv5GJGQv2PIE3xzUkCseg0EQO4WdO0kPGfY84oMUfzo1W5TjuKLj2l-yHJzh9AF8VZUCeVIKUEy5JjkfQerquVgJwKJAxXT1flD7liH2JO9_G2DPArP6RKMqVGMBmDRGI9KmnikG3QQAcUVxhU2aVaUB-07MUIFUvnZqltOtRjQGpqlbLUCCQoBoTy0s_QVjtyAlPunoHMpkWIQSw453MiEaazL8QQhDa8neV-f9K0Cr3MVVR_mesRvzVQHgcJXeyIPXPfmayKOJUO-gK_y_4OdmGyG5vVsNJwacT6WFTn7edT0upsWQr8Ty04sELTSH74aWgMFgPatOowYEFBQtXVd2JjHxG6Ab6xFhE0QELtT4WQalEtsI9cE2yDPhyPMnEQMM1DWAjo0K87bZrzSw.ov2v-IDvy-yBJIHyH08z2w; SSO_IDT="Bearer eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.Z0m80iGdshY1qT-4iantHdqo2DSM31JQ0FbYlu54YGbyWKHOoj2CEA.eWaLYydNm-Dt3IJT5V-bRA.DykRx1yzeiJ9hUcJUEoU6cofv5GJGQv2PIE3xzUkCseg0EQO4WdO0kPGfY84oMUfzo1W5TjuKLj2l-yHJzh9AF8VZUCeVIKUEy5JjkfQerquVgJwKJAxXT1flD7liH2JO9_G2DPArP6RKMqVGMBmDRGI9KmnikG3QQAcUVxhU2aVaUB-07MUIFUvnZqltOtRjQGpqlbLUCCQoBoTy0s_QVjtyAlPunoHMpkWIQSw453MiEaazL8QQhDa8neV-f9K0Cr3MVVR_mesRvzVQHgcJXeyIPXPfmayKOJUO-gK_y_4OdmGyG5vVsNJwacT6WFTn7edT0upsWQr8Ty04sELTSH74aWgMFgPatOowYEFBQtXVd2JjHxG6Ab6xFhE0QELtT4WQalEtsI9cE2yDPhyPMnEQMM1DWAjo0K87bZrzSw.ov2v-IDvy-yBJIHyH08z2w"',
+        Cookie: 'SSO_IDT_V2=eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.fJgGf2Fp0MNT20iAs_p3CCj6yY2NTlnrjlcIAxXwMSzugdLRvS79aQ.6DgQyxnSQtCxJkVzDvl6RQ.JdUlC7y-1HjTLzrzgYLje0OXy95YbJ8U8Nzbf1FNE5Gfe5JNfeB5fhG7ZthHpc4z3eLDvSHxD36Z2XpsdhGIdA_rpBGhwJ8BwhLqV0ljljSkcP8bK1zBFT9b0nttNwWya7TiHHEIQgwbUvx832BjZwb6r70-UVS4tj1IYidRK8WqV35OpowjsuYCAf1wgdSvTi-ox2XIW-iJP7PHjHyPiLqyWmg4xunQVs3FF8p9frK-bnEa0FhSGevM8XBUZNO1-o22pRNrhOOOs_6Fc0Le_vuurhPcDB-XmsBL96HEAjX3CX2L3ML5FpXstPOucHtZUhiJm6kow720Zum4rvP7u0E-YU-sHiCYvEndd6Tn_7dAB0oCLvzeHjIRFr498Zft3_rhz6N4vrH201way-QLb-sj4ID8EvCF7K9yEUUXLEk.uh5o1CJwszO8YtHXydODYg; SSO_IDT="Bearer eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.fJgGf2Fp0MNT20iAs_p3CCj6yY2NTlnrjlcIAxXwMSzugdLRvS79aQ.6DgQyxnSQtCxJkVzDvl6RQ.JdUlC7y-1HjTLzrzgYLje0OXy95YbJ8U8Nzbf1FNE5Gfe5JNfeB5fhG7ZthHpc4z3eLDvSHxD36Z2XpsdhGIdA_rpBGhwJ8BwhLqV0ljljSkcP8bK1zBFT9b0nttNwWya7TiHHEIQgwbUvx832BjZwb6r70-UVS4tj1IYidRK8WqV35OpowjsuYCAf1wgdSvTi-ox2XIW-iJP7PHjHyPiLqyWmg4xunQVs3FF8p9frK-bnEa0FhSGevM8XBUZNO1-o22pRNrhOOOs_6Fc0Le_vuurhPcDB-XmsBL96HEAjX3CX2L3ML5FpXstPOucHtZUhiJm6kow720Zum4rvP7u0E-YU-sHiCYvEndd6Tn_7dAB0oCLvzeHjIRFr498Zft3_rhz6N4vrH201way-QLb-sj4ID8EvCF7K9yEUUXLEk.uh5o1CJwszO8YtHXydODYg"',
         interceptors: function(state) {
             if(!state.isLogin) {
                 return {
