@@ -152,41 +152,19 @@ module.exports = {
         url:'/index/getstarlist',
         proxy: 'https://www.imooc.com',
         method: 'GET',
-        port: '443',
         headers: {
-            'Accept': 'application/json, text/javascript, */*; q=0.01',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Accept-Language': 'zh-CN,zh;q=0.9',
-            'Connection': 'keep-alive',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Host': 'www.imooc.com',
-            'Referer': 'https://www.imooc.com/',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
-            'Cookie': '_pk_id.2804852a3abc.ac81=cd8e392b-3702-469d-9b38-42b13dd1f6f4.1534147992.2.1534418441.1534148143.; cna=eSr4E356dFYCAWoLKdVGypbn; SSO_IDT_V2=eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.fnFbwGJjk4nFxjGfqUoWs6qSskRO-TkzWQYVlKElM7O3_VJgXB5FCQ.tUgwM5qL7FB6CzsRu1KU0A.DQhuBJkKRkfBzaeW7aaMPKFRjnkSwnwpLNylmm1mxwyU6lDpSePHIOcRGJ54Uyuqe5i8EC0nZGS0GOS37gHElCBuRK975AqsgbgIgyxPYVkZYgnHi965Y_KdwNH9vLCJf0w-RFuWOmZszMIlNe2123j7Z3hh_eGxNPAOsaC6SQtg7nJe-4NUbEWSaq3tEnNpnUb-aJxe-TSVoWYlAVkEtbjZgpp9p6ryOkJteHq8gOLz914Ue7xKaR0CjZWlF3aI7tDFTx9XmjmtG0e5QFRXS2p5hL1DtGPZgp7EpP4tBc-3prjacRBZNI01Mjyx4AD9Q8jnheg_ebtaFxBnElKhL-AM4h9vg1liXvNQ-PjYPIeTsrYSKov6meTSx7mlMb0q.d_pQJmBrQhGxT50bXtdAYA; UC-CSRF-TOKEN=852d2f8fabc618ad95bf5396cd6b93d5; SSO_IDT="Bearer eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.fnFbwGJjk4nFxjGfqUoWs6qSskRO-TkzWQYVlKElM7O3_VJgXB5FCQ.tUgwM5qL7FB6CzsRu1KU0A.DQhuBJkKRkfBzaeW7aaMPKFRjnkSwnwpLNylmm1mxwyU6lDpSePHIOcRGJ54Uyuqe5i8EC0nZGS0GOS37gHElCBuRK975AqsgbgIgyxPYVkZYgnHi965Y_KdwNH9vLCJf0w-RFuWOmZszMIlNe2123j7Z3hh_eGxNPAOsaC6SQtg7nJe-4NUbEWSaq3tEnNpnUb-aJxe-TSVoWYlAVkEtbjZgpp9p6ryOkJteHq8gOLz914Ue7xKaR0CjZWlF3aI7tDFTx9XmjmtG0e5QFRXS2p5hL1DtGPZgp7EpP4tBc-3prjacRBZNI01Mjyx4AD9Q8jnheg_ebtaFxBnElKhL-AM4h9vg1liXvNQ-PjYPIeTsrYSKov6meTSx7mlMb0q.d_pQJmBrQhGxT50bXtdAYA"; _pk_cvar.test-123.ac81=%7B%221%22%3A%5B%22userId%22%2C%221061%22%5D%2C%222%22%3A%5B%22source%22%2C%22cpc%22%5D%7D; _pk_ses.test-123.ac81=*; _pk_id.test-123.ac81=e84d8e01-06ba-474d-872a-b7bc99cc3fcd.1540968266.2.1541150772.1540968281.',
-            'X-Requested-With': 'XMLHttpRequest',
+            'Cookie': '_pk_id.2804852a3abc.ac81=cd8e392b-3702-469d-9b38-42b13dd1f6f4.1534147992.2.1534418441.1534148143.; cna=eSr4E356dFYCAWoLKdVGypbn; SSO_IDT_V2=eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.fnFbwGJjk4nFxjGfqUoWs6qSskRO-TkzWQYVlKElM7O3_VJgXB5FCQ.tUgwM5qL7FB6CzsRu1KU0A.DQhuBJkKRkfBzaeW7aaMPKFRjnkSwnwpLNylmm1mxwyU6lDpSePHIOcRGJ54Uyuqe5i8EC0nZGS0GOS37gHElCBuRK975AqsgbgIgyxPYVkZYgnHi965Y_KdwNH9vLCJf0w-RFuWOmZszMIlNe2123j7Z3hh_eGxNPAOsaC6SQtg7nJe-4NUbEWSaq3tEnNpnUb-aJxe-TSVoWYlAVkEtbjZgpp9p6ryOkJteHq8gOLz914Ue7xKaR0CjZWlF3aI7tDFTx9XmjmtG0e5QFRXS2p5hL1DtGPZgp7EpP4tBc-3prjacRBZNI01Mjyx4AD9Q8jnheg_ebtaFxBnElKhL-AM4h9vg1liXvNQ-PjYPIeTsrYSKov6meTSx7mlMb0q.d_pQJmBrQhGxT50bXtdAYA; UC-CSRF-TOKEN=852d2f8fabc618ad95bf5396cd6b93d5; SSO_IDT="Bearer eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.fnFbwGJjk4nFxjGfqUoWs6qSskRO-TkzWQYVlKElM7O3_VJgXB5FCQ.tUgwM5qL7FB6CzsRu1KU0A.DQhuBJkKRkfBzaeW7aaMPKFRjnkSwnwpLNylmm1mxwyU6lDpSePHIOcRGJ54Uyuqe5i8EC0nZGS0GOS37gHElCBuRK975AqsgbgIgyxPYVkZYgnHi965Y_KdwNH9vLCJf0w-RFuWOmZszMIlNe2123j7Z3hh_eGxNPAOsaC6SQtg7nJe-4NUbEWSaq3tEnNpnUb-aJxe-TSVoWYlAVkEtbjZgpp9p6ryOkJteHq8gOLz914Ue7xKaR0CjZWlF3aI7tDFTx9XmjmtG0e5QFRXS2p5hL1DtGPZgp7EpP4tBc-3prjacRBZNI01Mjyx4AD9Q8jnheg_ebtaFxBnElKhL-AM4h9vg1liXvNQ-PjYPIeTsrYSKov6meTSx7mlMb0q.d_pQJmBrQhGxT50bXtdAYA"; _pk_cvar.test-123.ac81=%7B%221%22%3A%5B%22userId%22%2C%221061%22%5D%2C%222%22%3A%5B%22source%22%2C%22cpc%22%5D%7D; _pk_ses.test-123.ac81=*; _pk_id.test-123.ac81=e84d8e01-06ba-474d-872a-b7bc99cc3fcd.1540968266.2.1541150772.1540968281.'
         }
     }, {
         url:'/yingxiao/*',
-        proxy: 'https://crm.uc.cn',
-        method: 'GET',
-        port: '443',
+        proxy: 'https://ad-test2.sm.cn',
         headers: {
-            'Accept': 'application/json, text/javascript, */*; q=0.01',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Accept-Language': 'zh-CN,zh;q=0.9',
-            'Connection': 'keep-alive',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Host': 'crm.uc.cn',
-            'Referer': 'https://crm.uc.cn',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
-            'Cookie': 'SSO_IDT_V2=eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.fJgGf2Fp0MNT20iAs_p3CCj6yY2NTlnrjlcIAxXwMSzugdLRvS79aQ.6DgQyxnSQtCxJkVzDvl6RQ.JdUlC7y-1HjTLzrzgYLje0OXy95YbJ8U8Nzbf1FNE5Gfe5JNfeB5fhG7ZthHpc4z3eLDvSHxD36Z2XpsdhGIdA_rpBGhwJ8BwhLqV0ljljSkcP8bK1zBFT9b0nttNwWya7TiHHEIQgwbUvx832BjZwb6r70-UVS4tj1IYidRK8WqV35OpowjsuYCAf1wgdSvTi-ox2XIW-iJP7PHjHyPiLqyWmg4xunQVs3FF8p9frK-bnEa0FhSGevM8XBUZNO1-o22pRNrhOOOs_6Fc0Le_vuurhPcDB-XmsBL96HEAjX3CX2L3ML5FpXstPOucHtZUhiJm6kow720Zum4rvP7u0E-YU-sHiCYvEndd6Tn_7dAB0oCLvzeHjIRFr498Zft3_rhz6N4vrH201way-QLb-sj4ID8EvCF7K9yEUUXLEk.uh5o1CJwszO8YtHXydODYg; SSO_IDT="Bearer eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.fJgGf2Fp0MNT20iAs_p3CCj6yY2NTlnrjlcIAxXwMSzugdLRvS79aQ.6DgQyxnSQtCxJkVzDvl6RQ.JdUlC7y-1HjTLzrzgYLje0OXy95YbJ8U8Nzbf1FNE5Gfe5JNfeB5fhG7ZthHpc4z3eLDvSHxD36Z2XpsdhGIdA_rpBGhwJ8BwhLqV0ljljSkcP8bK1zBFT9b0nttNwWya7TiHHEIQgwbUvx832BjZwb6r70-UVS4tj1IYidRK8WqV35OpowjsuYCAf1wgdSvTi-ox2XIW-iJP7PHjHyPiLqyWmg4xunQVs3FF8p9frK-bnEa0FhSGevM8XBUZNO1-o22pRNrhOOOs_6Fc0Le_vuurhPcDB-XmsBL96HEAjX3CX2L3ML5FpXstPOucHtZUhiJm6kow720Zum4rvP7u0E-YU-sHiCYvEndd6Tn_7dAB0oCLvzeHjIRFr498Zft3_rhz6N4vrH201way-QLb-sj4ID8EvCF7K9yEUUXLEk.uh5o1CJwszO8YtHXydODYg"',
-            'X-Requested-With': 'XMLHttpRequest',
-            'Transfer-Encoding': 'chunked'
+           'Cookie': 'cna=eSr4E356dFYCAWoLKdVGypbn; SSO_IDT_V2=eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.kSboqHvoo_SI7mW9FJMZBLp0lCak0Gl4ptL3oLUvCfEFGqzmyQ87hQ.y4zhaqRNmtYuW42ynrrx2w.sFPRE8UCheQQap3QWi_ghoW-FKyhUn_6Jdk81GgGBHe7LbpQKXUyV9HdbIhhIGGqODXqu9zPvcyeqlDtRJttx1aA9gX0e5EBda6kmRgjYgvYgwprncQ3f4B5gtRI7DiUbNFMxn9F1xxYmMpfMxQbmgqviLaTxP5_td6MkyLa-83B502swNCtNGfNRAiGVH6wO7QrQ7AMDe_fiB8GkhcFAHsDshas8NiD15iUvjoL3tErUNolwiT8JlBkjdV2Qc7n7wOGLo56McD_GDsfAQz_9kyQubWYf-QqCGg_u5bxAVzCsB4VugMNytpviV4aYrILpcffIl4DaJAEhSUWhceiWKWTlifY19xNK18CX-zIIBD-eV1SIEr5hvz4mOKSW5MJa2yBr9KR22iL_Fo2E8Tydw.iXtXs5QTzki4zIuODzXi1w; UC-CSRF-TOKEN=9cfc6d3cf6e301f0b95ac1b51d58b667; SSO_IDT="Bearer eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.kSboqHvoo_SI7mW9FJMZBLp0lCak0Gl4ptL3oLUvCfEFGqzmyQ87hQ.y4zhaqRNmtYuW42ynrrx2w.sFPRE8UCheQQap3QWi_ghoW-FKyhUn_6Jdk81GgGBHe7LbpQKXUyV9HdbIhhIGGqODXqu9zPvcyeqlDtRJttx1aA9gX0e5EBda6kmRgjYgvYgwprncQ3f4B5gtRI7DiUbNFMxn9F1xxYmMpfMxQbmgqviLaTxP5_td6MkyLa-83B502swNCtNGfNRAiGVH6wO7QrQ7AMDe_fiB8GkhcFAHsDshas8NiD15iUvjoL3tErUNolwiT8JlBkjdV2Qc7n7wOGLo56McD_GDsfAQz_9kyQubWYf-QqCGg_u5bxAVzCsB4VugMNytpviV4aYrILpcffIl4DaJAEhSUWhceiWKWTlifY19xNK18CX-zIIBD-eV1SIEr5hvz4mOKSW5MJa2yBr9KR22iL_Fo2E8Tydw.iXtXs5QTzki4zIuODzXi1w"'
         }
     }],
     state: {
         proxy: 'https://crm.uc.cn',
-        proxymethod: 1,
+        proxymethod: 2,
         username:'cxh',
         password:'123456',
         isLogin: true,

@@ -1,10 +1,12 @@
 const Mock = require("./mock") 
 const proxyHttp = require("./proxyHttp")
 const proxyRequire = require("./proxyRequire")
+const proxyRequest = require("./proxyRequest")
 
 const proxyMethods = [
     proxyHttp,
-    proxyRequire
+    proxyRequire,
+    proxyRequest
 ]
 
 module.exports = function({ mockData = [], state = {} }) {
@@ -13,12 +15,13 @@ module.exports = function({ mockData = [], state = {} }) {
             return next()
         }
         const params = req.method.toUpperCase() === 'GET' ? req.query :  req.body
+        let contentType = req.headers['content-type'] || req.headers['Content-Type']
         let isInterceptors = false
         let error = '没有配置该路由'
         let data = null
 
         state.params = params
-        
+        state.contentType = contentType
         if(!Array.isArray(mockData)) {
             mockData = [].push(mockData)
         }
