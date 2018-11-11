@@ -52,6 +52,7 @@ function callBack(res) {
                 data = JSON.parse(data)
             } catch(err) {
                 data = {
+                    data,
                     msg: "数据格式有误，请检查接口正确"
                 }
             }
@@ -77,19 +78,23 @@ module.exports = function(md = {}, state = {},  req, res) {
     }
 
     const url = proxy + req.path
+
     if(method  === 'get') {
         const params = querystring.stringify(state.params)
-        console.log(`${url}?${params}`)
-        get(`${url}?${params}`, headers, callBack(res))
-        return 
+        return get(`${url}?${params}`, headers, callBack(res))
     }
 
     if(!contentType || contentType.indexOf('application/json') >= 0) {
-        postJson(url, postdata, headers, callBack(res)) 
+        return postJson(url, postdata, headers, callBack(res)) 
     } else if(contentType.indexOf('x-www-form-urlencoded') >= 0) {
-        postForm(url, postdata, headers, callBack(res))
+        return postForm(url, postdata, headers, callBack(res))
     } else if(contentType.indexOf('multipart/form-data') >= 0) {
-        postFormData(url, postdata, headers, callBack(res))
+        return postFormData(url, postdata, headers, callBack(res))
     }
+    
+    const data = {
+        msg: "未找到请求方式，目前只支持 get、post/json、x-www-form-urlencoded、multipart/form-data"
+    }
+    res.json && res.json(data) || (res.body = data)
     return 
 }

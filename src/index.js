@@ -12,35 +12,20 @@ const proxyMethods = [
 module.exports = function({ mockData = [], state = {} }) {
     return async function (req, res, next) {
         if(mockData.length === 0 && state === {}) {
-            return next()
+            return next() 
         }
-        const params = req.method.toUpperCase() === 'GET' ? req.query :  req.body
-        let contentType = req.headers['content-type'] || req.headers['Content-Type']
+
         let isInterceptors = false
-        let error = '没有配置该路由'
         let data = null
 
-        state.params = params
-        state.contentType = contentType
         if(!Array.isArray(mockData)) {
             mockData = [].push(mockData)
         }
 
         const md = mockData.find((val) => {
-            if(
-                !val.proxy && 
-                ( 
-                    val.url === req.path ||
-                    val.url.indexOf("/*") >= 0 &&
-                    req.path.indexOf(val.url.replace("/*","")) == 0
-                ) && 
-                val.method
-            ) {
-                error = 'method 错误'
-                return  val.method.toUpperCase() === req.method.toUpperCase()
-            } else if(val.url.indexOf("/*") >= 0) {
-                let newUrl = val.url.replace("/*","")
-                return req.path.indexOf(newUrl) == 0 && req.path != newUrl
+            if(val.url.indexOf("/*") >= 0) {
+                let newUrl = val.url.replace("/*", "")
+                return req.path.indexOf(newUrl) === 0 && req.path != newUrl
             }
             return val.url === req.path
         })
@@ -49,13 +34,8 @@ module.exports = function({ mockData = [], state = {} }) {
             return next()
         }
         
-        if(
-            md.interceptors &&
-            typeof md.interceptors === 'function' ||
-            state.interceptors && 
-            typeof state.interceptors === 'function'
-        ) {
-            const interceptors = md.interceptors || state.interceptors
+        const interceptors = md.interceptors || state.interceptors
+        if(interceptors && typeof interceptors === 'function') {
             isInterceptors = interceptors(state, req)
         }
 
@@ -67,6 +47,20 @@ module.exports = function({ mockData = [], state = {} }) {
             res.json && res.json(data) || (res.body = data)
             return 
         } 
+
+        if(md.proxy) {
+            const method = req.method.toUpperCase()
+            const params = method === 'GET' ? req.query :  req.body
+            const contentType = req.headers['content-type'] || req.headers['Content-Type']
+            const proxymethod = state.proxymethod || 0
+
+            state.params = params
+            state.contentType = contentType
+
+            const rq = proxyMethods[proxymethod](md, state, req, res)
+
+            return 
+        }
 
         const mock = new Mock(req, state)
         
@@ -86,11 +80,6 @@ module.exports = function({ mockData = [], state = {} }) {
             }
         }
         
-        if(md.proxy) {
-            let proxymethod = state.proxymethod || 0
-            return proxyMethods[proxymethod](md, state, req, res)
-        }
-
         if(md && md.plot) {
             data = md.plot({data, params, state}) || data
         }
@@ -99,6 +88,6 @@ module.exports = function({ mockData = [], state = {} }) {
         req.state = state 
 
         res.json && res.json(req.mockData) || (res.body = req.mockData)
-
+        return 
     }
 }
