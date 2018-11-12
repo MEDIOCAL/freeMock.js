@@ -25,7 +25,6 @@ function postJson(url, data, headers, cb) {
 function postForm(url, data, headers, cb) {
     return request.post({
         url:url,
-        method: 'POST', 
         headers: Object.assign({}, headers, {
             "content-type": "application/x-www-form-urlencoded",
         }),
@@ -36,7 +35,6 @@ function postForm(url, data, headers, cb) {
 function postFormData(url, data, headers, cb) {
     return request.post({
         url:url,
-        method: 'POST', 
         headers: Object.assign({}, headers, {
             "content-type": "multipart/form-data",
         }),
