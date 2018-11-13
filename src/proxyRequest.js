@@ -46,16 +46,22 @@ function callBack(res) {
     return function(err, response, body) {
         let data = body
         if (!err && response.statusCode == 200) {
-            try {
-                data = JSON.parse(data)
-            } catch(err) {
-                data = {
-                    data,
-                    msg: "数据格式有误，请检查接口正确"
+            if(typeof data != 'object') {
+                try {
+                    data = JSON.parse(data)
+                } catch(err) {
+                    data = {
+                        data,
+                        msg: "数据格式有误，请检查接口正确"
+                    }
                 }
             }
-            res.json && res.json(data) || (res.body = data)
+        } else {
+            data = {
+                status: response.statusCode
+            }
         }
+        res.json && res.json(data) || (res.body = data)
     }
 }
 
