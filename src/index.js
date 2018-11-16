@@ -48,20 +48,6 @@ module.exports = function({ mockData = [], state = {} }) {
             return 
         } 
 
-        if(md.proxy) {
-            const method = req.method.toUpperCase()
-            const params = method === 'GET' ? req.query :  req.body
-            const contentType = req.headers['content-type'] || req.headers['Content-Type']
-            const proxymethod = state.proxymethod || 0
-
-            state.params = params
-            state.contentType = contentType
-
-            const rq = proxyMethods[proxymethod](md, state, req, res)
-
-            return 
-        }
-
         const mock = new Mock(req, state)
         
         for(let key in md) {
@@ -71,12 +57,12 @@ module.exports = function({ mockData = [], state = {} }) {
                 if(typeof md[key] === 'function') {
                     data = md[key](req, state)
                 }
-                data = mock.array(md[key], l)
+                data = mock.array(data, l)
             } else if(key === 'data') {
                 if(typeof md.data === 'function') {
                     data = md.data(req, state)
                 }
-                data = mock.object(md.data)
+                data = mock.object(data)
             }
         }
         
@@ -87,7 +73,48 @@ module.exports = function({ mockData = [], state = {} }) {
         req.mockData = data
         req.state = state 
 
+        if(md.proxy) {
+            const method = req.method.toUpperCase()
+            const params = method === 'GET' ? req.query :  req.body
+            const contentType = req.headers['content-type'] || req.headers['Content-Type']
+            const proxymethod = state.proxymethod || 0
+
+            state.params = params
+            state.contentType = contentType
+
+            const request = proxyMethods[proxymethod](md, state, req, res)
+
+            if(contentType && contentType.indexOf('multipart/form-data') >= 0) {
+                const boundaryKey = Math.random().toString(16)
+                request.setHeader('Content-Type', 'multipart/form-data; boundary='+boundaryKey+'')
+                request.write( 
+                    '--' + boundaryKey + '\r\n'
+                    + 'Content-Disposition: form-data; name="name"\r\n'
+                    + 'logo.png \r\n'
+                    +'--' + boundaryKey + '\r\n'
+                    + 'Content-Disposition: form-data; name="file"; filename="logo.png"\r\n'
+                    + 'Content-Transfer-Encoding: binary\r\n\r\n'
+                )
+                fs.createReadStream('/Users/chenxuehui/cxh/crm_mc_admin/src/assets/logo.png', { bufferSize: 4 * 1024 })
+                .on('end', function() {
+                    request.end('\r\n--' + boundaryKey + '--')
+                })
+                .pipe(request, { end: false })
+                
+                const form = new formidable.IncomingForm()
+                form.parse(req, function(err, fields, files) { 
+                    var forms = new FormStream()
+                    forms.field('name', 'logo.png')
+                    forms.stream('file', fs.createReadStream(__dirname + '../../../src/assets/logo.png'))
+                    forms.pipe(rq)
+                })
+            }
+            
+            return 
+        }
+
         res.json && res.json(req.mockData) || (res.body = req.mockData)
+
         return 
     }
 }

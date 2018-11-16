@@ -32,17 +32,16 @@ function postForm(url, data, headers, cb) {
     }, cb)
 }
 
-function postFormData(url, data, headers, cb) {
+function postFormData(url, headers, cb) {
     return request.post({
         url:url,
         headers: Object.assign({}, headers, {
             "content-type": "multipart/form-data",
-        }),
-        formData: data
+        })
     }, cb)
 }
 
-function callBack(res) {
+function callBack(res, req) {
     return function(err, response, body) {
         let data = body
         if (!err && response.statusCode == 200) {
@@ -50,14 +49,14 @@ function callBack(res) {
                 try {
                     data = JSON.parse(data)
                 } catch(err) {
-                    data = {
+                    data = req.mockData || {
                         data,
                         msg: "数据格式有误，请检查接口正确"
                     }
                 }
             }
         } else {
-            data = {
+            data = req.mockData || {
                 status: response.statusCode
             }
         }
@@ -69,9 +68,9 @@ module.exports = function(md = {}, state = {},  req, res) {
     const contentType = state.contentType
     const postdata = state.params
     const method = req.method.toLowerCase()
-    const headers = { 
+    const headers = Object.assign({}, state.headers, { 
         Cookie: md.headers && md.headers.Cookie || state.Cookie 
-    }
+    })
     
     let proxy = '' 
    
@@ -85,15 +84,15 @@ module.exports = function(md = {}, state = {},  req, res) {
 
     if(method  === 'get') {
         const params = querystring.stringify(state.params)
-        return get(`${url}?${params}`, headers, callBack(res))
+        return get(`${url}?${params}`, headers, callBack(res, req))
     }
 
     if(!contentType || contentType.indexOf('application/json') >= 0) {
-        return postJson(url, postdata, headers, callBack(res)) 
+        return postJson(url, postdata, headers, callBack(res, req)) 
     } else if(contentType.indexOf('x-www-form-urlencoded') >= 0) {
-        return postForm(url, postdata, headers, callBack(res))
+        return postForm(url, postdata, headers, callBack(res, req))
     } else if(contentType.indexOf('multipart/form-data') >= 0) {
-        return postFormData(url, postdata, headers, callBack(res))
+        return postFormData(url, headers, callBack(res, req))
     }
     
     const data = {

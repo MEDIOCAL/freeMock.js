@@ -157,10 +157,10 @@ module.exports = {
         }
     }, {
         url:'/yingxiao/*',
-        proxy: 'https://ad-test2.sm.cn',
-        headers: {
-           'Cookie': 'cna=eSr4E356dFYCAWoLKdVGypbn; SSO_IDT_V2=eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.kSboqHvoo_SI7mW9FJMZBLp0lCak0Gl4ptL3oLUvCfEFGqzmyQ87hQ.y4zhaqRNmtYuW42ynrrx2w.sFPRE8UCheQQap3QWi_ghoW-FKyhUn_6Jdk81GgGBHe7LbpQKXUyV9HdbIhhIGGqODXqu9zPvcyeqlDtRJttx1aA9gX0e5EBda6kmRgjYgvYgwprncQ3f4B5gtRI7DiUbNFMxn9F1xxYmMpfMxQbmgqviLaTxP5_td6MkyLa-83B502swNCtNGfNRAiGVH6wO7QrQ7AMDe_fiB8GkhcFAHsDshas8NiD15iUvjoL3tErUNolwiT8JlBkjdV2Qc7n7wOGLo56McD_GDsfAQz_9kyQubWYf-QqCGg_u5bxAVzCsB4VugMNytpviV4aYrILpcffIl4DaJAEhSUWhceiWKWTlifY19xNK18CX-zIIBD-eV1SIEr5hvz4mOKSW5MJa2yBr9KR22iL_Fo2E8Tydw.iXtXs5QTzki4zIuODzXi1w; UC-CSRF-TOKEN=9cfc6d3cf6e301f0b95ac1b51d58b667; SSO_IDT="Bearer eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.kSboqHvoo_SI7mW9FJMZBLp0lCak0Gl4ptL3oLUvCfEFGqzmyQ87hQ.y4zhaqRNmtYuW42ynrrx2w.sFPRE8UCheQQap3QWi_ghoW-FKyhUn_6Jdk81GgGBHe7LbpQKXUyV9HdbIhhIGGqODXqu9zPvcyeqlDtRJttx1aA9gX0e5EBda6kmRgjYgvYgwprncQ3f4B5gtRI7DiUbNFMxn9F1xxYmMpfMxQbmgqviLaTxP5_td6MkyLa-83B502swNCtNGfNRAiGVH6wO7QrQ7AMDe_fiB8GkhcFAHsDshas8NiD15iUvjoL3tErUNolwiT8JlBkjdV2Qc7n7wOGLo56McD_GDsfAQz_9kyQubWYf-QqCGg_u5bxAVzCsB4VugMNytpviV4aYrILpcffIl4DaJAEhSUWhceiWKWTlifY19xNK18CX-zIIBD-eV1SIEr5hvz4mOKSW5MJa2yBr9KR22iL_Fo2E8Tydw.iXtXs5QTzki4zIuODzXi1w"'
-        }
+        "data|8": function() {
+            return require(`${__dirname}/a.json`)
+        },
+        proxy: 'https://ad-test2.sm.cn'
     }],
     state: {
         proxy: 'https://crm.uc.cn',
@@ -168,7 +168,7 @@ module.exports = {
         username:'cxh',
         password:'123456',
         isLogin: true,
-        Cookie: 'SSO_IDT_V2=eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.fJgGf2Fp0MNT20iAs_p3CCj6yY2NTlnrjlcIAxXwMSzugdLRvS79aQ.6DgQyxnSQtCxJkVzDvl6RQ.JdUlC7y-1HjTLzrzgYLje0OXy95YbJ8U8Nzbf1FNE5Gfe5JNfeB5fhG7ZthHpc4z3eLDvSHxD36Z2XpsdhGIdA_rpBGhwJ8BwhLqV0ljljSkcP8bK1zBFT9b0nttNwWya7TiHHEIQgwbUvx832BjZwb6r70-UVS4tj1IYidRK8WqV35OpowjsuYCAf1wgdSvTi-ox2XIW-iJP7PHjHyPiLqyWmg4xunQVs3FF8p9frK-bnEa0FhSGevM8XBUZNO1-o22pRNrhOOOs_6Fc0Le_vuurhPcDB-XmsBL96HEAjX3CX2L3ML5FpXstPOucHtZUhiJm6kow720Zum4rvP7u0E-YU-sHiCYvEndd6Tn_7dAB0oCLvzeHjIRFr498Zft3_rhz6N4vrH201way-QLb-sj4ID8EvCF7K9yEUUXLEk.uh5o1CJwszO8YtHXydODYg; SSO_IDT="Bearer eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.fJgGf2Fp0MNT20iAs_p3CCj6yY2NTlnrjlcIAxXwMSzugdLRvS79aQ.6DgQyxnSQtCxJkVzDvl6RQ.JdUlC7y-1HjTLzrzgYLje0OXy95YbJ8U8Nzbf1FNE5Gfe5JNfeB5fhG7ZthHpc4z3eLDvSHxD36Z2XpsdhGIdA_rpBGhwJ8BwhLqV0ljljSkcP8bK1zBFT9b0nttNwWya7TiHHEIQgwbUvx832BjZwb6r70-UVS4tj1IYidRK8WqV35OpowjsuYCAf1wgdSvTi-ox2XIW-iJP7PHjHyPiLqyWmg4xunQVs3FF8p9frK-bnEa0FhSGevM8XBUZNO1-o22pRNrhOOOs_6Fc0Le_vuurhPcDB-XmsBL96HEAjX3CX2L3ML5FpXstPOucHtZUhiJm6kow720Zum4rvP7u0E-YU-sHiCYvEndd6Tn_7dAB0oCLvzeHjIRFr498Zft3_rhz6N4vrH201way-QLb-sj4ID8EvCF7K9yEUUXLEk.uh5o1CJwszO8YtHXydODYg"',
+        Cookie: 'cna=eSr4E356dFYCAWoLKdVGypbn; SSO_IDT_V2=eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.LSd29Z-Awz1x7Ifelvgr0kSe538E98ZmddkH-MCxatHq-2b9rieouA.TcWPaJ9yQV-FrHmwqnxuiQ.FeepPqj5tPXzzGGLNxeRjLKWt-X6Wq1N0TnplQdWBzY854FiDdBjW3l_-nbY6Q71zWsGA6d3qlnk49POzv4Cl36rx_I2d7w6W8nyHz0LDA0zaKl0Ol3HfHxX9k80_WCG9HwKXvHaW_X3xbGuX-TJ5rPuwj8VAK5gyc8nITNGWe9Abt_BLiRCu_PftaDU6CGRsiy_zH3vH6KSiypkzmG71XmpLFGA1SbK3m0KkzKVNgmWg__Wo_wmKgqvaIrR4ugocqY87FcAGXGPci3PHTILRwsb3bRt1C0XO59dylCgbhNc717Q8SIKDbw_MdB7OuI71lS2bliEn9dUyy4o1Qn2CbgikrgWMFWtiUDYrb6jOMYQOSxsH5rTHilHMnKAKJzHUlBhYzYKy6RSt7j1AOgjTQ.BRvqCZL9Iftt59huQwjV9Q; UC-CSRF-TOKEN=c9956c109d6cf34db4427910f98eee64; SSO_IDT="Bearer eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.LSd29Z-Awz1x7Ifelvgr0kSe538E98ZmddkH-MCxatHq-2b9rieouA.TcWPaJ9yQV-FrHmwqnxuiQ.FeepPqj5tPXzzGGLNxeRjLKWt-X6Wq1N0TnplQdWBzY854FiDdBjW3l_-nbY6Q71zWsGA6d3qlnk49POzv4Cl36rx_I2d7w6W8nyHz0LDA0zaKl0Ol3HfHxX9k80_WCG9HwKXvHaW_X3xbGuX-TJ5rPuwj8VAK5gyc8nITNGWe9Abt_BLiRCu_PftaDU6CGRsiy_zH3vH6KSiypkzmG71XmpLFGA1SbK3m0KkzKVNgmWg__Wo_wmKgqvaIrR4ugocqY87FcAGXGPci3PHTILRwsb3bRt1C0XO59dylCgbhNc717Q8SIKDbw_MdB7OuI71lS2bliEn9dUyy4o1Qn2CbgikrgWMFWtiUDYrb6jOMYQOSxsH5rTHilHMnKAKJzHUlBhYzYKy6RSt7j1AOgjTQ.BRvqCZL9Iftt59huQwjV9Q"',
         interceptors: function(state) {
             if(!state.isLogin) {
                 return {
