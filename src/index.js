@@ -1,13 +1,5 @@
 const Mock = require("./mock") 
-const proxyHttp = require("./proxyHttp")
-const proxyRequire = require("./proxyRequire")
 const proxyRequest = require("./proxyRequest")
-
-const proxyMethods = [
-    proxyHttp,
-    proxyRequire,
-    proxyRequest
-]
 
 module.exports = function({ mockData = [], state = {} }) {
     return async function (req, res, next) {
@@ -82,7 +74,7 @@ module.exports = function({ mockData = [], state = {} }) {
             state.params = params
             state.contentType = contentType
 
-            const request = proxyMethods[proxymethod](md, state, req, res)
+            const request = proxyRequest(md, state, req, res)
 
             if(contentType && contentType.indexOf('multipart/form-data') >= 0) {
                 const boundaryKey = Math.random().toString(16)
