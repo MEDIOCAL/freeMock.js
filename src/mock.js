@@ -278,7 +278,8 @@ class Mock {
 				result = result ? result[params[i]] : ''
 			}
 		}
-		if(typeof str === "object" && str.length > 0) {
+		
+		if(str && typeof str === "object" && str.length > 0 ) {
 			result = []
 			for(let arg of str) {
 				result.push(this.getReq(arg))

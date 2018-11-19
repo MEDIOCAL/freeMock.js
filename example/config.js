@@ -163,6 +163,7 @@ module.exports = {
         proxy: 'https://ad-test2.sm.cn'
     }],
     state: {
+        dirpath: __dirname,
         proxy: 'https://crm.uc.cn',
         proxymethod: 2,
         username:'cxh',

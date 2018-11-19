@@ -43,18 +43,19 @@ module.exports = function({ mockData = [], state = {} }) {
         const mock = new Mock(req, state)
         
         for(let key in md) {
+            let res = md[key]
             if(key.indexOf('data|') >= 0) {
                 let keys = key.split('|')
                 let l = keys[1]
                 if(typeof md[key] === 'function') {
-                    data = md[key](req, state)
+                    res = md[key](req, state)
                 }
-                data = mock.array(data, l)
+                data = mock.array(res, l)
             } else if(key === 'data') {
                 if(typeof md.data === 'function') {
-                    data = md.data(req, state)
+                    res = md.data(req, state)
                 }
-                data = mock.object(data)
+                data = mock.object(res)
             }
         }
         
