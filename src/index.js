@@ -24,6 +24,8 @@ module.exports = function({ mockData = [], state = {} }) {
 
         if(!md) {
             return next()
+        } else {
+            state.md = md
         }
         
         const interceptors = md.interceptors || state.interceptors
