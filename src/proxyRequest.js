@@ -1,5 +1,6 @@
 const request = require('request')
 const querystring = require("querystring")
+const requestDirFile = require("./requestFile.js")
 
 function get(url, headers, cb) {
     return request({
@@ -59,29 +60,10 @@ function callBack(res, req, state) {
     }
 }
 
-function requestDirFile(req, state, response) {
-    const path = req.path 
-    const dir_path = state.dirpath
-    let data = {}
-    let mockJson = null
-
-    try {
-        mockJson = require(dir_path + path + '.json')
-    } catch(err) {
-        console.warn(err)
-    }
-
-    data = mockJson || req.mockData || {
-        status: response.statusCode,
-        msg: "数据格式有误，请检查接口正确"
-    }
-
-    return data
-}
-
 module.exports = function(md = {}, state = {},  req, res) {
     const contentType = state.contentType
     const postdata = state.params
+    const query = state.query
     const method = req.method.toLowerCase()
     const headers = Object.assign({}, state.headers, { 
         Cookie: md.headers && md.headers.Cookie || state.Cookie 
@@ -95,11 +77,25 @@ module.exports = function(md = {}, state = {},  req, res) {
         proxy = state.proxy
     }
 
-    const url = proxy + req.path
+    let url = proxy + req.path
 
+    if(query) {
+        const params = querystring.stringify(query)
+        url = url + '?' + params
+    }
+
+    if(state.debugger) {
+        console.log('当前api信息:', {
+            method,
+            url,
+            contentType,
+            headers
+        })
+        console.log('当前api 传递的参数:', postdata)
+    }
+    
     if(method  === 'get') {
-        const params = querystring.stringify(state.params)
-        return get(`${url}?${params}`, headers, callBack(res, req, state))
+        return get(url, headers, callBack(res, req, state))
     }
 
     if(!contentType || contentType.indexOf('application/json') >= 0) {

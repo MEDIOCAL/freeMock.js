@@ -165,7 +165,7 @@ module.exports = {
     state: {
         dirpath: __dirname,
         proxy: 'https://crm.uc.cn',
-        proxymethod: 2,
+        proxymethod: 1,
         username:'cxh',
         password:'123456',
         isLogin: true,
