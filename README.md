@@ -15,14 +15,18 @@ server.js
 
 ```
 app.use(freeMock(config))
+or
+app.use(freeMock(__dirname + '/mock/config.js'))
 ```
+config 可以是一个对象，或者路径。
+当设置为路径的时候，更新文件不需要重启服务。
+
 config.js
 
 ```
 module.exports = {
     mockData: [{
         url:'/test1',
-        method:'GET',
         "data|<2": {
             name: "@name()",
             "list|<req.size": {
@@ -33,7 +37,6 @@ module.exports = {
         }
     }, {
         url: '/wolong',
-        method: 'GET',
         data: {
             name: "123",
             template: "456"
@@ -41,16 +44,7 @@ module.exports = {
     }, {
         url:'/wolong123/plan/list',
         proxy: 'https://ad-test1.sma.cn',
-        method: 'GET',
-        port: '443',
         headers: {
-            'Accept': '*/*',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Accept-Language': 'zh-CN,zh;q=0.9',
-            'Connection': 'keep-alive',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Host': 'ad-test1.sm.cn',
-            'Referer': 'https://ad-test1.sm.cn/cpc/static/index.html?uid=1061',
             'Cookie': '3428.1539223421.'
         }
     }],
@@ -75,10 +69,8 @@ mockData 是一个对象数组。
     {
         url     // 必需，接口的路径。例如 /A 注意前面要加 “/”
         data    // 默认为 {}。代表接口返回的数据。必须是一个 json 数据。 value可以是 function，但是 function 必须有返回值。
-        method  // 不设代表 get Post .. 都可以
         proxy   // 代理开关，当为 true 时，将使用 state 里配置的代理方式。当为字符串时，使用当前方式。不设，代表不走代理。
-        port    // 代理请求的 port
-        headers // 代理请求的 headers
+        headers // headers
     }
 ]
 ```
@@ -177,7 +169,6 @@ ctx 可以理解成 node 的 req。函数的返回值就是生成的 mock 数据
 ```
 {
     url:'/test1',
-    method:'GET',
     "data|<2": {
         name: "@name()",
         "list|<req.size": {
@@ -190,11 +181,14 @@ ctx 可以理解成 node 的 req。函数的返回值就是生成的 mock 数据
 
 #### 代理
 
+设置代理后优先请求服务器的数据。
+假如服务器报错，或者没有api，将请求本地相应路径下的json数据。
+如果没有json文件，继续生成 data 属性的数据。
+
 ```
 {
     url:'/wolong123/*',
     proxy: 'https://ad-test1.ok.cn', 
-    method: 'GET',
     headers: {
         Cookie: "asdsads"
     }
@@ -216,6 +210,24 @@ state
 ```
 ### state
 state 可以配置 proxy、headers、Cookie、plugin 等。
+dirpath：文件路径，假如后台没有api的情况，便去读本地json数据，配置路径指定读取哪个文件夹。例如：
+```
+{
+   dirpath：__dirname + '/mock' 
+}
+```
+当访问 /wolongweb/a 失败的时候，回去读取 __dirname + '/mock/wolongweb/a.json'文件
+当我们需要写文件的时候，也是在该目录下写。
+
+writeFile：表示是否写文件，访问api成功以后，会将服务器返回的数据，更新到对应的文件。true或者为一个数组。
+例如：
+当访问 /wolongweb/a?pageNo=2 的时候
+假如设置为true，则会更新 /wolongweb/a.json 。如果没有该目录，会自动新建。
+假如设置为['pageNo']，则会更新 /wolongweb/a_2.json 。同理，无该目录会新建该目录和文件。
+debugger： 设置为 true，会打印请求api的信息。
+
+
+
 因为我们可以再配置 data 的 function 里面使用 state，例如：
 ```
 mockData: [{
@@ -271,7 +283,7 @@ mockData:
                 state.isLogin = true
             }
             return {
-                msg:'登陆成功'
+                msg:'登录成功'
             }
         }
     }, {
@@ -287,6 +299,8 @@ mockData:
 ```
 interceptors: 是一个打断接口的 api，下面有介绍。
 这样就模拟了登录效果
+
+
 ### API
 interceptors: 
 是一个function， 接受两个参数 req、state。
