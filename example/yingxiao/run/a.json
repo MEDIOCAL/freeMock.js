@@ -1,3 +1,6 @@
 {
-    "name": "nihao"
+    "name": "nihao",
+    "age": "22",
+    "height": 181,
+    "weight": "80"
 }

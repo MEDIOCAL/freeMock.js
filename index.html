@@ -5,18 +5,33 @@
     <title>Document</title>
 </head>
 <body>
+    <input type="file" id="file">
     <button id="app">按钮</button>
+    <button id="form">按钮2</button>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
         var d = document.getElementById("app")
+        var form = document.getElementById("form")
+        var file = document.getElementById("file")
         d.addEventListener('click', function() {
-            fetch("/huihui", {
-                method: 'POST',
-                body: JSON.stringify({
+            axios.post("/huihui", {
                     name: 'cxh'
-                })
-            }, function(res) {
-                console.log(res)
             })
+        })
+
+        form.addEventListener('click', function() {
+            var formdata = new FormData()
+            var files = file.files[0]
+            formdata.append("name", "chenxuehui")
+            formdata.append("age", "25")
+            formdata.append("files", files)
+
+            axios.post('huihui', formdata, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            })
+           
         })
     </script>
 </body>

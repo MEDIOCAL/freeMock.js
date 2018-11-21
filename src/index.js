@@ -1,10 +1,28 @@
+const fs = require('fs')
 const Mock = require("./mock") 
 const proxyRequest = require("./proxyRequest")
 const proxyRequire = require("./proxyRequire")
 const proxyMethods = [proxyRequest, proxyRequire]
 
-module.exports = function({ mockData = [], state = {} }) {
-    return async function (req, res, next) {
+module.exports = function(rest) {
+    return async function (req, res, next) {     
+        let mockData = []
+        let state = {}
+
+        if(typeof rest === 'string') {
+            let data = {}
+            if(rest.indexOf('.json') > 0) {
+                data = JSON.parse(fs.readFileSync(rest, 'utf-8'))
+            } else {
+                data = eval(fs.readFileSync(rest, 'utf-8'))
+            }
+            mockData = data && data.mockData || []
+            state = data && data.state || {}
+        } else if(typeof rest === 'object') {
+            mockData = rest.mockData
+            state = rest.state
+        }
+
         if(mockData.length === 0 && state === {}) {
             return next() 
         }
@@ -61,10 +79,6 @@ module.exports = function({ mockData = [], state = {} }) {
             }
         }
         
-        if(md && md.plot) {
-            data = md.plot({data, params, state}) || data
-        }
-
         req.mockData = data
         req.state = state 
 
@@ -73,38 +87,39 @@ module.exports = function({ mockData = [], state = {} }) {
             const params = req.body
             const contentType = req.headers['content-type'] || req.headers['Content-Type']
             const methodIndex = state.proxymethod || 0
-
+            console.log(params)
+            console.log(query)
             state.params = params
             state.query = query
             state.contentType = contentType
 
             const request = proxyMethods[methodIndex](md, state, req, res)
 
-            if(contentType && contentType.indexOf('multipart/form-data') >= 0) {
-                const boundaryKey = Math.random().toString(16)
-                request.setHeader('Content-Type', 'multipart/form-data; boundary='+boundaryKey+'')
-                request.write( 
-                    '--' + boundaryKey + '\r\n'
-                    + 'Content-Disposition: form-data; name="name"\r\n'
-                    + 'logo.png \r\n'
-                    +'--' + boundaryKey + '\r\n'
-                    + 'Content-Disposition: form-data; name="file"; filename="logo.png"\r\n'
-                    + 'Content-Transfer-Encoding: binary\r\n\r\n'
-                )
-                fs.createReadStream('/Users/chenxuehui/cxh/crm_mc_admin/src/assets/logo.png', { bufferSize: 4 * 1024 })
-                .on('end', function() {
-                    request.end('\r\n--' + boundaryKey + '--')
-                })
-                .pipe(request, { end: false })
+            // if(contentType && contentType.indexOf('multipart/form-data') >= 0) {
+            //     const boundaryKey = Math.random().toString(16)
+            //     request.setHeader('Content-Type', 'multipart/form-data; boundary='+boundaryKey+'')
+            //     request.write( 
+            //         '--' + boundaryKey + '\r\n'
+            //         + 'Content-Disposition: form-data; name="name"\r\n'
+            //         + 'logo.png \r\n'
+            //         +'--' + boundaryKey + '\r\n'
+            //         + 'Content-Disposition: form-data; name="file"; filename="logo.png"\r\n'
+            //         + 'Content-Transfer-Encoding: binary\r\n\r\n'
+            //     )
+            //     fs.createReadStream('/Users/chenxuehui/cxh/crm_mc_admin/src/assets/logo.png', { bufferSize: 4 * 1024 })
+            //     .on('end', function() {
+            //         request.end('\r\n--' + boundaryKey + '--')
+            //     })
+            //     .pipe(request, { end: false })
                 
-                const form = new formidable.IncomingForm()
-                form.parse(req, function(err, fields, files) { 
-                    var forms = new FormStream()
-                    forms.field('name', 'logo.png')
-                    forms.stream('file', fs.createReadStream(__dirname + '../../../src/assets/logo.png'))
-                    forms.pipe(rq)
-                })
-            }
+            //     const form = new formidable.IncomingForm()
+            //     form.parse(req, function(err, fields, files) { 
+            //         var forms = new FormStream()
+            //         forms.field('name', 'logo.png')
+            //         forms.stream('file', fs.createReadStream(__dirname + '../../../src/assets/logo.png'))
+            //         forms.pipe(rq)
+            //     })
+            // }
             
             return 
         }

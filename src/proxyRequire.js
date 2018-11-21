@@ -1,6 +1,11 @@
 const axios = require("axios")
+const fs = require('fs')
+const path = require('path')
 const qs = require("qs")
+const formidable = require("formidable")
+const FormData = require('form-data');
 const requestDirFile = require("./requestFile.js")
+const writeFile = require("./writeFile.js")
 
 module.exports = async function proxyRequire(md = {} , state, req, res) {
     const contentType = state.contentType
@@ -45,35 +50,43 @@ module.exports = async function proxyRequire(md = {} , state, req, res) {
     let response = {
         data: {
             status: -1,
-            msg: '发生未知错误'
+            msg: '请求方法有问题。或者写文件错误'
         }
     }
-    
+
     try {
         if(method === 'get') {
             response = await axios[method](url, { headers })
-        } else if(!contentType || contentType.indexOf('application/json') >= 0) {
-            response = await axios[method](url, postdata, { headers })
-        } else if (contentType.indexOf('x-www-form-urlencoded') >= 0) {
-            response = await axios[method](url, qs.stringify(postdata), { headers })
-        } else {
-            response = {
-                data: {
-                    msg: "未找到请求方式，目前只支持 get、post/json、x-www-form-urlencoded、multipart/form-data"
-                }
-            }
+        } else if(method === 'post') {
+            if (contentType && contentType.indexOf('x-www-form-urlencoded') >= 0) {
+                response = await axios[method](url, qs.stringify(postdata), { headers })
+            } else if(contentType && contentType.indexOf('multipart/form-data') >= 0) {
+                const form = new formidable.IncomingForm()
+                form.parse(req, async function(err, fields, files) { 
+                    const form = new FormData();
+                    for(let key in fields) {
+                        form.append(key, fields[key])
+                    }
+                    form.append('file', fs.createReadStream(files))
+                    response = await axios[method](url, form, { headers })
+                    res.json && res.json(response.data) || (res.body = response.data)
+                })
+                form.onPart = function(part) {
+                    console.log(part)
+                  }
+                return 
+            } else {
+                response = await axios[method](url, postdata, { headers })
+            } 
+        }
+        if(state.writeFile) {
+            writeFile(req, state, response.data)
         }
     } catch(err) {
-        console.log(err)
-        if(state.dirpath) {
-            response.data = requestDirFile(req, state, response)
-        } else {
-            response.data = {
-                status: -1,
-                mag: "发生未知错误"
-            }
-        }
+        console.log('向后台请求接口的时候，或者写文件的时候出错：', err)
+        response.data = requestDirFile(req, state, response)
     }
+
     res.json && res.json(response.data) || (res.body = response.data)
     return
 }

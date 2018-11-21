@@ -109,20 +109,10 @@ module.exports = {
         }
     }, {
         url:'/huihui',
-        proxy: 'http://localhost',
-        method: 'POST',
-        port: '3002',
-        headers: {
-            'Accept': 'application/json, text/javascript, */*; q=0.01',
-            'Accept-Encoding': 'gzip, deflate',
-            'Accept-Language': 'zh-CN,zh;q=0.9',
-            'Connection': 'keep-alive',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Host': 'localhost:3003',
-            // 'Origin': 'http://localhost',
-            'Referer': 'http://localhost:3003/',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
-        }
+        data: {
+            "nihao": 'nis'
+        },
+        proxy: true
     }, {
         url: '/wolong',
         method: 'GET',
@@ -157,19 +147,17 @@ module.exports = {
         }
     }, {
         url:'/yingxiao/*',
-        "data|8": function() {
-            return require(`${__dirname}/a.json`)
-        },
-        proxy: 'https://ad-test2.sm.cn'
+        proxy: 'https://ad-test1.sm.cn'
     }],
     state: {
-        dirpath: __dirname,
+        dirpath: './example',
         proxy: 'https://crm.uc.cn',
         proxymethod: 1,
         username:'cxh',
         password:'123456',
         isLogin: true,
-        Cookie: 'cna=eSr4E356dFYCAWoLKdVGypbn; SSO_IDT_V2=eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.LSd29Z-Awz1x7Ifelvgr0kSe538E98ZmddkH-MCxatHq-2b9rieouA.TcWPaJ9yQV-FrHmwqnxuiQ.FeepPqj5tPXzzGGLNxeRjLKWt-X6Wq1N0TnplQdWBzY854FiDdBjW3l_-nbY6Q71zWsGA6d3qlnk49POzv4Cl36rx_I2d7w6W8nyHz0LDA0zaKl0Ol3HfHxX9k80_WCG9HwKXvHaW_X3xbGuX-TJ5rPuwj8VAK5gyc8nITNGWe9Abt_BLiRCu_PftaDU6CGRsiy_zH3vH6KSiypkzmG71XmpLFGA1SbK3m0KkzKVNgmWg__Wo_wmKgqvaIrR4ugocqY87FcAGXGPci3PHTILRwsb3bRt1C0XO59dylCgbhNc717Q8SIKDbw_MdB7OuI71lS2bliEn9dUyy4o1Qn2CbgikrgWMFWtiUDYrb6jOMYQOSxsH5rTHilHMnKAKJzHUlBhYzYKy6RSt7j1AOgjTQ.BRvqCZL9Iftt59huQwjV9Q; UC-CSRF-TOKEN=c9956c109d6cf34db4427910f98eee64; SSO_IDT="Bearer eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.LSd29Z-Awz1x7Ifelvgr0kSe538E98ZmddkH-MCxatHq-2b9rieouA.TcWPaJ9yQV-FrHmwqnxuiQ.FeepPqj5tPXzzGGLNxeRjLKWt-X6Wq1N0TnplQdWBzY854FiDdBjW3l_-nbY6Q71zWsGA6d3qlnk49POzv4Cl36rx_I2d7w6W8nyHz0LDA0zaKl0Ol3HfHxX9k80_WCG9HwKXvHaW_X3xbGuX-TJ5rPuwj8VAK5gyc8nITNGWe9Abt_BLiRCu_PftaDU6CGRsiy_zH3vH6KSiypkzmG71XmpLFGA1SbK3m0KkzKVNgmWg__Wo_wmKgqvaIrR4ugocqY87FcAGXGPci3PHTILRwsb3bRt1C0XO59dylCgbhNc717Q8SIKDbw_MdB7OuI71lS2bliEn9dUyy4o1Qn2CbgikrgWMFWtiUDYrb6jOMYQOSxsH5rTHilHMnKAKJzHUlBhYzYKy6RSt7j1AOgjTQ.BRvqCZL9Iftt59huQwjV9Q"',
+        debugger: false,
+        Cookie: 'cna=eSr4E356dFYCAWoLKdVGypbn; unify_code=40b72ca4-5dfe-4f4c-802e-89f3dd6d723d; SSO_IDT="Bearer eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.DUHUdNZiZFKec_9sTIPloDb3ud_7_iwV5aFklUVBLSpA57QyxtefTQ.Su9c7Q-d9s_M3LvQn_DY-Q.6Zb4066dNmfJnHaIl7UwM-pP3vKyo18FzPkMJptY6MXhA1Db6YtJ6Hyzpm2SlovzSkDn9dmkuBcpMHFR3PtW1lAqmjIO35ttFhVABi76FL8_MVfVBLS2FOHQlGsfvkqZzp86LKs22gkuJZ_WbmEM2fwHKhdInqqCHFXwu1hZi7jlEUTMsHaCNffqvN4kHphe_pTKamvW6_2qzO-hcyH0jsJS1FnT_Eze3M71FfTVRPb-AvRN3bDL1wPYiNmOj8PzSTOuGfHNJO0-RmzCSFFXuENxLnFR-TA3LCtpu6NYdwdDXiW4oSib-y7koWSkaj5g79cbT3POCSGtV9Bi5f99jV5wFSj7Eux0k7yhyCZ0JW-UxJqeuK16tbrhL_2jY_RbxYoetdd2rC95L-j1mWEahw.kR6sJSWGyMrxGsR6LC-tyA"; UC-CSRF-TOKEN=e45ccc7f3d0552d9fd6ba846304f0ead; SSO_IDT_V2=eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.DUHUdNZiZFKec_9sTIPloDb3ud_7_iwV5aFklUVBLSpA57QyxtefTQ.Su9c7Q-d9s_M3LvQn_DY-Q.6Zb4066dNmfJnHaIl7UwM-pP3vKyo18FzPkMJptY6MXhA1Db6YtJ6Hyzpm2SlovzSkDn9dmkuBcpMHFR3PtW1lAqmjIO35ttFhVABi76FL8_MVfVBLS2FOHQlGsfvkqZzp86LKs22gkuJZ_WbmEM2fwHKhdInqqCHFXwu1hZi7jlEUTMsHaCNffqvN4kHphe_pTKamvW6_2qzO-hcyH0jsJS1FnT_Eze3M71FfTVRPb-AvRN3bDL1wPYiNmOj8PzSTOuGfHNJO0-RmzCSFFXuENxLnFR-TA3LCtpu6NYdwdDXiW4oSib-y7koWSkaj5g79cbT3POCSGtV9Bi5f99jV5wFSj7Eux0k7yhyCZ0JW-UxJqeuK16tbrhL_2jY_RbxYoetdd2rC95L-j1mWEahw.kR6sJSWGyMrxGsR6LC-tyA',
         interceptors: function(state) {
             if(!state.isLogin) {
                 return {
@@ -184,6 +172,7 @@ module.exports = {
             "getName": function(name) {
                 return name
             }
-        }
+        },
+        writeFile: ['channelId']
     }
 }

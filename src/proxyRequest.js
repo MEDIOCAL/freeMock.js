@@ -1,6 +1,7 @@
 const request = require('request')
 const querystring = require("querystring")
 const requestDirFile = require("./requestFile.js")
+const writeFile = require("./writeFile.js")
 
 function get(url, headers, cb) {
     return request({
@@ -8,7 +9,7 @@ function get(url, headers, cb) {
         headers: Object.assign({}, headers, {
             "content-type": "application/json",
         })
-    },cb)
+    }, cb)
 }
 
 function postJson(url, data, headers, cb) {
@@ -44,18 +45,23 @@ function postFormData(url, headers, cb) {
 
 function callBack(res, req, state) {
     return function(err, response, body) {
-        let data = body
+        let data = null
         if (!err && response.statusCode == 200) {
-            if(typeof data != 'object') {
+            if(typeof body != 'object') {
                 try {
-                    data = JSON.parse(data)
-                } catch(err) {
-                    data = requestDirFile(req, state, response)
-                }
+                    data = JSON.parse(body)
+                } catch(err) {}
+            } else {
+                data = body
             }
-        } else {
-            data = requestDirFile(req, state, response)
         }
+        
+        if(!data) {
+            data = requestDirFile(req, state, response)
+        } else if(state.writeFile) {
+            writeFile(req, state, data)
+        }
+        
         res.json && res.json(data) || (res.body = data)
     }
 }
@@ -96,19 +102,20 @@ module.exports = function(md = {}, state = {},  req, res) {
     
     if(method  === 'get') {
         return get(url, headers, callBack(res, req, state))
+    } else if(method === 'post') {
+        if(contentType && contentType.indexOf('x-www-form-urlencoded') >= 0) {
+            return postForm(url, postdata, headers, callBack(res, req, state))
+        } else if(contentType && contentType.indexOf('multipart/form-data') >= 0) {
+            return postFormData(url, headers, callBack(res, req, state))
+        } else {
+            return postJson(url, postdata, headers, callBack(res, req, state)) 
+        }  
     }
 
-    if(!contentType || contentType.indexOf('application/json') >= 0) {
-        return postJson(url, postdata, headers, callBack(res, req, state)) 
-    } else if(contentType.indexOf('x-www-form-urlencoded') >= 0) {
-        return postForm(url, postdata, headers, callBack(res, req, state))
-    } else if(contentType.indexOf('multipart/form-data') >= 0) {
-        return postFormData(url, headers, callBack(res, req, state))
-    }
-    
     const data = {
         msg: "未找到请求方式，目前只支持 get、post/json、x-www-form-urlencoded、multipart/form-data"
     }
+
     res.json && res.json(data) || (res.body = data)
     return 
 }
