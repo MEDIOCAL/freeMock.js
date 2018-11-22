@@ -1,4 +1,5 @@
 const fs = require('fs')
+const creatName = require('./createPathName.js')
 
 module.exports = function writeFile(req, state, data) {
     const path = req.path 
@@ -6,22 +7,8 @@ module.exports = function writeFile(req, state, data) {
     const params = Object.assign({}, state.query, state.params)
     let name = dir_path + path
     
-    if(Array.isArray(state.writeFile) && state.writeFile.length > 0){
-        for(let cname of state.writeFile) {
-            if(
-                params[cname] && 
-                (
-                    typeof params[cname] === 'string' ||
-                    typeof params[cname] === 'number'
-                )
-            ) {
-                name += `_${params[cname]}`
-            }
-        }
-    }
-
+    name = creatName(state.readFile, params, name, req)
     name = name + '.json'
-    
     makep(name)
 
     if(typeof data != 'string') {
@@ -32,7 +19,7 @@ module.exports = function writeFile(req, state, data) {
         if(err) {
             console.log("写文件时出错", err)
         } else {
-            console.log('写文件操作成功')
+            console.log('写文件操作成功, 已写入到：' + name)
         }
     })
 
@@ -57,7 +44,7 @@ function makep(dir) {
                     if(err) {
                         console.log(err)
                     } else {
-                        console.log("文件创建成功")
+                        console.log("文件创建成功，文件路径：" + name)
                     }
                 })
             }

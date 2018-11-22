@@ -89,8 +89,7 @@ module.exports = function(rest) {
             const params = req.body
             const contentType = req.headers['content-type'] || req.headers['Content-Type']
             const methodIndex = state.proxymethod || 0
-            console.log(params)
-            console.log(query)
+            
             state.params = params
             state.query = query
             state.contentType = contentType

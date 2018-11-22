@@ -173,6 +173,9 @@ module.exports = {
                 return name
             }
         },
-        writeFile: ['channelId']
+        writeFile: {
+            '/yingxiao/web/article/list': ["channelId"]
+        },
+        readFile: ['channelId']
     }
 }
