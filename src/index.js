@@ -5,7 +5,7 @@ const proxyRequire = require("./proxyRequire")
 const proxyMethods = [proxyRequest, proxyRequire]
 
 module.exports = function(rest) {
-    return async function (req, res, next) {     
+    return async function (req, res, next) {   
         let mockData = []
         let state = {}
 

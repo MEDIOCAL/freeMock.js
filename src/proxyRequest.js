@@ -1,5 +1,5 @@
 const request = require('request')
-const querystring = require("querystring")
+const qs = require("qs")
 const requestDirFile = require("./requestFile.js")
 const writeFile = require("./writeFile.js")
 
@@ -86,7 +86,16 @@ module.exports = function(md = {}, state = {},  req, res) {
     let url = proxy + req.path
 
     if(query) {
-        const params = querystring.stringify(query)
+        for(let key in query) {
+            let value = query[key]
+            if(Array.isArray(value) && value.length > 1) {
+                const lis = unique(value)
+                if(lis.length === 1) {
+                    query[key] = lis[0]
+                }
+            }   
+        }
+        const params = qs.stringify(query)
         url = url + '?' + params
     }
 
