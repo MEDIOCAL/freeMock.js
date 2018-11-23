@@ -6,16 +6,56 @@
 </head>
 <body>
     <input type="file" id="file">
-    <button id="app">按钮</button>
+    <button id="app">按钮 form</button>
+    <button id="app2">按钮 json</button>
     <button id="form">按钮2</button>
+    <button id="wl1">卧龙测试 post json</button>
+    <button id="wl2">卧龙测试 post formdata</button>
+
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
         var d = document.getElementById("app")
+        var d2 = document.getElementById("app2")
         var form = document.getElementById("form")
         var file = document.getElementById("file")
+        var wl1 = document.getElementById("wl1")
+        var wl2 = document.getElementById("wl2")
+
         d.addEventListener('click', function() {
-            axios.post("/huihui", {
-                    name: 'cxh'
+            axios.post("/yingxiao/web/channel/modify", 'id=2&name=资源展台2', {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+        })
+        d2.addEventListener('click', function() {
+            axios.post("/yingxiao/web/leaderboard/modify", {
+                id: 1,
+                list: [
+                    {
+                        id: 81,
+                        limitDownload: 0,
+                        limitRead: 0,
+                        previewLink: "https://crm-test1.sm.cn/yingxiao/article_81.html",
+                        status: "发布",
+                        title: "AI",
+                        trackDownloadNum: 0,
+                        trackReadPv: 7,
+                        trackReadUv: 2,
+                    }, 
+                    {
+                        id: 104,
+                        limitDownload: 0,
+                        limitRead: 0,
+                        previewLink: "https://crm-test1.sm.cn/yingxiao/article_104.html",
+                        status: "发布",
+                        title: "营销",
+                        trackDownloadNum: 1,
+                        trackReadPv: 8,
+                        trackReadUv: 1,
+                    }
+                ],
+                title: "营销案例文章排行榜"
             })
         })
 
@@ -33,6 +73,26 @@
             })
            
         })
-    </script>
+        wl1.addEventListener('click', function() {
+            axios.post("/wolongweb/fanghuaIdea/update?uid=1061", {
+                id: "20076980818",
+                model: {
+                    styleType: 0,
+                    content: "{\"title\":\"<div>aaaaaaa111</div>\",\"desc_text\":\"1安居客--{租房}专业网站,提供多种户型房源,租期灵活即租租即即用用!!\",\"show_url\":\"www.ctrip.com\",\"target_url\":\"http://www.ctrip.com\"}"
+                }
+            })
+        })
+        wl2.addEventListener('click', function() {
+            var formdata = new FormData()
+            var files = file.files[0]
+            formdata.append("filename", files.name)
+            formdata.append("files", files)
+            axios.post("/mc-web/main/userPic/create?uid=1061", formdata,  {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            })
+        })
+   </script>
 </body>
 </html>

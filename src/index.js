@@ -94,33 +94,7 @@ module.exports = function(rest) {
             state.query = query
             state.contentType = contentType
 
-            const request = proxyMethods[methodIndex](md, state, req, res)
-
-            // if(contentType && contentType.indexOf('multipart/form-data') >= 0) {
-            //     const boundaryKey = Math.random().toString(16)
-            //     request.setHeader('Content-Type', 'multipart/form-data; boundary='+boundaryKey+'')
-            //     request.write( 
-            //         '--' + boundaryKey + '\r\n'
-            //         + 'Content-Disposition: form-data; name="name"\r\n'
-            //         + 'logo.png \r\n'
-            //         +'--' + boundaryKey + '\r\n'
-            //         + 'Content-Disposition: form-data; name="file"; filename="logo.png"\r\n'
-            //         + 'Content-Transfer-Encoding: binary\r\n\r\n'
-            //     )
-            //     fs.createReadStream('/Users/chenxuehui/cxh/crm_mc_admin/src/assets/logo.png', { bufferSize: 4 * 1024 })
-            //     .on('end', function() {
-            //         request.end('\r\n--' + boundaryKey + '--')
-            //     })
-            //     .pipe(request, { end: false })
-                
-            //     const form = new formidable.IncomingForm()
-            //     form.parse(req, function(err, fields, files) { 
-            //         var forms = new FormStream()
-            //         forms.field('name', 'logo.png')
-            //         forms.stream('file', fs.createReadStream(__dirname + '../../../src/assets/logo.png'))
-            //         forms.pipe(rq)
-            //     })
-            // }
+            proxyMethods[methodIndex](md, state, req, res)
             
             return 
         }

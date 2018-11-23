@@ -1,11 +1,8 @@
 const axios = require("axios")
-const fs = require('fs')
-const path = require('path')
 const qs = require("qs")
-const formidable = require("formidable")
-const FormData = require('form-data');
 const requestDirFile = require("./requestFile.js")
 const writeFile = require("./writeFile.js")
+const formData = require("./formData")
 
 module.exports = async function proxyRequire(md = {} , state, req, res) {
     const contentType = state.contentType
@@ -70,19 +67,6 @@ module.exports = async function proxyRequire(md = {} , state, req, res) {
             if (contentType && contentType.indexOf('x-www-form-urlencoded') >= 0) {
                 response = await axios[method](url, qs.stringify(postdata), { headers })
             } else if(contentType && contentType.indexOf('multipart/form-data') >= 0) {
-                const form = new formidable.IncomingForm()
-                form.parse(req, async function(err, fields, files) { 
-                    const form = new FormData();
-                    for(let key in fields) {
-                        form.append(key, fields[key])
-                    }
-                    form.append('file', fs.createReadStream(files))
-                    response = await axios[method](url, form, { headers })
-                    res.json && res.json(response.data) || (res.body = response.data)
-                })
-                form.onPart = function(part) {
-                    console.log(part)
-                  }
                 return 
             } else {
                 response = await axios[method](url, postdata, { headers })

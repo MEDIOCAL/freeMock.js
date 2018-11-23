@@ -1,46 +1,53 @@
-const request = require('request')
-const qs = require("qs")
+const request = require('superagent')
 const requestDirFile = require("./requestFile.js")
 const writeFile = require("./writeFile.js")
+const formData = require("./formData")
 
-function get(url, headers, cb) {
-    return request({
-        url, 
-        headers: Object.assign({}, headers, {
-            "content-type": "application/json",
-        })
-    }, cb)
+function get(url, query, headers, cb) {
+    return request
+    .get(url)
+    .query(query) 
+    .set(headers)
+    .end((err, res) => {
+        cb(err, res, res.body)
+    })
 }
 
-function postJson(url, data, headers, cb) {
-    return request({
-        url,
-        method: 'POST',
-        json: true,
-        headers: Object.assign({}, headers, {
-            "content-type": "application/json",
-        }),
-        body: JSON.stringify(data)
-    }, cb)
+function postJson(url, data, query, headers, cb) {
+    return request
+    .post(url)
+    .set(Object.assign({}, headers, {
+        "content-type": "application/json",
+    }))
+    .query(query)
+    .send(data)
+    .end( (err, res) => {
+        cb(err, res, res.body)
+    })
 }
 
-function postForm(url, data, headers, cb) {
-    return request.post({
-        url:url,
-        headers: Object.assign({}, headers, {
-            "content-type": "application/x-www-form-urlencoded",
-        }),
-        form: data
-    }, cb)
+function postForm(url, data, query, headers, cb) {
+    return request
+    .post(url)
+    .type('form')
+    .set(headers)
+    .query(query)
+    .send(data)
+    .end( (err, res) => {
+        cb(err, res, res.body)
+    })
 }
 
-function postFormData(url, headers, cb) {
-    return request.post({
-        url:url,
-        headers: Object.assign({}, headers, {
-            "content-type": "multipart/form-data",
-        })
-    }, cb)
+function postFormData(url, data, query, headers, cb) {
+    return request
+    .post(url)
+    .type('form')
+    .set(headers)
+    .query(query)
+    .send(data)
+    .end( (err, res) => {
+        cb(err, res, res.body)
+    })
 }
 
 function callBack(res, req, state) {
@@ -85,20 +92,6 @@ module.exports = function(md = {}, state = {},  req, res) {
 
     let url = proxy + req.path
 
-    if(query) {
-        for(let key in query) {
-            let value = query[key]
-            if(Array.isArray(value) && value.length > 1) {
-                const lis = unique(value)
-                if(lis.length === 1) {
-                    query[key] = lis[0]
-                }
-            }   
-        }
-        const params = qs.stringify(query)
-        url = url + '?' + params
-    }
-
     if(state.debugger) {
         console.log('当前api信息:', {
             method,
@@ -110,14 +103,24 @@ module.exports = function(md = {}, state = {},  req, res) {
     }
     
     if(method  === 'get') {
-        return get(url, headers, callBack(res, req, state))
+        return get(url, query, headers, callBack(res, req, state))
     } else if(method === 'post') {
         if(contentType && contentType.indexOf('x-www-form-urlencoded') >= 0) {
-            return postForm(url, postdata, headers, callBack(res, req, state))
+            return postForm(url, postdata, query, headers, callBack(res, req, state))
         } else if(contentType && contentType.indexOf('multipart/form-data') >= 0) {
-            return postFormData(url, headers, callBack(res, req, state))
+            formData.acceptData(req, function(fields, files) {
+                const params = {}
+                const forms = fields.concat(files)
+                for(let fie of forms) {
+                    params[fie.field] = fie.value || fie.file
+                }
+                const multipart = formData.post(params)
+                headers["content-type"] = `multipart/form-data; boundary=${multipart.boundary}`
+                postFormData(url, multipart.body, query, headers, callBack(res, req, state))
+            })
+            return 
         } else {
-            return postJson(url, postdata, headers, callBack(res, req, state)) 
+            return postJson(url, postdata,  query, headers, callBack(res, req, state)) 
         }  
     }
 
