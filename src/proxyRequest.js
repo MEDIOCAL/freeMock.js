@@ -92,7 +92,14 @@ module.exports = function(md = {}, state = {},  req, res) {
 
     let url = proxy + req.path
 
-    if(state.debugger) {
+    if(
+        state.debugger &&
+        state.debugger.method.includes(method) && 
+        (
+            state.debugger.path.length === 0 ||
+            state.debugger.path.includes(req.path) 
+        )
+    ) {
         console.log('当前api信息:', {
             method,
             url,
@@ -102,7 +109,7 @@ module.exports = function(md = {}, state = {},  req, res) {
         console.log('当前api 传递的参数:', postdata)
     }
     
-    if(method  === 'get') {
+    if(method === 'get') {
         return get(url, query, headers, callBack(res, req, state))
     } else if(method === 'post') {
         if(contentType && contentType.indexOf('x-www-form-urlencoded') >= 0) {

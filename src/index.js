@@ -84,6 +84,16 @@ module.exports = function(rest) {
         req.mockData = data
         req.state = state 
 
+        if(state.debugger === true) {
+            state.debugger = {
+                method: ['get', 'post'],
+                path: []
+            }
+        } else if(typeof state.debugger === 'object') {
+            state.debugger.method =  state.debugger.method || ['get', 'post']
+            state.debugger.path =  state.debugger.path || []
+        }
+
         if(md.proxy) {
             const query = req.query 
             const params = req.body
