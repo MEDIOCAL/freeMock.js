@@ -1,16 +1,27 @@
 const fs = require('fs')
+const path = require('path')
 const Mock = require("./mock")
 const creatName = require('./createPathName.js')
+const loger = require('./loger')
 
 module.exports = function requestDirFile(req, state, response) {
-    const path = req.path 
+    const rpath = req.path 
     const dir_path = state.dirpath
     const mock = new Mock(req, state)
     const params = Object.assign({}, state.query, state.params)
 
-    let name = dir_path + path
+    let name = ''
     let data = {}
     let mockJson = null
+
+    if(Array.isArray(dir_path) && dir_path.length === 2) {
+        name = (dir_path[0] + rpath).replace(state.configUrl, dir_path[1])
+    } else if(typeof dir_path === 'string') {
+        name = dir_path + rpath
+    } else {
+       loger(true, 'warn', 'dirpath 必须是一个字符串或者长度为2的数组')
+       name = path.resolve(__dirname, '../../../mock') + rpath 
+    }
 
     if(state.readFile) {
         name = creatName(state.readFile, params, name, req)
@@ -25,9 +36,9 @@ module.exports = function requestDirFile(req, state, response) {
         } else if(typeof mockJson === 'object' && mockJson != null) {
             mockJson = mock.object(mockJson)
         }
-        console.log("已读取：" + name + "的数据")
+        loger(true, 'info', "已读取：" + name + "的数据")
     } catch(err) {
-        console.log('读文件出错', err)
+        loger(true, 'error', '读文件出错', err)
     }
 
     data = mockJson || req.mockData || {

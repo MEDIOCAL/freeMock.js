@@ -3,6 +3,7 @@ const Mock = require("./mock")
 const proxyRequest = require("./proxyRequest")
 const proxyRequire = require("./proxyRequire")
 const proxyMethods = [proxyRequest, proxyRequire]
+const loger = require('./loger')
 
 module.exports = function(rest) {
     return async function (req, res, next) {   
@@ -11,10 +12,14 @@ module.exports = function(rest) {
 
         if(typeof rest === 'string') {
             let data = {}
-            if(rest.indexOf('.json') > 0) {
-                data = JSON.parse(fs.readFileSync(rest, 'utf-8'))
-            } else {
-                data = eval(fs.readFileSync(rest, 'utf-8'))
+            try {
+                if(rest.indexOf('.json') > 0) {
+                    data = JSON.parse(fs.readFileSync(rest, 'utf-8'))
+                } else {
+                    data = eval(fs.readFileSync(rest, 'utf-8'))
+                }
+            } catch(err) {
+                loger(true, 'error', '请求配置文件失败', err)
             }
             mockData = data && data.mockData || []
             state = data && data.state || {}
@@ -24,6 +29,7 @@ module.exports = function(rest) {
         }
 
         if(mockData.length === 0 && state === {}) {
+            loger(true, 'warn', '配置文件发生错误')
             return next() 
         }
 
@@ -37,12 +43,14 @@ module.exports = function(rest) {
         const md = mockData.find((val) => {
             if(val.url.indexOf("/*") >= 0) {
                 let newUrl = val.url.replace("/*", "")
+                state.configUrl = newUrl
                 return req.path.indexOf(newUrl) === 0 && req.path != newUrl
             }
             return val.url === req.path
         })
 
         if(!md) {
+            loger(state.debugger, 'warn', '未匹配到连接', req.path)
             return next()
         } else {
             state.md = md

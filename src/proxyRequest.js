@@ -2,6 +2,7 @@ const request = require('superagent')
 const requestDirFile = require("./requestFile.js")
 const writeFile = require("./writeFile.js")
 const formData = require("./formData")
+const loger = require('./loger')
 
 function get(url, query, headers, cb) {
     return request
@@ -100,13 +101,13 @@ module.exports = function(md = {}, state = {},  req, res) {
             state.debugger.path.includes(req.path) 
         )
     ) {
-        console.log('当前api信息:', {
+        loger(true, 'log', '当前api信息', {
             method,
             url,
             contentType,
             headers
-        })
-        console.log('当前api 传递的参数:', postdata)
+        }) 
+        loger(true, 'log', '当前api 传递的参数:', postdata)
     }
     
     if(method === 'get') {

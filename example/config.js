@@ -146,7 +146,7 @@ module.exports = {
         proxy: 'https://ad-test1.sm.cn'
     }],
     state: {
-        dirpath: './example',
+        dirpath: ['./example', ''],
         proxy: 'https://crm.uc.cn',
         proxymethod: 0,
         username:'cxh',
