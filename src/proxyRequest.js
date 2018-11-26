@@ -10,7 +10,10 @@ function get(url, query, headers, cb) {
     .query(query) 
     .set(headers)
     .end((err, res) => {
-        cb(err, res, res.body)
+        if(res) {
+
+        }
+        cb(err, res)
     })
 }
 
@@ -23,7 +26,7 @@ function postJson(url, data, query, headers, cb) {
     .query(query)
     .send(data)
     .end( (err, res) => {
-        cb(err, res, res.body)
+        cb(err, res)
     })
 }
 
@@ -35,7 +38,7 @@ function postForm(url, data, query, headers, cb) {
     .query(query)
     .send(data)
     .end( (err, res) => {
-        cb(err, res, res.body)
+        cb(err, res)
     })
 }
 
@@ -47,14 +50,15 @@ function postFormData(url, data, query, headers, cb) {
     .query(query)
     .send(data)
     .end( (err, res) => {
-        cb(err, res, res.body)
+        cb(err, res)
     })
 }
 
 function callBack(res, req, state) {
-    return function(err, response, body) {
+    return function(err, response) {
         let data = null
-        if (!err && response.statusCode == 200) {
+        if (!err && response && response.statusCode == 200) {
+            let body = response.body
             if(typeof body != 'object') {
                 try {
                     data = JSON.parse(body)
@@ -80,7 +84,7 @@ module.exports = function(md = {}, state = {},  req, res) {
     const query = state.query
     const method = req.method.toLowerCase()
     const headers = Object.assign({}, state.headers, { 
-        Cookie: md.headers && md.headers.Cookie || state.Cookie 
+        Cookie: md.headers && md.headers.Cookie || state.Cookie || 'freemock'
     })
     
     let proxy = '' 
@@ -101,13 +105,13 @@ module.exports = function(md = {}, state = {},  req, res) {
             state.debugger.path.includes(req.path) 
         )
     ) {
-        loger(true, 'log', '当前api信息', {
+        loger(true, 'info', '当前api信息', {
             method,
             url,
             contentType,
             headers
         }) 
-        loger(true, 'log', '当前api 传递的参数:', postdata)
+        loger(true, 'info', '当前api 传递的参数:', postdata)
     }
     
     if(method === 'get') {
