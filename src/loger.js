@@ -16,5 +16,5 @@ module.exports = function(isLog, level, message, error = '') {
     }
     const color = colors[level] || colors.log
     
-    console.log('...\n...\n...\n',color(`...s${message}`),error,'\n...\n')
+    console.log('...\n...\n',color(`...${message}`),error,'\n')
 }
