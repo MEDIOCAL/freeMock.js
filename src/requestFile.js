@@ -15,7 +15,10 @@ module.exports = function requestDirFile(req, state, response) {
     let mockJson = null
 
     if(Array.isArray(dir_path) && dir_path.length === 2) {
-        name = (dir_path[0] + rpath).replace(state.configUrl, dir_path[1])
+        const sp = state.configUrl.split('/').slice(1)
+        let rp = sp.slice(dir_path[1][0], dir_path[1][1]).join('/')
+        rp = rp ? '/' + rp : ''
+        name = (dir_path[0] + rpath).replace(state.configUrl, rp)
     } else if(typeof dir_path === 'string') {
         name = dir_path + rpath
     } else {

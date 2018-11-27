@@ -46,6 +46,7 @@ module.exports = function(rest) {
                 state.configUrl = newUrl
                 return req.path.indexOf(newUrl) === 0 && req.path != newUrl
             }
+            state.configUrl = val.url
             return val.url === req.path
         })
 

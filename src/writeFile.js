@@ -8,19 +8,20 @@ module.exports = function writeFile(req, state, data) {
     const dir_path = state.dirpath
     const params = Object.assign({}, state.query, state.params)
     let name = ''
-    console.log(state.configUrl)
     if(Array.isArray(dir_path) && dir_path.length === 2) {
-        name = (dir_path[0] + rpath).replace(state.configUrl, dir_path[1])
+        const sp = state.configUrl.split('/').slice(1)
+        let rp = sp.slice(dir_path[1][0], dir_path[1][1]).join('/')
+        rp = rp ? '/' + rp : ''
+        name = (dir_path[0] + rpath).replace(state.configUrl, rp)
     } else if(typeof dir_path === 'string') {
         name = dir_path + rpath
     } else {
         loger(true, 'warn', 'dirpath 必须是一个字符串或者长度为2的数组')
         name = path.resolve(__dirname, '../../../mock') + rpath 
     }
-    console.log(name)
+
     name = creatName(state.readFile, params, name, req)
     name = name + '.json'
-    console.log(name)
     makep(name)
 
     if(typeof data != 'string') {
@@ -39,7 +40,6 @@ module.exports = function writeFile(req, state, data) {
 
 function makep(dir) {
     let paths = dir.split('/')
-    console.log(dir)
     for(let i = 1; i < paths.length; i++) {
         let newPath = paths.slice(0,i).join('/')
         
