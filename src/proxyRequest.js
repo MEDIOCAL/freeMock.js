@@ -141,5 +141,6 @@ module.exports = function(md = {}, state = {},  req, res) {
     }
 
     res.json && res.json(data) || (res.body = data)
+    
     return 
 }
