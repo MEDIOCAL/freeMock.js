@@ -206,13 +206,16 @@ key 值中出现 | 代表这是一个数组，数组的元素是 value 值。 �
 
 ```
 
-#### [](https://github.com/MEDIOCAL/freeMock.js#%E4%BB%A3%E7%90%86)代理
+### [](https://github.com/MEDIOCAL/freeMock.js#%E4%BB%A3%E7%90%86)代理
 
 1.设置代理后优先请求服务器的数据。 
 例如：访问localhost:8080/wolong123/aa，先请求 https://ad-test1.ok.cn/wolong123/aa 的数据。
+
 2.假如服务器报错，或者没有api报404，将请求本地相应路径下的json数据。
 例如：此时我们设置的dirpath是 /mock,那么将获取 /mock/wolong123/aa.json 的文件。
+
 3.如果没有json文件，继续生成 data 属性的数据。
+
 4.如果没有设置 data 会返回报错信息
 
 
