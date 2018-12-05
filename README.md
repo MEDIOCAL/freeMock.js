@@ -249,6 +249,7 @@ proxy 有两种值:
 ### [](https://github.com/MEDIOCAL/freeMock.js#state)state
 
 **dirpath**
+
 文件路径，假如后台没有api的情况，便去读本地 json 数据，配置路径指定读取哪个文件夹。
 
 1.设置为字符串
@@ -281,10 +282,13 @@ state: {
 理论上我们访问 localhost:3000/koo/sm/v1/list 失败的时候，会去访问 /mock/koo/sm/v1/list.json。但是，我们在 mock 文件夹下没必要创建那么多的文件夹嵌套，所以我们需要把 /koo/sm/v1 删掉，直接访问 /mock/list.json。设置成数组就是这么个目的。/koo/sm/v1 会生成 [koo, sm, v1], 设置剪切 [0, 0] 意思就是从 0 开始 切0个，就是''了。
 
 **writeFile**
+
 值为 true 或 false。表示是否写文件，访问api成功以后，会将服务器返回的数据，更新到对应的文件。例如：
 当访问 /wolongweb/a?pageNo=2 的时候
 假如设置为true，则会更新 /wolongweb/a.json 。如果没有该目录，会自动新建。
+
 **readFile**
+
 读文件的配置，可设置为数组、对象。
 当设置为数组的时候：
 ```
@@ -303,7 +307,9 @@ state: {
     }
 }
 ```
+
 **debugger**
+
 设置为 true，会打印请求api的信息。
 设置为对象。例如： 
 ```
@@ -315,10 +321,13 @@ state: {
 }
 
 ```
+
 **proxy**
 在state 里设置 proxy 只能是 url。
+
 **Cookie**
 公共 cookie
+
 **headers**
 公共的 headers。
 
