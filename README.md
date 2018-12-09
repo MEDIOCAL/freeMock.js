@@ -84,8 +84,17 @@ mockData 是一个对象数组。
         data    // 默认为 {}。代表接口返回的数据。必须是一个 json 数据。 value可以是 function，但是 function 必须有返回值。
         proxy   // 代理开关，当为 true 时，将使用 state 里配置的代理方式。当为字符串时，使用当前方式。不设，代表不走代理。
         headers // headers
+        getMockData // [function] 当为代理模式的时候，可以通过此方法，来设定使用 mock 的值，还是使用代理返回的值。
     }
 ]
+// 有的时候，代理虽然成功，但是返回值却是 null，这不是我们需要的，所以这时候我们依然想用 mock 的值。
+getMockData(data) {
+    if(!data.data) {
+        // 当服务器返回值的 data 值为空的时候, 去请求对应 json 文件的值。
+        return true
+    }
+    return false
+}
 
 ```
 
