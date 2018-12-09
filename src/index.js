@@ -55,6 +55,7 @@ module.exports = function(rest) {
             return next()
         } else {
             state.md = md
+            state.getMockData = md.getMockData
         }
         
         const interceptors = md.interceptors || state.interceptors
