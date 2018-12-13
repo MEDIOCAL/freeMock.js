@@ -78,7 +78,7 @@ function callBack(res, req, state) {
             loger(true, 'error', 'error:', err)
         }
         
-        if(!data || (state.md.getMockData && state.md.getMockData(data))) {
+        if(!data || (state.md.getMockData && state.md.getMockData(data, req))) {
             data = requestDirFile(req, state, response)
         } else if(data && state.writeFile) {
             writeFile(req, state, data)
