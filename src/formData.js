@@ -1,5 +1,5 @@
-var fs = require('fs')
-var util = require('util')
+const fs = require('fs')
+const util = require('util')
 const formidable = require("formidable")
 
 var BOUNDARYPREFIX = 'nbglme'
@@ -39,23 +39,13 @@ exports.post = function (param) {
     }
 }
 
-exports.acceptData = function(req, cb, uploadsPath) {
+exports.acceptData = function(req, cb) {
     const form = new formidable.IncomingForm()
-    const fields = []
-    const files = []
     form.encoding = 'utf-8'
     form.keepExtensions= true
-    form.uploadDir = uploadsPath || 'views/'
-    form.parse(req)
-    form
-    .on('field', function(field,value){
-        fields.push({field, value});
-    })
-    .on('file', function(field,file){
-        files.push({field, file});
-    })
-    .on('end', function(){
-        console.log('-> upload done');
-        cb(fields, files)
+    form.parse(req, function(err, fields, files) {
+        if(!err) {
+            cb(fields, files)
+        }
     })
 }

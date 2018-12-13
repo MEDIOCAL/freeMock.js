@@ -57,9 +57,17 @@ function postFormData(url, data, query, headers, cb) {
 function callBack(res, req, state) {
     return function(err, response) {
         let data = null
+
         if (!err && response && response.statusCode == 200) {
             let body = response.body
-            if(typeof body != 'object') {
+            if(
+                response.text && 
+                (!body || typeof body === 'object' && JSON.stringify(body) === '{}')
+            ) {
+                data = response.text
+                res.send(data)
+                return 
+            } else if(typeof body != 'object') {
                 try {
                     data = JSON.parse(body)
                 } catch(err) {}
@@ -124,10 +132,7 @@ module.exports = function(md = {}, state = {},  req, res) {
         } else if(contentType && contentType.indexOf('multipart/form-data') >= 0) {
             formData.acceptData(req, function(fields, files) {
                 const params = {}
-                const forms = fields.concat(files)
-                for(let fie of forms) {
-                    params[fie.field] = fie.value || fie.file
-                }
+                Object.assign(params, fields, files)
                 const multipart = formData.post(params)
                 headers["content-type"] = `multipart/form-data; boundary=${multipart.boundary}`
                 postFormData(url, multipart.body, query, headers, callBack(res, req, state))
