@@ -19,13 +19,11 @@ const freeMock = require('freemockjs')
 
 app.use(freeMock(config))
 //or
-app.use(freeMock(__dirname + '/mock/config.js'))
-
-
+app.use(freeMock(path.reslove(__dirname , '/mock/config.js')))
 ```
 
 config 可以是一个对象，或者路径。
-当设置为路径的时候，更新文件不需要重启服务。（但是一定注意在设置其他路径的时候，例如dirpath。是相对于server文件的路径，而不是配置文件）
+当设置为路径的时候，更新文件不需要重启服务。但是路径是相对于 freemockjs server.js 的
 
 config.js
 
