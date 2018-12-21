@@ -75,7 +75,7 @@ function callBack(res, req, state) {
                 data = body
             }
         } else {
-            loger(true, 'error', 'error:', err)
+            loger(state.debugger, 'error', 'error:', err)
         }
         
         if(!data || (state.md.getMockData && state.md.getMockData(data, req))) {

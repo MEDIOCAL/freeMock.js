@@ -28,7 +28,7 @@ module.exports = function(rest) {
             state = rest.state
         }
 
-        if(mockData.length === 0 && state === {}) {
+        if(mockData.length === 0) {
             loger(true, 'warn', '配置文件发生错误')
             return next() 
         }
