@@ -65,8 +65,6 @@ function callBack(res, req, state) {
                 (!body || typeof body === 'object' && JSON.stringify(body) === '{}')
             ) {
                 data = response.text
-                res.send(data)
-                return 
             } else if(typeof body != 'object') {
                 try {
                     data = JSON.parse(body)
@@ -80,11 +78,16 @@ function callBack(res, req, state) {
         
         if(!data || (state.md.getMockData && state.md.getMockData(data, req))) {
             data = requestDirFile(req, state, response)
-        } else if(data && state.writeFile) {
+        } else if(data && state.writeFile && typeof data === 'object') {
             writeFile(req, state, data)
         }
         
-        res.json && res.json(data) || (res.body = data)
+        if(typeof data != 'object') {
+            res.send(data)
+            return 
+        }
+
+        res.json && res.json(data)
     }
 }
 
@@ -147,7 +150,7 @@ module.exports = function(md = {}, state = {},  req, res) {
         msg: "未找到请求方式，目前只支持 get、post/json、x-www-form-urlencoded、multipart/form-data"
     }
 
-    res.json && res.json(data) || (res.body = data)
+    res.json && res.json(data)
     
     return 
 }

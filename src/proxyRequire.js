@@ -80,7 +80,7 @@ module.exports = async function proxyRequire(md = {} , state, req, res) {
         response.data = requestDirFile(req, state, response)
     }
 
-    res.json && res.json(response.data) || (res.body = response.data)
+    res.json && res.json(response.data)
     return
 }
 

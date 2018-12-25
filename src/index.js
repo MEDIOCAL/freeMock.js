@@ -68,7 +68,7 @@ module.exports = function(rest) {
                         isInterceptors : 
                         { status: '400', msg:'is Interrupted'}
 
-            res.json && res.json(data) || (res.body = data)
+            res.json && res.json(data)
             return 
         } 
 
@@ -119,7 +119,7 @@ module.exports = function(rest) {
             return 
         }
 
-        res.json && res.json(req.mockData) || (res.body = req.mockData)
+        res.json && res.json(req.mockData)
 
         return 
     }
