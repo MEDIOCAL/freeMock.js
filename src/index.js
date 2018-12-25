@@ -22,10 +22,11 @@ module.exports = function(rest) {
                 loger(true, 'error', '请求配置文件失败', err)
             }
             mockData = data && data.mockData || []
-            state = data && data.state || {}
+            state = Object.assign({}, state, data.state)
         } else if(typeof rest === 'object') {
             mockData = rest.mockData
-            state = rest.state
+            state = Object.assign({}, state, rest.state)
+            
         }
 
         if(mockData.length === 0) {
