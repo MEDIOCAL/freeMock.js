@@ -5,14 +5,17 @@ const creatName = require('./createPathName.js')
 const loger = require('./loger')
 
 module.exports = function requestDirFile(req, state, response) {
-    const rpath = state.md.readWriteFilePath || req.path 
     const dir_path = state.dirpath
     const mock = new Mock(req, state)
     const params = Object.assign({}, state.query, state.params)
-
+    let rpath = req.path
     let name = ''
     let data = {}
     let mockJson = null
+
+    if(state.md.readWriteFilePath) {
+        rpath = req.path.replace(state.configUrl, state.md.readWriteFilePath)
+    }
 
     if(Array.isArray(dir_path) && dir_path.length === 2) {
         const sp = state.configUrl.split('/').slice(1)

@@ -112,7 +112,10 @@ module.exports = {
         data: {
             "nihao": 'nis'
         },
-        proxy: true
+        proxy: true,
+        getMockData() {
+            return true
+        }
     }, {
         url: '/wolong',
         method: 'GET',
