@@ -4,7 +4,7 @@ const Mock = require("./mock")
 const creatName = require('./createPathName.js')
 const loger = require('./loger')
 
-module.exports = function requestDirFile(req, state, response) {
+module.exports = function requestDirFile(req, state, response, isCompare = false) {
     const dir_path = state.dirpath
     const mock = new Mock(req, state)
     const params = Object.assign({}, state.query, state.params)
@@ -42,16 +42,21 @@ module.exports = function requestDirFile(req, state, response) {
         } else if(typeof mockJson === 'object' && mockJson != null) {
             mockJson = mock.object(mockJson)
         }
-        loger(true, 'info', "已读取：" + name + "的数据")
+
+        if(isCompare) {
+            loger(true, 'info', "正在对比数据")
+        } else {
+            loger(true, 'info', "已读取：" + name + "的数据")
+        } 
     } catch(err) {
-        loger(true, 'error', '读文件出错', err)
+        !isCompare && loger(true, 'error', '读文件出错', err)
     }
 
     data = mockJson || req.mockData || {
         status: response && response.statusCode || -1,
         msg: "数据格式有误，请检查接口正确"
     }
-
+    
     return data
 }
 

@@ -196,7 +196,7 @@ function callBack(res, req, state) {
             state.writeFile && 
             state.md.validateWriteFile(data, req) 
         ) {
-            const readFileData = requestDirFile(req, state, response)
+            const readFileData = requestDirFile(req, state, response, true)
             !deepCompare(readFileData, data) && writeFile(req, state, data) // 深度比较获取数据与文件数据，不一样才能写入
         }
         
