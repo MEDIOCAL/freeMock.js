@@ -1,8 +1,6 @@
 const fs = require('fs')
 const Mock = require("./mock") 
 const proxyRequest = require("./proxyRequest")
-const proxyRequire = require("./proxyRequire")
-const proxyMethods = [proxyRequest, proxyRequire]
 const loger = require('./loger')
 
 module.exports = function(rest) {
@@ -119,7 +117,7 @@ module.exports = function(rest) {
             state.query = query
             state.contentType = contentType
 
-            proxyMethods[methodIndex](md, state, req, res)
+            proxyRequest(md, state, req, res)
             
             return 
         }
