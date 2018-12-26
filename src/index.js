@@ -95,6 +95,10 @@ module.exports = function(rest) {
         req.mockData = data
         req.state = state 
 
+        if(!state.md.validateWriteFile || typeof state.md.validateWriteFile != 'function') {
+            state.md.validateWriteFile = () => true
+        }
+
         if(state.debugger === true) {
             state.debugger = {
                 method: ['get', 'post'],

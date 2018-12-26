@@ -4,10 +4,11 @@ const creatName = require('./createPathName.js')
 const loger = require('./loger')
 
 module.exports = function writeFile(req, state, data) {
-    const rpath = req.path 
+    const rpath = state.md.readWriteFilePath || req.path 
     const dir_path = state.dirpath
     const params = Object.assign({}, state.query, state.params)
     let name = ''
+
     if(Array.isArray(dir_path) && dir_path.length === 2) {
         const sp = state.configUrl.split('/').slice(1)
         let rp = sp.slice(dir_path[1][0], dir_path[1][1]).join('/')

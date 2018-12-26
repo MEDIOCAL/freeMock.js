@@ -5,7 +5,7 @@ const creatName = require('./createPathName.js')
 const loger = require('./loger')
 
 module.exports = function requestDirFile(req, state, response) {
-    const rpath = req.path 
+    const rpath = state.md.readWriteFilePath || req.path 
     const dir_path = state.dirpath
     const mock = new Mock(req, state)
     const params = Object.assign({}, state.query, state.params)
