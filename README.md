@@ -79,6 +79,7 @@ module.exports = {
 }
 ```
 此时返回 data 中数据
+
 **4.如果没有设置 data 会返回报错信息**
 
 ## 配置文件
@@ -99,12 +100,14 @@ config 是一个对象：
 
 值为 true 或 false，表示是否写文件。
 访问 api 成功以后，会将服务器返回的数据，更新到对应的文件。例如 demo1 中：
+
 当访问 /wo/plan/list?pageNo=2 的时候，因为 dirpath 为 /mock 会更新 /mock/wo/plan/list.json , 如果没有该目录，会自动新建。
 
 
 #### readFile
 
 读文件的配置，可设置为数组、对象。
+
 **当设置为数组的时候**
 
 ```
@@ -113,8 +116,11 @@ config 是一个对象：
 }
 ```
 假如我们访问 localhost:3000/wo/web/list?channelId=16 失败，不设置此值会去读取 /mock/wolong/web/list.json。
+
 假如设置如上，则会依次解析请求头中的 channelId、id，如果有值则会 加到文件名中，就变成了 /mock/wolong/web/list_16.json。
+
 如果是请求 localhost:3000/wolong/web/article?channelId=16&id=1011，则去加载 /mock/wolong/web/article_16_1011.json
+
 那么问题来了，假如多个 api 有重复的 params，那会互相造成干扰。所以可以设置成对象。
 
 **当设置为对象的时候**
@@ -128,6 +134,7 @@ config 是一个对象：
 }
 ```
 当访问 localhost:3000/wo/web/list?channelId=16 失败后，会读取 /mock/wolong/web/list_16.json 的数据。
+
 当访问 localhost:3000/wo/web/article?channelId=16&id=11 失败后，会读取 /mock/wolong/web/list_16_11.json 的数据。
 
 这种情况 mock tab 切换的时候，调用同一个 api 但是传递的值不同，获取数据不同。
@@ -150,6 +157,7 @@ mock 文件路径，假如后台没有api的情况，以便去读本地 json 数
 ```
 
 当访问 /wo/a 失败的时候，会去读取 __dirname + '/mock/wo/a.json' 文件。
+
 当访问成功后，我们想把获取的数据写入到本地文件，也是写入到 /mock/wo/a.json
 
 **2.设置为数组**
@@ -168,13 +176,16 @@ state: {
 }
 ```
 理论上我们访问 localhost:3000/koo/sm/v1/ag/list 失败的时候，会去访问 /mock/koo/sm/v1/list.json。但是，我们在 mock 文件夹下没必要创建那么多的文件夹嵌套，所以我们需要把 /koo/sm/v1 删掉，直接访问 /mock/ag/list.json。设置成数组就是这么个目的。
+
 /koo/sm/v1 会生成 [koo, sm, v1], 设置剪切 [0, 0] 意思就是从 0 开始 切0个。 所以就去读取 /mock/ag/list.json
+
 同理，当设置 [0, 1] 的时候，会去读取 /mock/koo/ag/list.json
 
 
 #### debugger
 
 设置为 true，会打印请求api的信息。
+
 设置为对象。例如：
 
 ```
@@ -189,6 +200,7 @@ state: {
 
 #### proxy
 在state 里设置 proxy 只能是 url。
+
 当在 mockData 的配置里也设置 proxy 为 url 时，优先使用 mockData 中配置的。
 
 #### Cookie
@@ -318,11 +330,13 @@ state: {
 }
 ```
 当我们访问 localhost:3000/aaa/bbb/ccc/dd/ff/e 的时候，假如代理访问失败，理论上会获取 /mock/aaa/bbb/cc/dd/ff/e.json。所以我们会在mock文件夹下生成嵌套很深的文件夹，这是我们不想看到的。
+
 假如我们像上面那样，设置 readWriteFilePath 为'',就代表着 '' 代替了 /aaa/bbb/cc/dd/，所以当访问失败的时候，会去获取 /mock/ff/e.json 的数据，这样我们就没必要去建立很多文件夹了。
 
 和 state 中 dirpath 设置为数组的情况相同。但是 ** 不能同时使用 ** 
 
 ### getMockData
+
 有的时候，代理虽然请求成功了。但是返回我们需要调试的字段数据却是 null，这不是我们需要的数据。这时候我们依然想用本地 mock 的数据。
 ```
 // 当服务器返回值的 view 值为空的时候, 去请求对应 json 文件的值。
@@ -337,7 +351,9 @@ getMockData(data, req) {
 ### validateWriteFile
 
 当我们将 state 下的 writeFile 设置为 true 的时候，每次我们去请求测试环境的数据成功，就会将我们得到数据写入到，本地对应的 json 文件中。这样做的目的主要是为了保证线上数据与本地 mock 数据保持同步。其次，当我们已有 api 时就不需要手动建立 json 文件，工具会自动生成，这样帮我们省很多力。
+
 有的时候代理虽然成功获取测试数据，但是测试数据并不如本地 mock 数据完美。此时，我们并不想写入本地文件。
+
 ```
 validateWriteFile(data, req) {
     if(!data.data.views || data.data.views.length === 0) {  // 当新获取的数据 views 为null或者[]的时候，不写入。
