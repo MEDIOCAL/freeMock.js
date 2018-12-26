@@ -56,14 +56,17 @@ module.exports = {
 ## 代理
 
 **1.设置代理后优先请求服务器的数据。**
+
 例如 demo1 中的设置：
 当访问localhost:8080/wo/plan/list，先请求 https://ad-test1.ok.cn/wo/plan/list 的数据。
 
 **2.假如服务器报错，或者没有 api 报 404，将请求本地相应路径下的json数据。**
+
 例如 demo1 中设置：
 此时我们设置的 dirpath 是 __dirname + '/mock',那么将获取当前路径下 /mock/wo/plan/list.json 的数据。
 
 **3.如果没有json文件，继续生成配置中 data 属性的数据。**
+
 例如 demo1 中设置：
 ```
 {
@@ -103,6 +106,7 @@ config 是一个对象：
 
 读文件的配置，可设置为数组、对象。
 **当设置为数组的时候**
+
 ```
 {
     readFile: ['channelId', 'id']
@@ -114,6 +118,7 @@ config 是一个对象：
 那么问题来了，假如多个 api 有重复的 params，那会互相造成干扰。所以可以设置成对象。
 
 **当设置为对象的时候**
+
 ```
 {
     readFile: {
@@ -128,6 +133,7 @@ config 是一个对象：
 这种情况 mock tab 切换的时候，调用同一个 api 但是传递的值不同，获取数据不同。
 
 **当 writeFile 为 true 的时候，写入数据也会以此写入文件**
+
 当访问 localhost:3000/wo/web/list?channelId=16 成功后，会写入到 /mock/wolong/web/list_16.json 文件中。
 
 #### dirpath
@@ -135,6 +141,7 @@ config 是一个对象：
 mock 文件路径，假如后台没有api的情况，以便去读本地 json 数据，配置路径指定读取哪个文件夹。
 
 **1.设置为字符串**
+
 ```
 {
    dirpath：__dirname + '/mock' 
@@ -146,6 +153,7 @@ mock 文件路径，假如后台没有api的情况，以便去读本地 json 数
 当访问成功后，我们想把获取的数据写入到本地文件，也是写入到 /mock/wo/a.json
 
 **2.设置为数组**
+
 ```
 state: {
     dirpath：[__dirname + '/mock', [0, 0]
