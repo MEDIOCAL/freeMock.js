@@ -13,7 +13,7 @@ module.exports = function requestDirFile(req, state, response) {
     let data = {}
     let mockJson = null
 
-    if(state.md.readWriteFilePath) {
+    if(typeof state.md.readWriteFilePath === 'string') {
         rpath = req.path.replace(state.configUrl, state.md.readWriteFilePath)
     }
 

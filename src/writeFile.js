@@ -9,7 +9,7 @@ module.exports = function writeFile(req, state, data) {
     let rpath = req.path
     let name = ''
 
-    if(state.md.readWriteFilePath) {
+    if(typeof state.md.readWriteFilePath === 'string') {
         rpath = req.path.replace(state.configUrl, state.md.readWriteFilePath)
     }
 
