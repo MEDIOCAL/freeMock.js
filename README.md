@@ -53,6 +53,7 @@ module.exports = {
     }
 }
 
+// 意思是： 访问 localhost:3000/mmm/* 任何 api 的时候，会代理访问 https://ad-test1.smsa.cn/mme/* 对应的 api。 访问不到就读取本地当前目录下 /mock/mme/*.json
 ```
 
 ## 代理
