@@ -25,31 +25,31 @@ app.use(freeMock(path.reslove(__dirname , '/mock/config.js')))
 ```
 注意：路径是相对于 freemockjs server.js 的
 
-### demo1 config.js
+### demo1 config.js (以下大部分 api 都没啥用，基本配置这样就 ok)
 
 ```
 module.exports = {
     mockData: [{
-        url:'/test1',
-        "data|<2": {
-            name: "@name()",
-            "list|<req.size": {
-                title:"@title()",
-                time: "@time()",
-                height: "@number(2)"
-            }
-        }
-    }, {
         url:'/wo/plan/list',
         data: {
             name: "123",
             template: "456"
         },
-        proxy: 'https://ad-test1.sma.cn',
+        proxy: true,
+    }, {
+        url:'/mme/*',
+        proxy: true
     }],
     state: {
-        dirpath: __dirname + '/mock',
-        writeFile: true,
+        dirpath: __dirname + '/mock',        // 必须
+        proxy: 'https://ad-test1.smsa.cn',   // 必须
+        Cookie: '1233asdasdsadasdsadzzzz',   // 必须
+        headers: { 
+            'CSRF-TOKEN': 'ssdw22'
+        },
+        readFile: {
+            '/opt/dict/list': ["theme"],
+        }
     }
 }
 
