@@ -53,7 +53,14 @@ module.exports = {
     }
 }
 
-// 意思是： 访问 localhost:3000/mmm/* 任何 api 的时候，会代理访问 https://ad-test1.smsa.cn/mme/* 对应的 api。 访问不到就读取本地当前目录下 /mock/mme/*.json
+```
+项目 api 请求：
+```
+axios.post('/mme/aaa/bbb/c', params}).then(...) 
+
+axios.get('/wo/plan/list', { params }).then(...)
+
+上面两个请求会直接访问 localhost:3000/wo/plan/list 本地的接口，但是实际上会代理访问 https://ad-test1.smsa.cn/wo/plan/list。 访问不到就读取本地当前目录下 /mock/wo/plan/list.json  。
 ```
 
 ## 代理
