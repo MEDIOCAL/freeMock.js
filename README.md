@@ -200,6 +200,47 @@ state: {
 根据 swagger 生成 mock 数据。
 优先级  proxy > 读取本地数据 > swagger > data 字段
 
+#### swaggerManualProps
+
+swaggerManualProps 可设置为一个对象。其属性的值可以为 function、object、string、number、boolean。
+
+例如在 state 里我们这么设置：
+
+```
+{
+    pageSize: 20,
+    success: false,
+    pageNo: res => res.query.pageNo,
+    data: {
+        length: 20    // 假如 data 为一个数组的话，会生成一个长度为 20 的数组。
+    },
+}
+```
+
+**注意：当设置为 object 时，只针对数组类型的数据设置 length。**
+
+假如在开发中有些字段为 int32，随机生成的 value 可能会很大，但是我们所需要的数值为 1 - 5。例如：
+
+bussinessType值为 1 - 5，但是随即生成了 121213。有什么方法可以手动更改数据呢？ 
+
+```
+{
+    bussinessType: () => {
+        const arr = [1, 2, 3, 4, 5]
+        const index = Math.floor(Math.random()*arr.length)
+        return arr[index]
+    }
+}
+```
+
+同理，对于 pageNo 也为 int32，我们期望从 query 里取我们传递的值。
+
+```
+{
+    pageNo: res => res.query.pageNo
+}
+```
+
 #### debugger
 
 设置为 true，会打印请求api的信息。
