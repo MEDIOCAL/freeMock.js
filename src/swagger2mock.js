@@ -1,5 +1,8 @@
-function swagger({paths, definitions, basePath}) {
-    return function(path, method = 'get') {
+function swagger({paths, definitions, basePath, manualProps = {}}) {
+    return function(req) {
+        let path = req.path
+        let method = req.method
+
         if(!paths || !definitions) {
             return null
         }
@@ -25,7 +28,7 @@ function swagger({paths, definitions, basePath}) {
             result = getMockTemp(definition)
         }
         
-        return mock(result, definitions)
+        return mock(result, definitions, manualProps, req)
     }
 }
 
@@ -35,7 +38,7 @@ function getMockTemp(definition) {
     }
 }
 
-function mock(properties, definitions) {
+function mock(properties, definitions, manualProps, req) {
     const types = ['string', 'boolean', 'integer']
     const result = {}
 
@@ -44,24 +47,38 @@ function mock(properties, definitions) {
         const format = value.format
         
         if(types.includes(type)) {
-            result[key] = createDataByType(type, format, key)
+            result[key] = createDataByType(type, format, key, manualProps, req)
         } else if(value.originalRef && definitions[value.originalRef])  { 
             let def = getMockTemp(definitions[value.originalRef])
-            result[key] = mock(def, definitions)
+            result[key] = mock(def, definitions, manualProps, req)
         } else if(value.items && value.items.originalRef && definitions[value.items.originalRef]) {
             let def = getMockTemp(definitions[value.items.originalRef])
             let arr = []
             for(let index = 0; index < 5; index ++) {
-                arr.push(mock(def, definitions))
+                arr.push(mock(def, definitions, manualProps, req))
             }
             result[key] = arr
-        } 
+        } else if(typeof type === 'object') {
+            result[key] = {}
+        } else {
+            result[key] = ''
+        }
     }
 
     return result
 }
 
-function createDataByType(type, format, key) {
+function createDataByType(type, format, key, manualProps, req) {
+    const manualKey = Object.keys(manualProps)
+    
+    if(manualKey.includes(key)) {
+        const result = manualProps[key]
+        if(typeof result === 'function') {
+            return result(req)
+        } 
+        return result
+    }
+
     switch(type) {
         case 'boolean':
             return boolean(key)

@@ -178,14 +178,21 @@ module.exports = {
                 return name
             }
         },
-        writeFile: {
-            '/yingxiao/web/article/list': ["channelId"]
-        },
+        // writeFile: {
+        //     '/yingxiao/web/article/list': ["channelId"]
+        // },
         readFile: ['channelId'],
         headers: {
             "UC-CSRF-TOKEN": "e37d83b4e29f9f01195bea7c80c8c5aa"
         },
         swagger: 'imp-daily.uc.test/ncrm/v2/api-docs',
-        pureProxy: true,
+        pureProxy: false,
+        swaggerManualProps: {
+            pageSize: 20,
+            pageNo: req => req.query.pageNo,
+            businessTypes: () => {
+                return '2'
+            }
+        }
     }
 }

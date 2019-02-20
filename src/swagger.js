@@ -9,7 +9,7 @@ module.exports = async function(req, state, md) {
     } else {
         swagger = await new Promise(function(reslove) {
             try {
-                request.get(state.swagger).set({'Cookie': md.headers && md.headers.Cookie || state.Cookie}).end(function(err, res) {
+                request.get(state.swagger).set({'Cookie': state.Cookie}).end(function(err, res) {
                     if(err) {
                         reslove(null)
                     } else {
@@ -22,9 +22,11 @@ module.exports = async function(req, state, md) {
             }
         })
     }
-    
+    if(state.swaggerManualProps) {
+        swagger.manualProps = state.swaggerManualProps
+    }
     loger(true, 'info', '开始生成 swagger', req.path)
-    const data = swagger2mock(swagger)(req.path)
+    const data = swagger2mock(swagger)(req)
 
     if(!data) {
         loger(true, 'warn', 'swagger 读取失败', req.path)
