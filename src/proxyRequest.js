@@ -162,6 +162,8 @@ function callBack(res, req, state, md) {
         let data = null
         
         if (!err && response && response.statusCode == 200) {
+            loger(true, 'info', '请求数据成功', req.path)
+            
             let body = response.body
             let text = response.text
             if(
