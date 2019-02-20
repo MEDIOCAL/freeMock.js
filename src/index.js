@@ -2,6 +2,7 @@ const fs = require('fs')
 const Mock = require("./mock") 
 const proxyRequest = require("./proxyRequest")
 const loger = require('./loger')
+const swagger = require('./swagger')
 
 module.exports = function(rest) {
     return async function (req, res, next) {   
@@ -17,7 +18,7 @@ module.exports = function(rest) {
                     data = eval(fs.readFileSync(rest, 'utf-8'))
                 }
             } catch(err) {
-                loger(true, 'error', '请求配置文件失败', err)
+                loger(true, 'error', '请求配置文件失败')
             }
             mockData = data && data.mockData || []
             state = Object.assign({}, state, data.state)
@@ -48,9 +49,11 @@ module.exports = function(rest) {
             state.configUrl = val.url
             return val.url === req.path
         })
+        
+        loger(true, 'help', '\n\n\n' + req.path + ':')
 
         if(!md) {
-            loger(state.debugger, 'warn', '未匹配到连接', req.path)
+            loger(true, 'warn', '未匹配到连接', req.path)
             return next()
         } else {
             state.md = md
@@ -108,10 +111,10 @@ module.exports = function(rest) {
         }
 
         if(md.proxy) {
+            loger(state.debugger, 'info', '进入代理模式', req.path)
             const query = req.query 
             const params = req.body
             const contentType = req.headers['content-type'] || req.headers['Content-Type']
-            const methodIndex = state.proxymethod || 0
             
             state.params = params
             state.query = query
@@ -121,8 +124,15 @@ module.exports = function(rest) {
             
             return 
         }
+        
+        if(state.swagger) {
+            const swaggerData = await swagger(req, state, md)
+            if(swaggerData && !req.mockData) {
+                req.mockData = swaggerData
+            }
+        } 
 
-        res.json && res.json(req.mockData)
+        res.json(req.mockData)
 
         return 
     }

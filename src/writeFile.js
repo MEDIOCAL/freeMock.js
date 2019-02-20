@@ -35,7 +35,7 @@ module.exports = function writeFile(req, state, data) {
     
     fs.writeFile(name, data, 'utf8', function(err){
         if(err) {
-            loger(true, 'error', '写文件时出错', err)
+            loger(true, 'error', '写文件时出错')
         } else {
             loger(true, 'info', '写文件操作成功, 已写入到：'+ name)
         }
@@ -60,7 +60,7 @@ function makep(dir) {
             } else {
                 fs.open(name, "w", function(err) {
                     if(err) {
-                        loger(true, 'info', "创建文件失败" + name, err)
+                        loger(true, 'info', "创建文件失败" + name)
                     } else {
                         loger(true, 'info', "文件创建成功，文件路径：" + name)
                     }

@@ -3,6 +3,7 @@ const requestDirFile = require("./requestFile.js")
 const writeFile = require("./writeFile.js")
 const formData = require("./formData")
 const loger = require('./loger')
+const swagger = require('./swagger')
 
 function deepCompare(x, y) {
     var i, l, leftChain, rightChain;
@@ -122,12 +123,7 @@ function get(url, query, headers, cb) {
     .get(url)
     .query(query) 
     .set(headers)
-    .end((err, res) => {
-        if(res) {
-
-        }
-        cb(err, res)
-    })
+    .end(cb)
 }
 
 function postJson(url, data, query, headers, cb) {
@@ -138,9 +134,7 @@ function postJson(url, data, query, headers, cb) {
     }))
     .query(query)
     .send(data)
-    .end( (err, res) => {
-        cb(err, res)
-    })
+    .end(cb)
 }
 
 function postForm(url, data, query, headers, cb) {
@@ -150,9 +144,7 @@ function postForm(url, data, query, headers, cb) {
     .set(headers)
     .query(query)
     .send(data)
-    .end( (err, res) => {
-        cb(err, res)
-    })
+    .end(cb)
 }
 
 function postFormData(url, data, query, headers, cb) {
@@ -162,34 +154,40 @@ function postFormData(url, data, query, headers, cb) {
     .set(headers)
     .query(query)
     .send(data)
-    .end( (err, res) => {
-        cb(err, res)
-    })
+    .end(cb)
 }
 
-function callBack(res, req, state) {
-    return function(err, response) {
+function callBack(res, req, state, md) {
+    return async function(err, response) {
         let data = null
-
+        
         if (!err && response && response.statusCode == 200) {
             let body = response.body
+            let text = response.text
             if(
-                response.text && 
+                text && 
                 (!body || typeof body === 'object' && JSON.stringify(body) === '{}')
             ) {
-                data = response.text
-            } else if(typeof body != 'object') {
-                try {
-                    data = JSON.parse(body)
-                } catch(err) {}
+                data = text
             } else {
                 data = body
             }
+        } else if(state.pureProxy) {
+            if(err) {
+                return res.send(err)
+            } else if(response) {
+                return res.send(response)
+            }
         } else {
-            loger(state.debugger, 'error', 'error:', err)
+            loger(true, 'error', '向服务器请求发生错误', req.path)
         }
 
+        if(!data && state.swagger) {
+            data = await swagger(req, state, md)
+        } 
+        
         if(!data || (state.md.getMockData && state.md.getMockData(data, req))) {
+            loger(state.info, 'info', '开始读取文件', req.path)
             data = requestDirFile(req, state, response)
         } else if(
             data && typeof data === 'object' && 
@@ -199,13 +197,8 @@ function callBack(res, req, state) {
             const readFileData = requestDirFile(req, state, response, true)
             !deepCompare(readFileData, data) && writeFile(req, state, data) // 深度比较获取数据与文件数据，不一样才能写入
         }
-        
-        if(typeof data != 'object') {
-            res.send(data)
-            return 
-        }
 
-        res.json && res.json(data)
+        return res.send(data)
     }
 }
 
@@ -236,31 +229,31 @@ module.exports = function(md = {}, state = {},  req, res) {
             state.debugger.path.includes(req.path) 
         )
     ) {
-        loger(true, 'info', '当前api信息', {
+        loger(true, 'debug', '当前api信息：', {
             method,
             url,
             contentType,
             headers
         }) 
-        loger(true, 'info', '当前api 传递的参数:', postdata)
+        loger(true, 'debug', '当前api 传递的参数:', postdata)
     }
     
     if(method === 'get') {
-        return get(url, query, headers, callBack(res, req, state))
+        return get(url, query, headers, callBack(res, req, state, md))
     } else if(method === 'post') {
         if(contentType && contentType.indexOf('x-www-form-urlencoded') >= 0) {
-            return postForm(url, postdata, query, headers, callBack(res, req, state))
+            return postForm(url, postdata, query, headers, callBack(res, req, state, md))
         } else if(contentType && contentType.indexOf('multipart/form-data') >= 0) {
             formData.acceptData(req, function(fields, files) {
                 const params = {}
                 Object.assign(params, fields, files)
                 const multipart = formData.post(params)
                 headers["content-type"] = `multipart/form-data; boundary=${multipart.boundary}`
-                postFormData(url, multipart.body, query, headers, callBack(res, req, state))
+                postFormData(url, multipart.body, query, headers, callBack(res, req, state, md))
             })
             return 
         } else {
-            return postJson(url, postdata,  query, headers, callBack(res, req, state)) 
+            return postJson(url, postdata,  query, headers, callBack(res, req, state, md)) 
         }  
     }
 

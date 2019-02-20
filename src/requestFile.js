@@ -49,7 +49,7 @@ module.exports = function requestDirFile(req, state, response, isCompare = false
             loger(true, 'info', "已读取：" + name + "的数据")
         } 
     } catch(err) {
-        !isCompare && loger(true, 'error', '读文件出错', err)
+        !isCompare && loger(true, 'error', '读文件出错')
     }
 
     data = mockJson || req.mockData || {

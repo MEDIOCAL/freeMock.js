@@ -15,6 +15,11 @@ module.exports = function(isLog, level, message, error = '') {
         return
     }
     const color = colors[level] || colors.log
+    if(typeof error === 'object') {
+        console.log('\t',color(`${message}`),'\n')
+        console.log("%j", error)
+    } else {
+        console.log('\t',color(`${message}`),error,'\n')
+    }
     
-    console.log('...\n...\n',color(`...${message}`),error,'\n')
 }
