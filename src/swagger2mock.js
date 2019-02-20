@@ -27,7 +27,6 @@ function swagger({paths, definitions, basePath, manualProps = {}}) {
             const definition = definitions[responses[200].schema.originalRef]
             result = getMockTemp(definition)
         }
-        
         return mock(result, definitions, manualProps, req)
     }
 }
@@ -54,7 +53,16 @@ function mock(properties, definitions, manualProps, req) {
         } else if(value.items && value.items.originalRef && definitions[value.items.originalRef]) {
             let def = getMockTemp(definitions[value.items.originalRef])
             let arr = []
-            for(let index = 0; index < 5; index ++) {
+            let length = 5
+            if(
+                Object.keys(manualProps).includes(key) && 
+                typeof manualProps[key] === 'object' && 
+                manualProps[key].length != undefined
+            ) {
+                length = manualProps[key].length
+            }
+
+            for(let index = 0; index < length; index ++) {
                 arr.push(mock(def, definitions, manualProps, req))
             }
             result[key] = arr

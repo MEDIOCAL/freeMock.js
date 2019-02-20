@@ -192,6 +192,9 @@ module.exports = {
             pageNo: req => req.query.pageNo,
             businessTypes: () => {
                 return '2'
+            },
+            result: {
+                length: 19,
             }
         }
     }
