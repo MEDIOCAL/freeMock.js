@@ -183,15 +183,17 @@ function callBack(res, req, state, md) {
         } else {
             loger(true, 'error', '向服务器请求发生错误', req.path)
         }
-
-        if(!data && state.swagger) {
-            data = await swagger(req, state, md)
-        } 
         
         if(!data || (state.md.getMockData && state.md.getMockData(data, req))) {
             loger(state.info, 'info', '开始读取文件', req.path)
             data = requestDirFile(req, state, response)
-        } else if(
+        } 
+
+        if(!data && state.swagger) {
+            data = await swagger(req, state, md) 
+        }
+
+        if(
             data && typeof data === 'object' && 
             state.writeFile && 
             state.md.validateWriteFile(data, req) 
@@ -200,7 +202,11 @@ function callBack(res, req, state, md) {
             !deepCompare(readFileData, data) && writeFile(req, state, data) // 深度比较获取数据与文件数据，不一样才能写入
         }
 
-        return res.send(data)
+        if(data || req.mockData) {
+            return res.send(data || req.mockData)
+        } else {
+            return res.send(err || response)
+        }
     }
 }
 

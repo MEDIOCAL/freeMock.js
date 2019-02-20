@@ -198,7 +198,7 @@ state: {
 #### swagger 
 
 根据 swagger 生成 mock 数据。
-优先级 swagger > 读取本地数据 > data 字段
+优先级  proxy > 读取本地数据 > swagger > data 字段
 
 #### debugger
 

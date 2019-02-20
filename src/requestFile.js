@@ -52,10 +52,7 @@ module.exports = function requestDirFile(req, state, response, isCompare = false
         !isCompare && loger(true, 'error', '读文件出错')
     }
 
-    data = mockJson || req.mockData || {
-        status: response && response.statusCode || -1,
-        msg: "数据格式有误，请检查接口正确"
-    }
+    data = mockJson || null
     
     return data
 }

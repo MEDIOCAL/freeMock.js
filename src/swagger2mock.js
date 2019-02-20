@@ -1,20 +1,20 @@
 function swagger({paths, definitions, basePath}) {
     return function(path, method = 'get') {
         if(!paths || !definitions) {
-            return 
+            return null
         }
         path = path.replace(basePath, '')
 
         const sw = paths[path]
         
         if(!sw) {
-            return 
+            return null
         }
 
         const temp = sw[method.toLowerCase()]
         
         if(!temp) {
-            return 
+            return null
         }
 
         const { responses } = temp
