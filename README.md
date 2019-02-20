@@ -6,7 +6,8 @@
 
 当 api 报错或者没有 api 又或者在联调的时候某个测试环境的 api 报错，影响调试。可以读取本地 mock 的 json 文件中的数据。
 
-可以将测试环境的数据保存到本地的 json 文件中。
+可以将测试环境的数据保存到本地的 json 文件中。  
+version： 2.0.23， 2.1.8
 
 ## Quick get start
 
@@ -191,6 +192,13 @@ state: {
 
 同理，当设置 [0, 1] 的时候，会去读取 /mock/koo/ag/list.json
 
+#### pureProxy 
+
+纯代理模式，代理失败也不会返回 mock 数据
+#### swagger 
+
+根据 swagger 生成 mock 数据。
+优先级 swagger > 读取本地数据 > data 字段
 
 #### debugger
 
