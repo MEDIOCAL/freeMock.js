@@ -11,25 +11,35 @@ module.exports = async function(req, state, md) {
             try {
                 request.get(state.swagger).set({'Cookie': state.Cookie}).end(function(err, res) {
                     if(err) {
+                        loger(true, 'warn', '请求 swagger 出错', req.path)
                         reslove(null)
                     } else {
                         reslove(res.body)
                     }
                 })
             } catch(err) {
-                loger(true, 'warn', '读取swagger出错', req.path)
+                loger(true, 'warn', '请求 swagger 出错', req.path)
                 reslove(null)
             }
         })
     }
-    if(state.swaggerManualProps) {
-        swagger.manualProps = state.swaggerManualProps
+
+    const swaggerManualProps = md.swaggerManualProps || state.swaggerManualProps 
+
+    if(swagger && swaggerManualProps) {
+        swagger.manualProps = Object.assign({
+            pageNo: res => (res.query.pageNo || req.body.pageNo || 1),
+            pageSize: res => (res.query.pageSize || req.body.pageSize || 20),
+            data: res => ({ length: res.query.pageSize || res.body.pageSize || 20 }),
+            result: res => ({ length: res.query.pageSize || res.body.pageSize || 20 }),
+        }, swaggerManualProps)
     }
+    
     loger(true, 'info', '开始生成 swagger', req.path)
     const data = swagger2mock(swagger)(req)
 
     if(!data) {
-        loger(true, 'warn', 'swagger 读取失败', req.path)
+        loger(true, 'warn', 'swagger 数据生成失败', req.path)
     } else {
         loger(true, 'info', '已根据 swagger 生成 mock 数据', req.path)
     }

@@ -150,9 +150,12 @@ module.exports = {
     }, {
         url:'/yingxiao/*',
         proxy: 'https://ad-test1.sm.cn'
-    },{
+    }, {
         url:'/ncrm/*',
         proxy: 'https://imp-daily.uc.test',
+    }, {
+        url:'/api/*',
+        proxy: 'https://dmp-pre.sm.cn',
     }],
     state: {
         dirpath: ['./example', [0, 1]],
@@ -185,17 +188,17 @@ module.exports = {
         headers: {
             "UC-CSRF-TOKEN": "e37d83b4e29f9f01195bea7c80c8c5aa"
         },
-        swagger: 'imp-daily.uc.test/ncrm/v2/api-docs',
+        // swagger: 'imp-daily.uc.test/ncrm/v2/api-docs',
+        swagger: 'dmp-pre.sm.cn/api/v2/api-docs',
         pureProxy: false,
         swaggerManualProps: {
-            pageSize: 20,
-            pageNo: req => req.query.pageNo,
-            businessTypes: () => {
-                return '2'
-            },
-            result: {
-                length: 19,
-            }
+            // pageSize: 20,
+            // businessTypes: () => {
+            //     return '2'
+            // },
+            // result: {
+            //     length: 19,
+            // }
         }
     }
 }
