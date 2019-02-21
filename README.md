@@ -200,6 +200,17 @@ state: {
 根据 swagger 生成 mock 数据。
 优先级  proxy > 读取本地数据 > swagger > data 字段
 
+```
+swagger: 'imp.mmsstt.test/n/v2/api-docs',
+swaggerManualProps: {
+     pageSize: 20,
+     pageNo: req => req.query.pageNo,
+        businessTypes: () => {
+             eturn '2'
+        }
+ }
+```
+
 #### swaggerManualProps
 
 swaggerManualProps 可设置为一个对象。其属性的值可以为 function、object、string、number、boolean。
@@ -208,18 +219,18 @@ swaggerManualProps 可设置为一个对象。其属性的值可以为 function�
 
 ```
 {
-    pageSize: 20,
-    success: false,
-    pageNo: res => res.query.pageNo,
-    data: {
-        length: 20    // 假如 data 为一个数组的话，会生成一个长度为 20 的数组。
+    pageSize: 20,        // 生成数据中所有的 pageSize 都为20
+    success: false,      // 生成数据中所有的 success 都为 false
+    pageNo: res => res.query.pageNo,  // 生成数据中所有的 pageNo 都为 url 中传递的值
+    data: {              // 假如 data 为一个数组的话，生成数据中所有的 data 长度都为 20
+        length: 20       // 假如 data 为一个数组的话，会生成一个长度为 20 的数组。
     },
 }
 ```
 
 **注意：当设置为 object 时，只针对数组类型的数据设置 length。如果设置的字段不是数组类型，则不生效。**
 
-假如在开发中有些字段为 int32，随机生成的 value 可能会很大，但是我们所需要的数值为 1 - 5。例如：
+假如在开发中有些字段在swagger中类型为 int32，随机生成的 value 可能会很大，但是我们所需要的数值为 1 - 5。例如：
 
 bussinessType值为 1 - 5，但是随即生成了 121213。有什么方法可以手动更改数据呢？ 
 
