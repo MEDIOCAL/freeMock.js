@@ -176,12 +176,25 @@ function callBack(res, req, state, md) {
             }
         } else if(state.pureProxy) {
             if(err) {
+                loger(true, 'error', '向服务器请求发生错误', err)
                 return res.send(err)
             } else if(response) {
+                loger(true, 'error', '服务器返回错误', response)
                 return res.send(response)
             }
         } else {
-            loger(true, 'error', '向服务器请求发生错误', req.path)
+            let error = req.path
+            if(
+                state.debugger &&
+                state.debugger.method.includes(req.method.toLowerCase()) && 
+                (
+                    state.debugger.path.length === 0 ||
+                    state.debugger.path.includes(req.path) 
+                )
+            ) {
+                error = err
+            }
+            loger(true, 'error', '向服务器请求发生错误', error)
         }
         
         if(!data || (state.md.getMockData && state.md.getMockData(data, req))) {
