@@ -153,6 +153,9 @@ module.exports = {
     }, {
         url:'/ncrm/*',
         proxy: 'https://imp-daily.uc.test',
+        headers: {
+            Cookies: 'SSO_IDT="Bearer eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.MkMuO8afKzBvrdh0OI0WelYq9fGt5j9Hgs1X2_eU6M76hnRtOXIqqw.xBM-8Mw_tmcRo_ZofpdprA.QtyU3XkDXSId4yB3FRkcl4jTEte2SaVl5-Ct588PCg4WdD0qwPeuGEGs3CXOmu4ZdGv1Uy3GrjGRV5g13JmoQuMd4ccf75GewQZy9YoVKunPQKR-JQiUQmlaEN9ZwBKF82ucowKhz603sWHzROaKCjI9ndFfe79EWReyaiRLZj_8oWUSokBb_zTfoo-USsmrHLc25Cq2aE6It7GGpzXyoVEsCulQMfvrMDOR9V2x-dQPPc4BR8v93SESmhIH9iGLrxOPUAOBCvqFMnl0m69vaQ0QirpDxPB_aUK8Cm1aAcaU2AVRpc2x9Kt3bowneA0n406wQHoZczMbmtnV1Gtt9xPvOt3mc0YJMvrVS8CALERL37XYiM3W9f0u6h3l9zIWHFxUIbYLyULPjfF4lqS2Qw.y2vLKYMkL4xpVjgogB5pwA"; UC-CSRF-TOKEN=e294dc8754c9d34cd7845c9f488dbb72; SSO_IDT_V2=eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.MkMuO8afKzBvrdh0OI0WelYq9fGt5j9Hgs1X2_eU6M76hnRtOXIqqw.xBM-8Mw_tmcRo_ZofpdprA.QtyU3XkDXSId4yB3FRkcl4jTEte2SaVl5-Ct588PCg4WdD0qwPeuGEGs3CXOmu4ZdGv1Uy3GrjGRV5g13JmoQuMd4ccf75GewQZy9YoVKunPQKR-JQiUQmlaEN9ZwBKF82ucowKhz603sWHzROaKCjI9ndFfe79EWReyaiRLZj_8oWUSokBb_zTfoo-USsmrHLc25Cq2aE6It7GGpzXyoVEsCulQMfvrMDOR9V2x-dQPPc4BR8v93SESmhIH9iGLrxOPUAOBCvqFMnl0m69vaQ0QirpDxPB_aUK8Cm1aAcaU2AVRpc2x9Kt3bowneA0n406wQHoZczMbmtnV1Gtt9xPvOt3mc0YJMvrVS8CALERL37XYiM3W9f0u6h3l9zIWHFxUIbYLyULPjfF4lqS2Qw.y2vLKYMkL4xpVjgogB5pwA'
+        },
     }, {
         url:'/api/*',
         proxy: 'https://dmp-pre.sm.cn',

@@ -6,6 +6,7 @@ const loger = require('./loger')
 module.exports = function writeFile(req, state, data) {
     const dir_path = state.dirpath
     const params = Object.assign({}, state.query, state.params)
+    let fileConfig = ''
     let rpath = req.path
     let name = ''
 
@@ -24,8 +25,14 @@ module.exports = function writeFile(req, state, data) {
         loger(true, 'warn', 'dirpath 必须是一个字符串或者长度为2的数组')
         name = path.resolve(__dirname, '../../../mock') + rpath 
     }
-
-    name = creatName(state.readFile, params, name, req)
+    
+    if(state.readFile && typeof state.readFile === 'object') {
+        fileConfig = state.readFile
+    } else if(state.writeFile && typeof state.writeFile === 'object') {
+        fileConfig = state.writeFile
+    }
+    
+    name = creatName(fileConfig, params, name, req)
     name = name + '.json'
     makep(name)
 

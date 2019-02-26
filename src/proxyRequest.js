@@ -197,7 +197,7 @@ function callBack(res, req, state, md) {
             loger(true, 'error', '向服务器请求发生错误', error)
         }
         
-        if(!data || (state.md.getMockData && state.md.getMockData(data, req))) {
+        if(state.readFile && (!data || (state.md.getMockData && state.md.getMockData(data, req)))) {
             loger(state.info, 'info', '开始读取文件', req.path)
             data = requestDirFile(req, state, response)
         } 

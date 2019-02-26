@@ -58,6 +58,9 @@ module.exports = function(rest) {
         } else {
             state.md = md
             state.getMockData = md.getMockData
+            if(state.readFile === undefined) {
+                state.readFile = true
+            }
         }
         
         const interceptors = md.interceptors || state.interceptors
