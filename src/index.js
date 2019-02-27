@@ -1,5 +1,5 @@
 const fs = require('fs')
-const Mock = require("./mock") 
+const mock = require("./mock") 
 const proxyRequest = require("./proxyRequest")
 const loger = require('./loger')
 const swagger = require('./swagger')
@@ -77,25 +77,16 @@ module.exports = function(rest) {
             return 
         } 
 
-        const mock = new Mock(req, state)
-        
+        const mockjsData = {}
+
         for(let key in md) {
-            let res = md[key]
-            if(key.indexOf('data|') >= 0) {
-                let keys = key.split('|')
-                let l = keys[1]
-                if(typeof md[key] === 'function') {
-                    res = md[key](req, state)
-                }
-                data = mock.array(res, l)
-            } else if(key === 'data') {
-                if(typeof md.data === 'function') {
-                    res = md.data(req, state)
-                }
-                data = mock.object(res)
+            if(key.indexOf('data') >= 0) {
+                mockjsData[key] = md[key]
             }
         }
-        
+
+        data = mock(req, state)(mockjsData)
+
         req.mockData = data
         req.state = state 
 

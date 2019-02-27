@@ -9,7 +9,7 @@ module.exports = async function(req, state, md) {
     } else {
         swagger = await new Promise(function(reslove) {
             try {
-                request.get(state.swagger).set({'Cookie': state.Cookie}).end(function(err, res) {
+                request.get(state.swagger).set({'Cookie': (md.headers || md.headers.Cookie || state.Cookie)}).end(function(err, res) {
                     if(err) {
                         loger(true, 'warn', '请求 swagger 出错', req.path)
                         reslove(null)

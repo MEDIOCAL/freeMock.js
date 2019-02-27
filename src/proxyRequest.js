@@ -4,6 +4,7 @@ const writeFile = require("./writeFile.js")
 const formData = require("./formData")
 const loger = require('./loger')
 const swagger = require('./swagger')
+const mock = require("./mock") 
 
 function deepCompare(x, y) {
     var i, l, leftChain, rightChain;
@@ -160,11 +161,12 @@ function postFormData(url, data, query, headers, cb) {
 function callBack(res, req, state, md) {
     return async function(err, response) {
         let data = null
-        
+        let isHttp = true
         if (!err && response && response.statusCode == 200) {
             loger(true, 'info', '请求数据成功', req.path)
             
             let body = response.body
+            
             let text = response.text
             if(
                 text && 
@@ -196,16 +198,20 @@ function callBack(res, req, state, md) {
             }
             loger(true, 'error', '向服务器请求发生错误', error)
         }
-        
-        if(state.readFile && (!data || (state.md.getMockData && state.md.getMockData(data, req)))) {
-            loger(state.info, 'info', '开始读取文件', req.path)
-            data = requestDirFile(req, state, response)
-        } 
 
+        // 读文件
+        if(state.readFile && (!data || (state.md.getMockData && state.md.getMockData(data, req)))) {
+            loger(true, 'info', '开始读取文件', req.path)
+            data = requestDirFile(req, state, response)
+            isHttp = false
+        } 
+  
+        // 读 swagger
         if(!data && state.swagger) {
             data = await swagger(req, state, md) 
+            isHttp = false
         }
-
+       
         if(
             data && typeof data === 'object' && 
             state.writeFile && 
@@ -216,6 +222,8 @@ function callBack(res, req, state, md) {
         }
 
         if(data || req.mockData) {
+            // 读文件 或者 读 swagger 需要 mock
+            data = isHttp ? data : mock(req, state)(data)
             return res.send(data || req.mockData)
         } else {
             return res.send(err || response)

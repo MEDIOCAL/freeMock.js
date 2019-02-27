@@ -1,12 +1,11 @@
 const fs = require('fs')
 const path = require('path')
-const Mock = require("./mock")
+const mock = require("./mock")
 const creatName = require('./createPathName.js')
 const loger = require('./loger')
 
 module.exports = function requestDirFile(req, state, response, isCompare = false) {
     const dir_path = state.dirpath
-    const mock = new Mock(req, state)
     const params = Object.assign({}, state.query, state.params)
     let rpath = req.path
     let name = ''
@@ -37,10 +36,9 @@ module.exports = function requestDirFile(req, state, response, isCompare = false
 
     try {
         mockJson = JSON.parse(fs.readFileSync(name, 'utf-8'))
-        if(Array.isArray(mockJson)) {
-            mockJson = mock.array(mockJson)
-        } else if(typeof mockJson === 'object' && mockJson != null) {
-            mockJson = mock.object(mockJson)
+
+        if(typeof mockJson === 'object' && mockJson != null) {
+            mockJson = mock(req, state)(mockJson)
         }
 
         if(isCompare) {
@@ -51,7 +49,7 @@ module.exports = function requestDirFile(req, state, response, isCompare = false
     } catch(err) {
         !isCompare && loger(true, 'error', '读文件出错')
     }
-
+   
     data = mockJson || null
     
     return data

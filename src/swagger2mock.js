@@ -167,16 +167,10 @@ function integer(format, key = '', enums) {
     }
 
     if(key.indexOf('id') < 0 && key.indexOf('Id') < 0) {
-        return Math.round(Math.random())
+        return '@integer(10, 1000)'
     }
 
-    if(format === 'int16') {
-        return Math.ceil(Math.random() * 32767)
-    } else if(format === 'int32') {
-        return Math.ceil(Math.random() * 2147483647)
-    } else {
-        return Math.ceil(Math.random() * 9223372036854775807)
-    }
+    return '@integer(1000, 100000)'
 }
 
 function string(key = '', enums) {
@@ -186,34 +180,46 @@ function string(key = '', enums) {
     }
     
     if(key.indexOf('date') >= 0 || key.indexOf('Date') >= 0) {
-        let date = new Date()
-        return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+        return '@date()'
     }
 
     if(key.indexOf('time') >= 0 || key.indexOf('Time') >= 0) {
-        let date = new Date()
-        return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+        return '@time()'
     }
 
-    const len = Math.ceil(Math.random() * 10) + 10
-    const $chars = 'ABCDEFGHJKMNPQRSTWXYZ abcdefhijkmnprstwxyz '
-
     if(key.indexOf('email') >= 0 || key.indexOf('Email') >= 0) {
-        const i = Math.floor(Math.random() * 4)
-        return $chars.slice(i, i + 5) + '@' + $chars.slice(i, i + 3) + '.com'
+        return '@mail()'
     }
 
     if(key.indexOf('url') >= 0 || key.indexOf('Url') >= 0) {
-        return 'http://' + $chars.slice(i, i + 5) + '.com'
+        return '@url()'
     }
 
-    let pwd = ''
+    if(key.indexOf('title') >= 0 || key.indexOf('Title') >= 0) {
+        return '@title()'
+    }
 
-    for (i = 0; i < len; i++) {
-　　　　pwd += $chars.charAt(Math.floor(Math.random() * $chars.length));
-　　 }
+    if(key.indexOf('province') >= 0 || key.indexOf('Province') >= 0) {
+        return '@province()'
+    }
 
-    return pwd
+    if(key.indexOf('city') >= 0 || key.indexOf('City') >= 0) {
+        return '@city()'
+    }
+
+    if(key.indexOf('address') >= 0 || key.indexOf('Address') >= 0) {
+        return '@county(true)'
+    }
+
+    if(key.indexOf('name') >= 0 || key.indexOf('Name') >= 0 || key.indexOf('Person') > 0) {
+        return '@name(true)'
+    }
+
+    if(key.indexOf('code') >= 0 || key.indexOf('Code') >= 0) {
+        return '@string("number", 18)'
+    }
+
+    return '@title()'
 }
 
 
