@@ -7,7 +7,6 @@
 当 api 报错或者没有 api 又或者在联调的时候某个测试环境的 api 报错，影响调试。可以读取本地 mock 的 json 文件中的数据。
 
 可以将测试环境的数据保存到本地的 json 文件中。  
-version： 2.0.23， 2.1.8
 
 ## Quick get start
 
@@ -153,6 +152,20 @@ config 是一个对象：
 **当 writeFile 为 true 的时候，写入数据也会以此写入文件**
 
 当访问 localhost:3000/wo/web/list?channelId=16 成功后，会写入到 /mock/wolong/web/list_16.json 文件中。
+也可以设置成对象，原理和 readFile 相同。
+
+**当设置了 readFile 为对象的时候，writeFile 只需要设置为 true 即可，两者可共用一份数据操作文件。 当 readFile 设置为 false 的时候，writeFile 可以设置成对象**
+
+两者取值如下：
+
+```
+if(state.readFile && typeof state.readFile === 'object') {
+      fileConfig = state.readFile
+} else if(state.writeFile && typeof state.writeFile === 'object') {
+      fileConfig = state.writeFile
+}
+ name = creatName(fileConfig, params, name, req)
+```
 
 #### dirpath
 
@@ -446,6 +459,8 @@ validateWriteFile(data, req) {
 
 ## demo分析动态数据生成
 
+fremockjs 引用了 Mock.js 生成动态数据。详情参考 <a href="http://mockjs.com/" target="blank">Mock.js</a>
+
 #### demo2
 
 ```
@@ -471,8 +486,8 @@ mockData = [
         url: '/getData',
         data: {
             name: '@name()',
-            age: '@number(0, 1, 99)'
-            id: '@number(0, 10000, 999999)
+            age: '@number(1, 99)'
+            id: '@number(10000, 999999)
         }
     }
 ]
@@ -489,44 +504,39 @@ mockData = [
     url: '/getData',
     'data|9': {
         name: '@name()',
-        age: '@number(0, 1, 99)',
+        age: '@number(1, 99)',
         id: '@number(0, 10000, 999999),
-        'source|<9': '@title()'
+        'source|9': ['@title()']
     }
 }
 
 ```
-
-key 值中出现 | 代表这是一个数组，数组的元素是 value 值。 比如 data|9，代表data是一个长度为 9 的数组，数组的元素是，后面的 mock 对象生成的数据。 “|”可以配合 “<"、“>”、“<=”、“>=” 使用。 source|<9 代表 source 是一个长度小于 9 的数组。注意此处没有设置[]。
 
 操控动态数据：
 
 ```
 {
     url: '/getData',
-    'data|req.pageSize': {
-        pageNo: '@params(pageNo)',
-        maxPage: function(ctx, state) {
-            return ctx.query.maxPage
-        }
+    'data|@params.pageSize': {
+        pageNo: '@params.pageNo',
     }
 }
 
 ```
 
-在 key 中，可以直接使用 req，来获取我们调用接口传递的参数。例如： 调用 [http://localhost:3002/test1?pageSize=12&pageNo=10&maxPage=100](http://localhost:3002/test1?pageSize=12&pageNo=10&maxPage=100) 但是只有在 key 值当中使用时，才可以直接使用 req。如果想在 value 中使用可以仿照上例中 pageNo 和 maxPage 调用。 @params(pageNo): params 方法可以获取 pageNo 的值。相当于 req.pageNo 当值为 function 时，可以在函数体内使用 ctx 获取。 ctx 可以理解成 node 的 req。函数的返回值就是生成的 mock 数据，第二个 state 后面会提到。
+在 key 中，可以直接使用 @params，来获取我们调用接口传递的参数。例如： 调用 [http://localhost:3002/test1?pageSize=12&pageNo=10&maxPage=100](http://localhost:3002/test1?pageSize=12&pageNo=10&maxPage=100) @params.pageSize 就是取 pageSize 的值
 
-当我们 post 数据的时候有传递的参数可能会是一个对象。那么 req 可以获取对象的值么？ 答案是肯定的。
-
-```
-'data|req.page.pageSize'
+当我们 post 数据的时候有传递的参数可能会是一个对象。那么 @params 可以获取对象的值么？ 答案是肯定的。
 
 ```
-
-而 params 方法也可以接受多个参数，例如：
+'data|@params.page.pageSize'
 
 ```
- pageNo: '@params(page, pageNo)' // 相当于 req.page.pageNo
+
+而 @params 也可以接受多个参数，例如：
+
+```
+ pageNo: '@params.page.pageNo' // 相当于 req.query.page.pageNo
 
 ```
 
@@ -552,7 +562,7 @@ key 值中出现 | 代表这是一个数组，数组的元素是 value 值。 �
     url:'/test1',
     "data|<2": {
         name: "@name()",
-        "list|<req.size": {
+        "list|@params.size": {
             title:"@title()",
             name: "@getName(chenxuehui)"
         }
@@ -565,29 +575,4 @@ key 值中出现 | 代表这是一个数组，数组的元素是 value 值。 �
 
 interceptors: 是一个function， 接受两个参数 req、state。 返回 false 的时候不会打断接口。 当返回的值判定为true的时候，接口会返回该值。 如果返回值为 true，那么接口会返回
 
-```
-{ status: '400', msg:'is Interrupted'}
-
-```
-
-name()： 随机生成人名
-
-title()：随机生成一串字符
-
-number()：随机生成一个数字
-
-number(n)：随机生成精确到小数点后n位的数字
-
-number(a,b,c)：在a，b的范围内随机生成精确到小数点后c位数字
-
-string()：随机生成一串字符串
-
-string(2)：随机生成2个英文字符
-
-string(a, b)：a=true，随机生成b个大写英文字符
-
-boolean()：随机生成一个boolean值
-
-boolean(a)：如果a=true则返回true，否则返回false
-
-. . . .
+<a href="http://mockjs.com/examples.html" target="blank">动态数据</a>
