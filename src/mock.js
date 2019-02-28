@@ -5,7 +5,7 @@ function analysis(temp, req) {
         return temp 
     }
 
-    const reg = /@param(.[0-9a-zA-Z_$]+)+/g
+    const reg = /@param(\.[0-9a-zA-Z_\$]+)+/g
 
     if(typeof temp === 'object') {
         temp = JSON.stringify(temp)
