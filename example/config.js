@@ -181,7 +181,7 @@ module.exports = {
         },
         plugin: {
             "getName": function(name) {
-                return name
+                return this.req.query.name + name
             }
         },
         writeFile: ["channelId"],

@@ -1,11 +1,12 @@
 const Mock = require('mockjs')
 
-function analysis(temp, req) {
+function analysis(temp, req, state) {
     if(!temp) {
         return temp 
     }
 
     const reg = /@param(\.[0-9a-zA-Z_\$]+)+/g
+    const func = /@[a-zA-Z0-9]+\(\w*\)/g
 
     if(typeof temp === 'object') {
         temp = JSON.stringify(temp)
@@ -18,6 +19,21 @@ function analysis(temp, req) {
             }
 
             return body
+        })
+
+        temp = temp.replace(func, function($1) {
+            const str = $1.substring(1, $1.length - 1)
+            const funs = str.split('(')
+            const funcname = funs[0]
+            const arg = funs[1]
+            if(
+                state.plugin && 
+                state.plugin[funcname] && 
+                typeof state.plugin[funcname] === 'function'
+            ) {
+                return state.plugin[funcname].call({req, state}, arg)
+            }
+            return $1
         })
     }
 
