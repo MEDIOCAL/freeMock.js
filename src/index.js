@@ -1,6 +1,6 @@
 const fs = require('fs')
 const mock = require("./mock") 
-const proxyRequest = require("./proxyRequest")
+const proxy = require("./proxy")
 const loger = require('./loger')
 const swagger = require('./swagger')
 
@@ -57,6 +57,7 @@ module.exports = function(rest) {
             return next()
         } else {
             state.md = md
+            req.md = md
             state.getMockData = md.getMockData
             if(state.readFile === undefined) {
                 state.readFile = true
@@ -109,12 +110,11 @@ module.exports = function(rest) {
             const query = req.query 
             const params = req.body
             const contentType = req.headers['content-type'] || req.headers['Content-Type']
-            
             state.params = params
             state.query = query
-            state.contentType = contentType
+            state.contentType = contentType || 'application/json'
 
-            proxyRequest(md, state, req, res)
+            proxy(req, res, state, md)()
             
             return 
         }
