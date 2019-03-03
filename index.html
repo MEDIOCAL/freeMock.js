@@ -12,6 +12,7 @@
     <button id="app4">swagger</button>
     <button id="form">按钮2 formdata</button>
     <button id="wl1">卧龙测试 post json</button>
+    <button id="wl3">卧龙测试 post form</button>
     <button id="wl2">卧龙测试 post formdata</button>
     <button id="xw">xw测试</button>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -24,6 +25,7 @@
         var file = document.getElementById("file")
         var wl1 = document.getElementById("wl1")
         var wl2 = document.getElementById("wl2")
+        var wl3 = document.getElementById("wl3")
         var xw = document.getElementById("xw")
 
         d.addEventListener('click', function() {
@@ -34,33 +36,13 @@
             })
         })
         d2.addEventListener('click', function() {
-            axios.post("/yingxiao/web/leaderboard/modify", {
-                id: 1,
-                list: [
-                    {
-                        id: 81,
-                        limitDownload: 0,
-                        limitRead: 0,
-                        previewLink: "https://crm-test1.sm.cn/yingxiao/article_81.html",
-                        status: "发布",
-                        title: "AI",
-                        trackDownloadNum: 0,
-                        trackReadPv: 7,
-                        trackReadUv: 2,
-                    }, 
-                    {
-                        id: 104,
-                        limitDownload: 0,
-                        limitRead: 0,
-                        previewLink: "https://crm-test1.sm.cn/yingxiao/article_104.html",
-                        status: "发布",
-                        title: "营销",
-                        trackDownloadNum: 1,
-                        trackReadPv: 8,
-                        trackReadUv: 1,
-                    }
-                ],
-                title: "营销案例文章排行榜"
+            axios.post("/ncrm/customer/modifyIndustry", {
+                cid: 178274,
+                dataType: '1',
+                industry1: '2000000',
+                industry2: '2001000',
+                industry3: '2001001',
+                viewId: "",
             })
         })
         d3.addEventListener('click', function() {
@@ -98,11 +80,22 @@
         wl2.addEventListener('click', function() {
             var formdata = new FormData()
             var files = file.files[0]
-            formdata.append("filename", files.name)
-            formdata.append("files", files)
-            axios.post("/mc-web/main/userPic/create?uid=1061", formdata,  {
+            formdata.append("file", files)
+            axios.post("/ncrm/file/upload/qual", formdata)
+        })
+        wl3.addEventListener('click', function() {
+            const data = {
+                id: 52800002,
+                level: 2,
+                model: { planName: '000022' },
+                uid: 1061,
+            }
+            const body = Object.entries(data).map(([key, val]) => {
+                return encodeURIComponent(key) + '=' + encodeURIComponent(val)
+            }).join('&')
+            axios.post("/wolongweb/plan/update?uid=1061", body,  {
               headers: {
-                'Content-Type': 'multipart/form-data'
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
               }
             })
         })
