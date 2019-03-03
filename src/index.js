@@ -114,7 +114,8 @@ module.exports = function(rest) {
             state.query = query
             state.contentType = contentType || 'application/json'
 
-            proxy(req, res, state, md)()
+            const exproxy = proxy(req, res, state, md)
+            exproxy(req, res, next)
             
             return 
         }
