@@ -202,13 +202,19 @@ function callBack(res, req, state, md) {
         // 读文件
         if(state.readFile && (!data || (state.md.getMockData && state.md.getMockData(data, req)))) {
             loger(true, 'info', '开始读取文件', req.path)
-            data = requestDirFile(req, state, response)
+            const fileData = requestDirFile(req, state, response)
+            if(fileData) {
+                data = fileData
+            }
             isHttp = false
         } 
   
         // 读 swagger
         if(!data && state.swagger) {
-            data = await swagger(req, state, md) 
+            const swdata = await swagger(req, state, md) 
+            if(swdata) {
+                data = swdata
+            }
             isHttp = false
         }
        
