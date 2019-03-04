@@ -210,7 +210,7 @@ function callBack(res, req, state, md) {
         } 
   
         // 读 swagger
-        if(!data && state.swagger) {
+        if(state.swagger && (!data || (state.md.getMockData && state.md.getMockData(data, req)))) {
             const swdata = await swagger(req, state, md) 
             if(swdata) {
                 data = swdata
