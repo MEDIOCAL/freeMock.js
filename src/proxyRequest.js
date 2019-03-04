@@ -148,14 +148,18 @@ function postForm(url, data, query, headers, cb) {
     .end(cb)
 }
 
-function postFormData(url, data, query, headers, cb) {
-    return request
-    .post(url)
-    .type('form')
-    .set(headers)
-    .query(query)
-    .send(data)
-    .end(cb)
+function postFormData(url, fields, files, query, headers, cb) {
+    let rq = request.post(url).set(headers).query(query)
+    
+    for(let [key, value] of Object.entries(fields)) {
+        rq = rq.field(key, value)
+    }
+    
+    for(let [key, file] of Object.entries(files)) {
+        rq = rq.attach(key, file.path)
+    }
+
+    return rq.end(cb)
 }
 
 function callBack(res, req, state, md) {
@@ -280,11 +284,7 @@ module.exports = function(md = {}, state = {},  req, res) {
             return postForm(url, postdata, query, headers, callBack(res, req, state, md))
         } else if(contentType && contentType.indexOf('multipart/form-data') >= 0) {
             formData.acceptData(req, function(fields, files) {
-                const params = {}
-                Object.assign(params, fields, files)
-                const multipart = formData.post(params)
-                headers["content-type"] = `multipart/form-data; boundary=${multipart.boundary}`
-                postFormData(url, multipart.body, query, headers, callBack(res, req, state, md))
+                postFormData(url, fields, files, query, headers, callBack(res, req, state, md))
             })
             return 
         } else {
