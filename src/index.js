@@ -105,7 +105,7 @@ module.exports = function(rest) {
         }
 
         if(md.proxy) {
-            loger(state.debugger, 'info', '进入代理模式', '-->' + (typeof md.proxy === 'string' ? md.proxy : state.proxy))
+            loger(true, 'info', '进入代理模式', '-->' + (typeof md.proxy === 'string' ? md.proxy : state.proxy))
             const query = req.query 
             const params = req.body
             const contentType = req.headers['content-type'] || req.headers['Content-Type']
