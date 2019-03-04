@@ -82,10 +82,9 @@ module.exports = function(rest) {
         for(let key in md) {
             if(key.indexOf('data') >= 0) {
                 mockjsData[key] = md[key]
+                data = mock(req, state)(mockjsData)
             }
         }
-
-        data = mock(req, state)(mockjsData)
 
         req.mockData = data
         req.state = state 
