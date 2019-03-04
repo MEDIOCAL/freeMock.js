@@ -24,9 +24,13 @@ module.exports = async function(req, state, md) {
         })
     }
 
+    if(!swagger) {
+        return null
+    }
+    
     const swaggerManualProps = md.swaggerManualProps || state.swaggerManualProps 
 
-    if(swagger && swaggerManualProps) {
+    if(swaggerManualProps) {
         swagger.manualProps = Object.assign({
             pageNo: res => (res.query.pageNo || req.body.pageNo || 1),
             pageSize: res => (res.query.pageSize || req.body.pageSize || 20),
