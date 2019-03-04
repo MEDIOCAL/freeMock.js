@@ -214,8 +214,8 @@ function callBack(res, req, state, md) {
             const swdata = await swagger(req, state, md) 
             if(swdata) {
                 data = swdata
+                isHttp = false
             }
-            isHttp = false
         }
        
         if(
