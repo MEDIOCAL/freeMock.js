@@ -119,17 +119,15 @@ function deepCompare(x, y) {
     return true;
 }
 
-function get(url, query, headers, cb) {
-    return request
-    .get(url)
+function get(method, url, query, headers, cb) {
+    return request[method](url)
     .query(query) 
     .set(headers)
     .end(cb)
 }
 
-function postJson(url, data, query, headers, cb) {
-    return request
-    .post(url)
+function postJson(method, url, data, query, headers, cb) {
+    return request[method](url)
     .set(Object.assign({}, headers, {
         "content-type": "application/json",
     }))
@@ -138,9 +136,8 @@ function postJson(url, data, query, headers, cb) {
     .end(cb)
 }
 
-function postForm(url, data, query, headers, cb) {
-    return request
-    .post(url)
+function postForm(method, url, data, query, headers, cb) {
+    return request[method](url)
     .type('form')
     .set(headers)
     .query(query)
@@ -148,8 +145,8 @@ function postForm(url, data, query, headers, cb) {
     .end(cb)
 }
 
-function postFormData(url, fields, files, query, headers, cb) {
-    let rq = request.post(url).set(headers).query(query)
+function postFormData(method, url, fields, files, query, headers, cb) {
+    let rq = request[method](url).set(headers).query(query)
     
     for(let [key, value] of Object.entries(fields)) {
         rq = rq.field(key, value)
@@ -277,18 +274,18 @@ module.exports = function(md = {}, state = {},  req, res) {
         loger(true, 'debug', '当前api 传递的参数:', postdata)
     }
     
-    if(method === 'get') {
-        return get(url, query, headers, callBack(res, req, state, md))
-    } else if(method === 'post') {
+    if(['get', 'delete', 'head'].includes(method)) {
+        return get(method, url, query, headers, callBack(res, req, state, md))
+    } else if(['post', 'put', 'patch'].includes(method)) {
         if(contentType && contentType.indexOf('x-www-form-urlencoded') >= 0) {
-            return postForm(url, postdata, query, headers, callBack(res, req, state, md))
+            return postForm(method, url, postdata, query, headers, callBack(res, req, state, md))
         } else if(contentType && contentType.indexOf('multipart/form-data') >= 0) {
             formData.acceptData(req, function(fields, files) {
-                postFormData(url, fields, files, query, headers, callBack(res, req, state, md))
+                postFormData(method, url, fields, files, query, headers, callBack(res, req, state, md))
             })
             return 
         } else {
-            return postJson(url, postdata,  query, headers, callBack(res, req, state, md)) 
+            return postJson(method, url, postdata,  query, headers, callBack(res, req, state, md)) 
         }  
     }
 
