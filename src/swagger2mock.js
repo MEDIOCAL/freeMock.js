@@ -79,7 +79,7 @@ function mock(properties, definitions, manualProps, req) {
             let length = getArrayLength(manualProps, key, req)
 
             for(let i = 0; i < length; i++) {
-                arr.push(createDataByType(value))
+                arr.push(createDataByType(value, key, manualProps, req))
             }
 
             result[key] = arr
@@ -126,7 +126,7 @@ function getArrayLength(manualProps, key, req) {
     return length
 }
 
-function createDataByType(value, key, manualProps, req) {
+function createDataByType(value, key, manualProps={}, req) {
     const { type, format, enum: enums } = value 
     
     const manualKey = Object.keys(manualProps)
@@ -188,7 +188,7 @@ function string(key = '', enums) {
     }
 
     if(key.indexOf('email') >= 0 || key.indexOf('Email') >= 0) {
-        return '@mail()'
+        return '@email()'
     }
 
     if(key.indexOf('url') >= 0 || key.indexOf('Url') >= 0) {
