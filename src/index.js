@@ -3,6 +3,7 @@ const mock = require("./mock")
 const proxyRequest = require("./proxyRequest")
 const loger = require('./loger')
 const swagger = require('./swagger')
+const requestDirFile = require("./requestFile.js")
 
 module.exports = function(rest) {
     return async function (req, res, next) {   
@@ -122,6 +123,12 @@ module.exports = function(rest) {
             const swaggerData = await swagger(req, state, md)
             if(swaggerData && !req.mockData) {
                 req.mockData = swaggerData
+            }
+        } else if(state.readFile) {
+            const fileData = requestDirFile(req, state)
+            if(fileData) {
+                const data = mock(req, state)(fileData)
+                data && (req.mockData = data)
             }
         } 
 
