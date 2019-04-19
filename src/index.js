@@ -4,6 +4,7 @@ const proxyRequest = require("./proxyRequest")
 const loger = require('./loger')
 const swagger = require('./swagger')
 const requestDirFile = require("./requestFile.js")
+const writeFile = require("./writeFile.js")
 
 module.exports = function(rest) {
     return async function (req, res, next) {   
@@ -102,6 +103,20 @@ module.exports = function(rest) {
         } else if(typeof state.debugger === 'object') {
             state.debugger.method =  state.debugger.method || ['get', 'post']
             state.debugger.path =  state.debugger.path || []
+        }
+
+        if(state.mkfile) {
+            writeFile(req, state, `{\n\t"status": 0,\n\t"msg": "success",\n\t"result": {}\n}`, function(name, data) {
+                if(!fs.existsSync(name) || !fs.readFileSync(name, 'utf8')) {
+                    fs.writeFile(name, data, 'utf8', function(err) {
+                        if(err) {
+                            loger(true, 'error', '写文件时出错')
+                        } else {
+                            loger(true, 'info', '已创建：'+ name)
+                        }
+                    })
+                }
+            })
         }
 
         if(md.proxy) {

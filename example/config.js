@@ -105,7 +105,7 @@ module.exports = {
             ]
         }
     }, {
-        url:'/huihui',
+        url:'/huihui1',
         data: {
             "nihao": 'nis'
         },
@@ -202,6 +202,7 @@ module.exports = {
             // result: {
             //     length: 19,
             // }
-        }
+        },
+        mkfile: true,
     }
 }

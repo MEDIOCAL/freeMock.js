@@ -3,7 +3,7 @@ const path = require('path')
 const creatName = require('./createPathName.js')
 const loger = require('./loger')
 
-module.exports = function writeFile(req, state, data) {
+module.exports = function writeFile(req, state, data, cb = null) {
     const dir_path = state.dirpath
     const params = Object.assign({}, state.query, state.params)
     let fileConfig = ''
@@ -40,14 +40,17 @@ module.exports = function writeFile(req, state, data) {
         data = JSON.stringify(data)
     }
     
-    fs.writeFile(name, data, 'utf8', function(err){
-        if(err) {
-            loger(true, 'error', '写文件时出错')
-        } else {
-            loger(true, 'info', '写文件操作成功, 已写入到：'+ name)
-        }
-    })
-
+    if(cb) {
+        cb(name, data)
+    } else {
+        fs.writeFile(name, data, 'utf8', function(err) {
+            if(err) {
+                loger(true, 'error', '写文件时出错')
+            } else {
+                loger(true, 'info', '写文件操作成功, 已写入到：'+ name)
+            }
+        })
+    }
 }
 
 function makep(dir) {
