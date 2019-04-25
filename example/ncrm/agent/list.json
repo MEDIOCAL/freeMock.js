@@ -1,1 +1,5 @@
-{"status":0,"message":"success","data":{"pageNo":1,"pageSize":20,"totalCount":0,"totalPage":0,"result":[],"notEmpty":false,"empty":true,"offset":0},"extend":null,"success":true}
+{
+	"status": 0,
+	"msg": "success",
+	"result": {}
+}

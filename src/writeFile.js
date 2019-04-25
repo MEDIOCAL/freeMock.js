@@ -68,13 +68,7 @@ function makep(dir) {
             if(newPath.indexOf('.json') < 0) {
                 fs.mkdirSync(newPath)
             } else {
-                fs.open(name, "w", function(err) {
-                    if(err) {
-                        loger(true, 'info', "创建文件失败" + name)
-                    } else {
-                        loger(true, 'info', "文件创建成功，文件路径：" + name)
-                    }
-                })
+                fs.openSync(name, "w")
             }
         }
     }

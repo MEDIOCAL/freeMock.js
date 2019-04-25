@@ -108,13 +108,7 @@ module.exports = function(rest) {
         if(state.mkfile) {
             writeFile(req, state, `{\n\t"status": 0,\n\t"msg": "success",\n\t"result": {}\n}`, function(name, data) {
                 if(!fs.existsSync(name) || !fs.readFileSync(name, 'utf8')) {
-                    fs.writeFile(name, data, 'utf8', function(err) {
-                        if(err) {
-                            loger(true, 'error', '写文件时出错')
-                        } else {
-                            loger(true, 'info', '已创建：'+ name)
-                        }
-                    })
+                    fs.writeFileSync(name, data, 'utf8')
                 }
             })
         }
@@ -137,7 +131,7 @@ module.exports = function(rest) {
         if(state.swagger) {
             const swaggerData = await swagger(req, state, md)
             if(swaggerData && !req.mockData) {
-                req.mockData = swaggerData
+                req.mockData = mock(req, state)(swaggerData)
             }
         } else if(state.readFile) {
             const fileData = requestDirFile(req, state)
