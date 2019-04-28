@@ -243,7 +243,7 @@ module.exports = function(md = {}, state = {},  req, res) {
     const postdata = state.params
     const query = state.query
     const method = req.method.toLowerCase()
-    const headers = Object.assign({}, state.headers, { 
+    const headers = Object.assign({}, state.headers, md.headers, { 
         Cookie: md.headers && md.headers.Cookie || state.Cookie || 'freemock'
     })
     

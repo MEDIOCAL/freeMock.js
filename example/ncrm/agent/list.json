@@ -1,5 +1,10 @@
 {
 	"status": 0,
 	"msg": "success",
-	"result": {}
+   "pageSize": "@param.pageSize", 
+	"result": {
+  	"name": "@name()",   
+    "businesstypes|1-5":[{"id|1-5": 5}], 
+    "list|@param.pageSize": [1]  
+  }
 }

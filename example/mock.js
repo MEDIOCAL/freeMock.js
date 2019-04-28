@@ -2,7 +2,7 @@ module.exports = {
     mockData: [{
         url: '/opt/mocks/*',
     }, {
-        url: '/mocks/*',
+        url: '/ncrm/*',
     }],
     state: {
         dirpath: __dirname,
