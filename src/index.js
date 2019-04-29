@@ -20,7 +20,7 @@ module.exports = function(rest) {
                     data = eval(fs.readFileSync(rest, 'utf-8'))
                 }
             } catch(err) {
-                loger(true, 'error', '请求配置文件失败')
+                loger(true, 'error', '请求配置文件失败', err)
             }
             mockData = data && data.mockData || []
             state = Object.assign({}, state, data.state)

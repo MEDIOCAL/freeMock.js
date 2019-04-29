@@ -1,3 +1,4 @@
+const path = require('path')
 module.exports = {
     mockData: [{
         url: '/opt/mocks/*',
@@ -5,7 +6,7 @@ module.exports = {
         url: '/ncrm/*',
     }],
     state: {
-        dirpath: __dirname,
+        dirpath: path.resolve('./example'),
         readFile: true,
         debugger: false,
         mkfile: true,
