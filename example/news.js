@@ -21,12 +21,12 @@ module.exports = {
         }]
     },
     
-    
+
     // 接入 swagger api。 （ swagger 在前面并且空一格，用于区别代理地址和 swagger 地址 ）
     "/ncrm/*": "swagger http://imp-daily.uc.test/ncrm/v2/api-docs",
 
 
-    // function 得到执行 function 返回值的数据， param：同上 @param；req：请求头； state： 本文件中所有除路径之外的配置
+    // function 得到执行 function 返回值的数据。 param：同上 @param；req：请求头； state： 本文件中所有除路径之外的配置
     "/test22/*": function(param, req, state) {
         return {
             status: 0,

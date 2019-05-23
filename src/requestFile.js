@@ -6,7 +6,6 @@ const loger = require('./loger')
 
 module.exports = function requestDirFile(req, state, response, isCompare = false) {
     const dir_path = state.md.dirpath || state.dirpath
-    console.log(dir_path)
     const params = Object.assign({}, state.query, state.params)
     let rpath = req.path
     let name = ''

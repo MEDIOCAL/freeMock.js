@@ -105,7 +105,7 @@ module.exports = function(rest) {
             state.debugger.path =  state.debugger.path || []
         }
 
-        if(state.mkfile === undefined || state.mkfile) {
+        if((state.mkfile === undefined || state.mkfile) && (state.dirpath || md.dirpath)) {
             writeFile(req, state, `{\n\t"status": 0,\n\t"msg": "success",\n\t"result": {}\n}`, function(name, data) {
                 if(!fs.existsSync(name) || !fs.readFileSync(name, 'utf8')) {
                     fs.writeFileSync(name, data, 'utf8')
