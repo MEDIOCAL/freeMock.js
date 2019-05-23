@@ -178,15 +178,18 @@ function callBack(res, req, state, md) {
                 data = body
             }
         } else if(state.pureProxy) {
-            if(err) {
+            if(response) {
+                res.set(response.header)
+                return res.status(response.status).send(response.text)
+            } else if(err) {
                 loger(true, 'error', '向服务器请求发生错误', err)
                 return res.send(err)
-            } else if(response) {
-                loger(true, 'error', '服务器返回错误', response)
-                return res.send(response)
-            }
+            } 
         } else {
-            let error = req.path
+            let error = { 
+                path: req.path,
+                ...err,
+            }
             if(
                 state.debugger &&
                 state.debugger.method.includes(req.method.toLowerCase()) && 
@@ -201,7 +204,7 @@ function callBack(res, req, state, md) {
         }
 
         // 读 swagger
-        if(state.swagger && (!data || (state.md.getMockData && state.md.getMockData(data, req)))) {
+        if((md.swagger || state.swagger) && (!data || (state.md.getMockData && state.md.getMockData(data, req)))) {
             const swdata = await swagger(req, state, md) 
             if(swdata) {
                 data = swdata

@@ -3,22 +3,21 @@ const loger = require('./loger')
 const request = require('superagent')
 
 module.exports = async function(req, state, md) {
-    let swagger = {}
-    if(typeof state.swagger === 'object') {
-        swagger = state.swagger
-    } else {
+    let swagger = md.swagger || state.swagger
+    if(typeof swagger != 'object') {
+        const swaggerapi = swagger
         swagger = await new Promise(function(reslove) {
             try {
-                request.get(state.swagger).set({'Cookie': (md.headers && md.headers.Cookie || state.Cookie || 'no')}).end(function(err, res) {
+                request.get(swaggerapi).set({'Cookie': (md.headers && md.headers.Cookie || state.Cookie || 'no')}).end(function(err, res) {
                     if(err) {
-                        loger(true, 'warn', '请求 swagger 出错', req.path)
+                        loger(true, 'warn', '请求 swagger 出错', err)
                         reslove(null)
                     } else {
                         reslove(res.body)
                     }
                 })
             } catch(err) {
-                loger(true, 'warn', '请求 swagger 出错', req.path)
+                loger(true, 'warn', '请求 swagger 出错', err)
                 reslove(null)
             }
         })

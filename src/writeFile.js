@@ -4,7 +4,7 @@ const creatName = require('./createPathName.js')
 const loger = require('./loger')
 
 module.exports = function writeFile(req, state, data, cb = null) {
-    const dir_path = state.dirpath
+    const dir_path = state.md.dirpath || state.dirpath
     const params = Object.assign({}, state.query, state.params)
     let fileConfig = ''
     let rpath = req.path

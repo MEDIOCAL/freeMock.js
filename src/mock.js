@@ -18,7 +18,7 @@ function analysis(temp, req, state) {
                 body = body[q]
             }
 
-            return body
+            return body || ''
         })
 
         temp = temp.replace(func, function($1) {

@@ -5,29 +5,29 @@ const loger = require('./loger')
 const swagger = require('./swagger')
 const requestDirFile = require("./requestFile.js")
 const writeFile = require("./writeFile.js")
+const resetConfig = require("./resetConfig")
 
 module.exports = function(rest) {
     return async function (req, res, next) {   
         let mockData = []
         let state = {}
-
+        let impdata = rest
         if(typeof rest === 'string') {
-            let data = {}
             try {
                 if(rest.indexOf('.json') > 0) {
-                    data = JSON.parse(fs.readFileSync(rest, 'utf-8'))
+                    impdata = JSON.parse(fs.readFileSync(rest, 'utf-8'))
                 } else {
-                    data = eval(fs.readFileSync(rest, 'utf-8'))
+                    impdata = eval(fs.readFileSync(rest, 'utf-8'))
                 }
             } catch(err) {
                 loger(true, 'error', '请求配置文件失败', err)
             }
-            mockData = data && data.mockData || []
-            state = Object.assign({}, state, data.state)
-        } else if(typeof rest === 'object') {
-            mockData = rest.mockData
-            state = Object.assign({}, state, rest.state)
-            
+        }
+        
+        if(typeof impdata === 'object') {
+            impdata = resetConfig(impdata, req)
+            mockData = impdata && impdata.mockData || []
+            state = Object.assign({}, state, impdata.state)
         }
 
         if(mockData.length === 0) {
@@ -105,7 +105,7 @@ module.exports = function(rest) {
             state.debugger.path =  state.debugger.path || []
         }
 
-        if(state.mkfile) {
+        if(state.mkfile === undefined || state.mkfile) {
             writeFile(req, state, `{\n\t"status": 0,\n\t"msg": "success",\n\t"result": {}\n}`, function(name, data) {
                 if(!fs.existsSync(name) || !fs.readFileSync(name, 'utf8')) {
                     fs.writeFileSync(name, data, 'utf8')
@@ -128,12 +128,12 @@ module.exports = function(rest) {
             return 
         }
         
-        if(state.swagger) {
+        if(state.swagger || md.swagger) {
             const swaggerData = await swagger(req, state, md)
             if(swaggerData && !req.mockData) {
                 req.mockData = mock(req, state)(swaggerData)
             }
-        } else if(state.readFile) {
+        } else if(state.readFile && !req.mockData) {
             const fileData = requestDirFile(req, state)
             if(fileData) {
                 const data = mock(req, state)(fileData)

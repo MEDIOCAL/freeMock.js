@@ -3,7 +3,7 @@ var bodyParser = require('body-parser')
 var path = require('path')
 var app = express()
 var freeMock = require('./src')
-var config = require('./example/mock')
+var config = require('./example/news')
 
 app.engine("html",require("ejs").__express)
 app.set('view engine', 'html')
