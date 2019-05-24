@@ -17,7 +17,8 @@ module.exports = {
     "/test11/*": {
         status: 0,
         "result|@param.pageSize": [{
-            name: "@name"
+            name: "@name",
+            age: "@integer(0, 100)",
         }]
     },
     

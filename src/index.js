@@ -17,13 +17,19 @@ module.exports = function(rest) {
                 if(rest.indexOf('.json') > 0) {
                     impdata = JSON.parse(fs.readFileSync(rest, 'utf-8'))
                 } else {
-                    impdata = eval(fs.readFileSync(rest, 'utf-8'))
+                    // impdata = eval(fs.readFileSync(rest, 'utf-8'))
+                    if(Object.keys(require.cache).includes(rest)) {
+                        delete require.cache[rest]
+                    }
+                    impdata = require(rest)
+                    console.log(impdata)
                 }
             } catch(err) {
                 loger(true, 'error', '请求配置文件失败', err)
             }
         }
         
+
         if(typeof impdata === 'object') {
             impdata = resetConfig(impdata, req)
             mockData = impdata && impdata.mockData || []

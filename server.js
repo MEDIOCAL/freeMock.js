@@ -12,7 +12,8 @@ app.use(express.static(path.join(__dirname, '/')))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-app.use(freeMock(config))
+// app.use(freeMock(config))
+app.use(freeMock(path.resolve('./example/news.js')))
 
 app.use('/', function(req, res){
     res.render('index.html')
