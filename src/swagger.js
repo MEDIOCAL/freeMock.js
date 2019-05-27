@@ -10,14 +10,14 @@ module.exports = async function(req, state, md) {
             try {
                 request.get(swaggerapi).set({'Cookie': (md.headers && md.headers.Cookie || state.Cookie || 'no')}).end(function(err, res) {
                     if(err) {
-                        loger(true, 'warn', '请求 swagger 出错', err)
+                        loger.error('请求 swagger 出错', 'Mock')
                         reslove(null)
                     } else {
                         reslove(res.body)
                     }
                 })
             } catch(err) {
-                loger(true, 'warn', '请求 swagger 出错', err)
+                loger.error(err, 'Mock')
                 reslove(null)
             }
         })
@@ -38,13 +38,12 @@ module.exports = async function(req, state, md) {
         }, swaggerManualProps)
     }
     
-    loger(true, 'info', '开始生成 swagger', req.path)
     const data = swagger2mock(swagger)(req)
 
     if(!data) {
-        loger(true, 'warn', 'swagger 数据生成失败', req.path)
+        loger.warn(req.path + ': swagger 数据生成失败', 'Mock')
     } else {
-        loger(true, 'info', '已根据 swagger 生成 mock 数据', req.path)
+        loger.info(req.path + ': 已根据 swagger 生成 mock 数据', 'Mock')
     }
     return data
 }

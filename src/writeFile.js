@@ -22,7 +22,7 @@ module.exports = function writeFile(req, state, data, cb = null) {
     } else if(typeof dir_path === 'string') {
         name = dir_path + rpath
     } else {
-        loger(true, 'warn', 'dirpath 必须是一个字符串或者长度为2的数组')
+        loger.warn(req.path + '：dirpath 必须是一个字符串或者长度为2的数组', 'Mock')
         name = path.resolve(__dirname, '../../../mock') + rpath 
     }
     
@@ -45,9 +45,9 @@ module.exports = function writeFile(req, state, data, cb = null) {
     } else {
         fs.writeFile(name, data, 'utf8', function(err) {
             if(err) {
-                loger(true, 'error', '写文件时出错')
+                loger.error(err, 'Mock')
             } else {
-                loger(true, 'info', '写文件操作成功, 已写入到：'+ name)
+                loger.info(req.path + ': 已将请求到的数据写入到：'+ name, 'Mock')
             }
         })
     }

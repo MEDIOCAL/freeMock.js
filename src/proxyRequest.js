@@ -164,10 +164,8 @@ function callBack(res, req, state, md) {
         let data = null
         let isHttp = true
         if (!err && response && response.statusCode == 200) {
-            loger(true, 'info', '请求数据成功', req.path)
-            
+            loger.info(req.path + ': 请求数据成功', 'Mock')
             let body = response.body
-            
             let text = response.text
             if(
                 text && 
@@ -182,7 +180,7 @@ function callBack(res, req, state, md) {
                 res.set(response.header)
                 return res.status(response.status).send(response.text)
             } else if(err) {
-                loger(true, 'error', '向服务器请求发生错误', err)
+                loger.error(err, 'Mock')
                 return res.send(err)
             } 
         } else {
@@ -200,7 +198,7 @@ function callBack(res, req, state, md) {
             ) {
                 error = err
             }
-            loger(true, 'error', '向服务器请求发生错误', error)
+            loger.error(error, 'Mock')
         }
 
         // 读 swagger
@@ -214,7 +212,6 @@ function callBack(res, req, state, md) {
         
         // 读文件
         if(state.readFile && (!data || (state.md.getMockData && state.md.getMockData(data, req)))) {
-            loger(true, 'info', '开始读取文件', req.path)
             const fileData = requestDirFile(req, state, response)
             if(fileData) {
                 data = fileData
@@ -268,13 +265,8 @@ module.exports = function(md = {}, state = {},  req, res) {
             state.debugger.path.includes(req.path) 
         )
     ) {
-        loger(true, 'debug', '当前api信息：', {
-            method,
-            url,
-            contentType,
-            headers
-        }) 
-        loger(true, 'debug', '当前api 传递的参数:', postdata)
+        loger.log(`当前api信息：\n\tmethod: ${method}\n\turl:${url}\n\tcontentType:${contentType}\n'当前api 传递的参数:\n`, 'Mock') 
+        loger.log(postdata, 'Mock')
     }
     
     if(['get', 'delete', 'head'].includes(method)) {

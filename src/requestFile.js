@@ -24,7 +24,7 @@ module.exports = function requestDirFile(req, state, response, isCompare = false
     } else if(typeof dir_path === 'string') {
         name = dir_path + rpath
     } else {
-       loger(true, 'warn', 'dirpath 必须是一个字符串或者长度为2的数组')
+       loger.warn(req.path + ': dirpath 必须是一个字符串或者长度为2的数组', 'Mock')
        name = path.resolve(__dirname, '../../../mock') + rpath 
     }
 
@@ -42,12 +42,12 @@ module.exports = function requestDirFile(req, state, response, isCompare = false
         }
 
         if(isCompare) {
-            loger(true, 'info', "正在对比数据")
+            loger.info(req.path + ": 正在对比数据", 'Mock')
         } else {
-            loger(true, 'info', "已读取：" + name + "的数据")
+            loger.info(req.path + ": 已读取 " + name + " 的数据", 'Mock')
         } 
     } catch(err) {
-        !isCompare && loger(true, 'error', '读文件出错')
+        !isCompare && loger.error(err, 'Mock')
     }
    
     data = mockJson || null

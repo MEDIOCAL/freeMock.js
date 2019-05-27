@@ -22,10 +22,9 @@ module.exports = function(rest) {
                         delete require.cache[rest]
                     }
                     impdata = require(rest)
-                    console.log(impdata)
                 }
             } catch(err) {
-                loger(true, 'error', '请求配置文件失败', err)
+                loger.error(err, 'Mock')
             }
         }
         
@@ -37,7 +36,7 @@ module.exports = function(rest) {
         }
 
         if(mockData.length === 0) {
-            loger(true, 'warn', '配置文件发生错误')
+            loger.warn('配置文件发生错误', 'Mock')
             return next() 
         }
 
@@ -58,10 +57,7 @@ module.exports = function(rest) {
             return val.url === req.path
         })
         
-        loger(true, 'help', '\n\n\n' + req.path + ':')
-
         if(!md) {
-            loger(true, 'warn', '未匹配到连接', req.path)
             return next()
         } else {
             state.md = md
@@ -91,6 +87,7 @@ module.exports = function(rest) {
             if(key.indexOf('data') >= 0) {
                 mockjsData[key] = md[key]
                 data = mock(req, state)(mockjsData)
+                loger.info(req.path + ': 已根据 data 属性，生成数据', 'Mock')
             }
         }
 
@@ -120,7 +117,7 @@ module.exports = function(rest) {
         }
 
         if(md.proxy) {
-            loger(true, 'info', '进入代理模式', '-->' + (typeof md.proxy === 'string' ? md.proxy : state.proxy))
+            loger.info(req.path + ': 进入代理模式\n开始请求 ' + (typeof md.proxy === 'string' ? md.proxy : state.proxy) + req.path, 'Mock')
             const query = req.query 
             const params = req.body
             const contentType = req.headers['content-type'] || req.headers['Content-Type']
