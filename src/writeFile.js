@@ -46,8 +46,6 @@ module.exports = function writeFile(req, state, data, cb = null) {
         fs.writeFile(name, data, 'utf8', function(err) {
             if(err) {
                 loger.error(err, 'Mock-write')
-            } else {
-                loger.info(req.path + ': 已将请求到的数据写入到：'+ name, 'Mock')
             }
         })
     }

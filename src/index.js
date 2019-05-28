@@ -36,7 +36,7 @@ module.exports = function(rest) {
         }
 
         if(mockData.length === 0) {
-            loger.warn('配置文件发生错误', 'Mock')
+            loger.error('配置文件发生错误', 'Mock')
             return next() 
         }
 
@@ -87,7 +87,7 @@ module.exports = function(rest) {
             if(key.indexOf('data') >= 0) {
                 mockjsData[key] = md[key]
                 data = mock(req, state)(mockjsData)
-                loger.info(req.path + ': 已根据 data 属性，生成数据', 'Mock')
+                // loger.info(req.path + ': 已根据 data 属性，生成数据', 'Mock')
             }
         }
 
@@ -117,7 +117,7 @@ module.exports = function(rest) {
         }
 
         if(md.proxy) {
-            loger.info(req.path + ': 进入代理模式\n开始请求 ' + (typeof md.proxy === 'string' ? md.proxy : state.proxy) + req.path, 'Mock')
+            // loger.info(req.path + ': 进入代理模式\n开始请求 ' + (typeof md.proxy === 'string' ? md.proxy : state.proxy) + req.path, 'Mock')
             const query = req.query 
             const params = req.body
             const contentType = req.headers['content-type'] || req.headers['Content-Type']

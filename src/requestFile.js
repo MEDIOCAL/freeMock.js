@@ -40,12 +40,6 @@ module.exports = function requestDirFile(req, state, response, isCompare = false
         if(typeof mockJson === 'object' && mockJson != null) {
             mockJson = mock(req, state)(mockJson)
         }
-
-        if(isCompare) {
-            loger.info(req.path + ": 正在对比数据", 'Mock')
-        } else {
-            loger.info(req.path + ": 已读取 " + name + " 的数据", 'Mock')
-        } 
     } catch(err) {
         !isCompare && loger.error(err, 'Mock-readFile')
     }

@@ -42,8 +42,6 @@ module.exports = async function(req, state, md) {
 
     if(!data) {
         loger.warn(req.path + ': swagger 数据生成失败', 'Mock')
-    } else {
-        loger.info(req.path + ': 已根据 swagger 生成 mock 数据', 'Mock')
     }
     return data
 }
