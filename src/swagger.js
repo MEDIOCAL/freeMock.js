@@ -10,14 +10,14 @@ module.exports = async function(req, state, md) {
             try {
                 request.get(swaggerapi).set({'Cookie': (md.headers && md.headers.Cookie || state.Cookie || 'no')}).end(function(err, res) {
                     if(err) {
-                        loger.error('请求 swagger 出错', 'Mock')
+                        loger.error(err, 'Mock-swagger')
                         reslove(null)
                     } else {
                         reslove(res.body)
                     }
                 })
             } catch(err) {
-                loger.error(err, 'Mock')
+                loger.error(err, 'Mock-swagger')
                 reslove(null)
             }
         })

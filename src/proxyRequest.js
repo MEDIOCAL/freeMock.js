@@ -180,7 +180,7 @@ function callBack(res, req, state, md) {
                 res.set(response.header)
                 return res.status(response.status).send(response.text)
             } else if(err) {
-                loger.error(err, 'Mock')
+                loger.error(err, 'Mock-proxy')
                 return res.send(err)
             } 
         } else {
@@ -198,7 +198,7 @@ function callBack(res, req, state, md) {
             ) {
                 error = err
             }
-            loger.error(error, 'Mock')
+            loger.error(error, 'Mock-proxy')
         }
 
         // 读 swagger
