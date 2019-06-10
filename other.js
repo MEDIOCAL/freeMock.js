@@ -16,7 +16,6 @@ app.post('/huihui', function(req, res) {
   })
 })
 app.get('/hui', function(req, res) {
-  console.log(22)
   res.json({
     name: 'cxh',
     age: '24'

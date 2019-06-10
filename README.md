@@ -160,9 +160,9 @@ config 是一个对象：
 
 ```
 if(state.readFile && typeof state.readFile === 'object') {
-      fileConfig = state.readFile
+    fileConfig = state.readFile
 } else if(state.writeFile && typeof state.writeFile === 'object') {
-      fileConfig = state.writeFile
+    fileConfig = state.writeFile
 }
  name = creatName(fileConfig, params, name, req)
 ```
@@ -216,8 +216,8 @@ state: {
 ```
 swagger: 'imp.mmsstt.test/n/v2/api-docs',
 swaggerManualProps: {
-     pageSize: 20,
-     pageNo: req => req.query.pageNo,
+    pageSize: 20,
+    pageNo: req => req.query.pageNo,
         businessTypes: () => {
              eturn '2'
         }
@@ -502,12 +502,12 @@ mockData = [
 ```
 {
     url: '/getData',
-    'data|9': {
+    'data|9': [{
         name: '@name()',
         age: '@number(1, 99)',
         id: '@number(0, 10000, 999999),
         'source|9': ['@title()']
-    }
+    }]
 }
 
 ```
@@ -517,9 +517,9 @@ mockData = [
 ```
 {
     url: '/getData',
-    'data|@params.pageSize': {
+    'data|@params.pageSize': [{
         pageNo: '@params.pageNo',
-    }
+    }]
 }
 
 ```
@@ -560,12 +560,12 @@ mockData = [
 ```
 {
     url:'/test1',
-    "data|<2": {
+    "data": {
         name: "@name()",
-        "list|@params.size": {
+        "list|@params.size": [{
             title:"@title()",
             name: "@getName(chenxuehui)"
-        }
+        }]
     }
 }
 

@@ -1,35 +1,42 @@
 const fs = require('fs')
-const Mock = require("./mock") 
+const mock = require("./mock") 
 const proxyRequest = require("./proxyRequest")
 const loger = require('./loger')
 const swagger = require('./swagger')
+const requestDirFile = require("./requestFile.js")
+const writeFile = require("./writeFile.js")
+const resetConfig = require("./resetConfig")
 
 module.exports = function(rest) {
     return async function (req, res, next) {   
         let mockData = []
         let state = {}
-
+        let impdata = rest
         if(typeof rest === 'string') {
-            let data = {}
             try {
                 if(rest.indexOf('.json') > 0) {
-                    data = JSON.parse(fs.readFileSync(rest, 'utf-8'))
+                    impdata = JSON.parse(fs.readFileSync(rest, 'utf-8'))
                 } else {
-                    data = eval(fs.readFileSync(rest, 'utf-8'))
+                    // impdata = eval(fs.readFileSync(rest, 'utf-8'))
+                    if(Object.keys(require.cache).includes(rest)) {
+                        delete require.cache[rest]
+                    }
+                    impdata = require(rest)
                 }
             } catch(err) {
-                loger(true, 'error', '请求配置文件失败')
+                loger.error(err, 'Mock')
             }
-            mockData = data && data.mockData || []
-            state = Object.assign({}, state, data.state)
-        } else if(typeof rest === 'object') {
-            mockData = rest.mockData
-            state = Object.assign({}, state, rest.state)
-            
+        }
+        
+
+        if(typeof impdata === 'object') {
+            impdata = resetConfig(impdata, req)
+            mockData = impdata && impdata.mockData || []
+            state = Object.assign({}, state, impdata.state)
         }
 
         if(mockData.length === 0) {
-            loger(true, 'warn', '配置文件发生错误')
+            loger.error('配置文件发生错误', 'Mock')
             return next() 
         }
 
@@ -50,10 +57,7 @@ module.exports = function(rest) {
             return val.url === req.path
         })
         
-        loger(true, 'help', '\n\n\n' + req.path + ':')
-
         if(!md) {
-            loger(true, 'warn', '未匹配到连接', req.path)
             return next()
         } else {
             state.md = md
@@ -77,25 +81,16 @@ module.exports = function(rest) {
             return 
         } 
 
-        const mock = new Mock(req, state)
-        
+        let mockjsData = {}
+
         for(let key in md) {
-            let res = md[key]
-            if(key.indexOf('data|') >= 0) {
-                let keys = key.split('|')
-                let l = keys[1]
-                if(typeof md[key] === 'function') {
-                    res = md[key](req, state)
-                }
-                data = mock.array(res, l)
-            } else if(key === 'data') {
-                if(typeof md.data === 'function') {
-                    res = md.data(req, state)
-                }
-                data = mock.object(res)
+            if(key.indexOf('data') >= 0) {
+                mockjsData = md[key]
+                data = mock(req, state)(mockjsData)
+                // loger.info(req.path + ': 已根据 data 属性，生成数据', 'Mock')
             }
         }
-        
+
         req.mockData = data
         req.state = state 
 
@@ -113,8 +108,16 @@ module.exports = function(rest) {
             state.debugger.path =  state.debugger.path || []
         }
 
+        if((state.mkfile === undefined || state.mkfile) && (state.dirpath || md.dirpath)) {
+            writeFile(req, state, `{\n\t"status": 0,\n\t"msg": "success",\n\t"result": {}\n}`, function(name, data) {
+                if(!fs.existsSync(name) || !fs.readFileSync(name, 'utf8')) {
+                    fs.writeFileSync(name, data, 'utf8')
+                }
+            })
+        }
+
         if(md.proxy) {
-            loger(state.debugger, 'info', '进入代理模式', req.path)
+            // loger.info(req.path + ': 进入代理模式\n开始请求 ' + (typeof md.proxy === 'string' ? md.proxy : state.proxy) + req.path, 'Mock')
             const query = req.query 
             const params = req.body
             const contentType = req.headers['content-type'] || req.headers['Content-Type']
@@ -128,10 +131,16 @@ module.exports = function(rest) {
             return 
         }
         
-        if(state.swagger) {
+        if(state.swagger || md.swagger) {
             const swaggerData = await swagger(req, state, md)
             if(swaggerData && !req.mockData) {
-                req.mockData = swaggerData
+                req.mockData = mock(req, state)(swaggerData)
+            }
+        } else if(state.readFile && !req.mockData) {
+            const fileData = requestDirFile(req, state)
+            if(fileData) {
+                const data = mock(req, state)(fileData)
+                data && (req.mockData = data)
             }
         } 
 

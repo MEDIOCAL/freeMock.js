@@ -3,8 +3,8 @@ const path = require('path')
 const creatName = require('./createPathName.js')
 const loger = require('./loger')
 
-module.exports = function writeFile(req, state, data) {
-    const dir_path = state.dirpath
+module.exports = function writeFile(req, state, data, cb = null) {
+    const dir_path = state.md.dirpath || state.dirpath
     const params = Object.assign({}, state.query, state.params)
     let fileConfig = ''
     let rpath = req.path
@@ -22,7 +22,7 @@ module.exports = function writeFile(req, state, data) {
     } else if(typeof dir_path === 'string') {
         name = dir_path + rpath
     } else {
-        loger(true, 'warn', 'dirpath 必须是一个字符串或者长度为2的数组')
+        loger.warn(req.path + '：dirpath 必须是一个字符串或者长度为2的数组', 'Mock')
         name = path.resolve(__dirname, '../../../mock') + rpath 
     }
     
@@ -40,14 +40,15 @@ module.exports = function writeFile(req, state, data) {
         data = JSON.stringify(data)
     }
     
-    fs.writeFile(name, data, 'utf8', function(err){
-        if(err) {
-            loger(true, 'error', '写文件时出错')
-        } else {
-            loger(true, 'info', '写文件操作成功, 已写入到：'+ name)
-        }
-    })
-
+    if(cb) {
+        cb(name, data)
+    } else {
+        fs.writeFile(name, data, 'utf8', function(err) {
+            if(err) {
+                loger.error(err, 'Mock-write')
+            }
+        })
+    }
 }
 
 function makep(dir) {
@@ -65,13 +66,7 @@ function makep(dir) {
             if(newPath.indexOf('.json') < 0) {
                 fs.mkdirSync(newPath)
             } else {
-                fs.open(name, "w", function(err) {
-                    if(err) {
-                        loger(true, 'info', "创建文件失败" + name)
-                    } else {
-                        loger(true, 'info', "文件创建成功，文件路径：" + name)
-                    }
-                })
+                fs.openSync(name, "w")
             }
         }
     }

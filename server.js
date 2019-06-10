@@ -3,7 +3,7 @@ var bodyParser = require('body-parser')
 var path = require('path')
 var app = express()
 var freeMock = require('./src')
-var config = require('./example/config')
+var config = require('./example/news')
 
 app.engine("html",require("ejs").__express)
 app.set('view engine', 'html')
@@ -12,7 +12,8 @@ app.use(express.static(path.join(__dirname, '/')))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-app.use(freeMock(__dirname + '/example/config.js'))
+// app.use(freeMock(config))
+app.use(freeMock(path.resolve('./example/news.js')))
 
 app.use('/', function(req, res){
     res.render('index.html')

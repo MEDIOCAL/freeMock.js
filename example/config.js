@@ -4,7 +4,7 @@ module.exports = {
         data: {
             people: {
                 name: "@name()",
-                age: "@number(req.fixed)",
+                age: "@integer(@param.fixed, @param.fixed+10)",
             }
         }
     }, {
@@ -31,16 +31,13 @@ module.exports = {
     }, {
         url:'/test1',
         method:'GET',
-        "data|<2": {
+        "data|2": [{
             name: "@name()",
-            "list|<req.size": {
+            "list|@param.size": [{
                 title:"@title()",
                 time: "@time()",
-                height: "@number(2)",
-                size: function(ctx, state) {
-                    return ctx.query.size
-                },
-                pageNo: "@params(pageNo)",
+                height: "@integer(2, 10)",
+                pageNo: "@param.pageNo",
                 name: "@getName(chenxuehui)",
                 lists: [
                     {
@@ -59,8 +56,8 @@ module.exports = {
                         }
                     ]
                 }
-            }
-        }
+            }]
+        }]
     }, {
         url: '/test2',
         method: 'get',
@@ -94,7 +91,7 @@ module.exports = {
             list: [
                 {
                     name: "@name",
-                    age: "@number()"
+                    age: "@integer(1, 100)"
                 },
                 "nihao",
                 "@name()",
@@ -108,7 +105,7 @@ module.exports = {
             ]
         }
     }, {
-        url:'/huihui',
+        url:'/huihui1',
         data: {
             "nihao": 'nis'
         },
@@ -149,12 +146,15 @@ module.exports = {
         }
     }, {
         url:'/yingxiao/*',
-        proxy: 'https://ad-test1.sm.cn'
+        proxy: 'http://crm-test1.sm.cn',
+        headers: {
+            Cookie: 'cna=eSr4E356dFYCAWoLKdVGypbn; SSO_IDT_V2=eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.mKSxXbWNPQ2t6qX-jp0-_V8JxHCbp1MPsr6PJnOPrE9-p9JDAlK1bA.oB6PwdEHCY91_qcTOb0AUA.MWdiT4kV4uLqyhgJHEyTaQBswdhEL7AhEpzfa2IJFcpXAHweGePPdNCyRwThIT3aLkbK6F97O5aCTqCAzdROrmNu_vFE2Y7Yh58jV6BpruQtu6zNjBoYcdJbDj8jHLAu8eX79vCTcZZoSj3q1d-BU3FbsNnZoPPcP_2OOH2JAnWROe-RSvteaNbWBqxymBQ-rsP2ce2Yd3x5DSsVxgKWj8BRq8ZR__EzqL111NW-rC292Yk4n-g1ADCj29U548QXjiBwUQG5VNmSBCIdcgRaUnDmnvfm-fw5P11FPVOi_1VBmmzLXVwTlMNfpFU37hYIsbRZXyGBAtI9TAXUbhAeBRjB770AvKRZfKwIwOKvo2MM-yPP16K0JQ0ouKpxHCThmB2rjJRm7Sc8f-tJIh2tVQ.kXadr0O_ICfLaBeC1IOU-g; UC-CSRF-TOKEN=8b38fc075e1dc3312a5be30b042a7224; SSO_IDT="Bearer eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.mKSxXbWNPQ2t6qX-jp0-_V8JxHCbp1MPsr6PJnOPrE9-p9JDAlK1bA.oB6PwdEHCY91_qcTOb0AUA.MWdiT4kV4uLqyhgJHEyTaQBswdhEL7AhEpzfa2IJFcpXAHweGePPdNCyRwThIT3aLkbK6F97O5aCTqCAzdROrmNu_vFE2Y7Yh58jV6BpruQtu6zNjBoYcdJbDj8jHLAu8eX79vCTcZZoSj3q1d-BU3FbsNnZoPPcP_2OOH2JAnWROe-RSvteaNbWBqxymBQ-rsP2ce2Yd3x5DSsVxgKWj8BRq8ZR__EzqL111NW-rC292Yk4n-g1ADCj29U548QXjiBwUQG5VNmSBCIdcgRaUnDmnvfm-fw5P11FPVOi_1VBmmzLXVwTlMNfpFU37hYIsbRZXyGBAtI9TAXUbhAeBRjB770AvKRZfKwIwOKvo2MM-yPP16K0JQ0ouKpxHCThmB2rjJRm7Sc8f-tJIh2tVQ.kXadr0O_ICfLaBeC1IOU-g"'
+        }
     }, {
         url:'/ncrm/*',
-        proxy: 'https://imp-daily.uc.test',
+        proxy: 'http://imp-daily.uc.test',
         headers: {
-            Cookies: 'SSO_IDT="Bearer eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.MkMuO8afKzBvrdh0OI0WelYq9fGt5j9Hgs1X2_eU6M76hnRtOXIqqw.xBM-8Mw_tmcRo_ZofpdprA.QtyU3XkDXSId4yB3FRkcl4jTEte2SaVl5-Ct588PCg4WdD0qwPeuGEGs3CXOmu4ZdGv1Uy3GrjGRV5g13JmoQuMd4ccf75GewQZy9YoVKunPQKR-JQiUQmlaEN9ZwBKF82ucowKhz603sWHzROaKCjI9ndFfe79EWReyaiRLZj_8oWUSokBb_zTfoo-USsmrHLc25Cq2aE6It7GGpzXyoVEsCulQMfvrMDOR9V2x-dQPPc4BR8v93SESmhIH9iGLrxOPUAOBCvqFMnl0m69vaQ0QirpDxPB_aUK8Cm1aAcaU2AVRpc2x9Kt3bowneA0n406wQHoZczMbmtnV1Gtt9xPvOt3mc0YJMvrVS8CALERL37XYiM3W9f0u6h3l9zIWHFxUIbYLyULPjfF4lqS2Qw.y2vLKYMkL4xpVjgogB5pwA"; UC-CSRF-TOKEN=e294dc8754c9d34cd7845c9f488dbb72; SSO_IDT_V2=eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.MkMuO8afKzBvrdh0OI0WelYq9fGt5j9Hgs1X2_eU6M76hnRtOXIqqw.xBM-8Mw_tmcRo_ZofpdprA.QtyU3XkDXSId4yB3FRkcl4jTEte2SaVl5-Ct588PCg4WdD0qwPeuGEGs3CXOmu4ZdGv1Uy3GrjGRV5g13JmoQuMd4ccf75GewQZy9YoVKunPQKR-JQiUQmlaEN9ZwBKF82ucowKhz603sWHzROaKCjI9ndFfe79EWReyaiRLZj_8oWUSokBb_zTfoo-USsmrHLc25Cq2aE6It7GGpzXyoVEsCulQMfvrMDOR9V2x-dQPPc4BR8v93SESmhIH9iGLrxOPUAOBCvqFMnl0m69vaQ0QirpDxPB_aUK8Cm1aAcaU2AVRpc2x9Kt3bowneA0n406wQHoZczMbmtnV1Gtt9xPvOt3mc0YJMvrVS8CALERL37XYiM3W9f0u6h3l9zIWHFxUIbYLyULPjfF4lqS2Qw.y2vLKYMkL4xpVjgogB5pwA'
+            Cookie: 'SSO_IDT="Bearer eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.MkMuO8afKzBvrdh0OI0WelYq9fGt5j9Hgs1X2_eU6M76hnRtOXIqqw.xBM-8Mw_tmcRo_ZofpdprA.QtyU3XkDXSId4yB3FRkcl4jTEte2SaVl5-Ct588PCg4WdD0qwPeuGEGs3CXOmu4ZdGv1Uy3GrjGRV5g13JmoQuMd4ccf75GewQZy9YoVKunPQKR-JQiUQmlaEN9ZwBKF82ucowKhz603sWHzROaKCjI9ndFfe79EWReyaiRLZj_8oWUSokBb_zTfoo-USsmrHLc25Cq2aE6It7GGpzXyoVEsCulQMfvrMDOR9V2x-dQPPc4BR8v93SESmhIH9iGLrxOPUAOBCvqFMnl0m69vaQ0QirpDxPB_aUK8Cm1aAcaU2AVRpc2x9Kt3bowneA0n406wQHoZczMbmtnV1Gtt9xPvOt3mc0YJMvrVS8CALERL37XYiM3W9f0u6h3l9zIWHFxUIbYLyULPjfF4lqS2Qw.y2vLKYMkL4xpVjgogB5pwA"; UC-CSRF-TOKEN=e294dc8754c9d34cd7845c9f488dbb72; SSO_IDT_V2=eyJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiQTEyOEtXIn0.MkMuO8afKzBvrdh0OI0WelYq9fGt5j9Hgs1X2_eU6M76hnRtOXIqqw.xBM-8Mw_tmcRo_ZofpdprA.QtyU3XkDXSId4yB3FRkcl4jTEte2SaVl5-Ct588PCg4WdD0qwPeuGEGs3CXOmu4ZdGv1Uy3GrjGRV5g13JmoQuMd4ccf75GewQZy9YoVKunPQKR-JQiUQmlaEN9ZwBKF82ucowKhz603sWHzROaKCjI9ndFfe79EWReyaiRLZj_8oWUSokBb_zTfoo-USsmrHLc25Cq2aE6It7GGpzXyoVEsCulQMfvrMDOR9V2x-dQPPc4BR8v93SESmhIH9iGLrxOPUAOBCvqFMnl0m69vaQ0QirpDxPB_aUK8Cm1aAcaU2AVRpc2x9Kt3bowneA0n406wQHoZczMbmtnV1Gtt9xPvOt3mc0YJMvrVS8CALERL37XYiM3W9f0u6h3l9zIWHFxUIbYLyULPjfF4lqS2Qw.y2vLKYMkL4xpVjgogB5pwA'
         },
     }, {
         url:'/api/*',
@@ -181,18 +181,18 @@ module.exports = {
         },
         plugin: {
             "getName": function(name) {
-                return name
+                return this.req.query.name + name
             }
         },
-        // writeFile: {
-        //     '/yingxiao/web/article/list': ["channelId"]
-        // },
-        readFile: ['channelId'],
+        writeFile: ["channelId"],
+        
+        readFile: false,
+        // readFile: ['channelId'],
         headers: {
             "UC-CSRF-TOKEN": "e37d83b4e29f9f01195bea7c80c8c5aa"
         },
         // swagger: 'imp-daily.uc.test/ncrm/v2/api-docs',
-        swagger: 'dmp-pre.sm.cn/api/v2/api-docs',
+        // swagger: 'dmp-pre.sm.cn/api/v2/api-docs',
         pureProxy: false,
         swaggerManualProps: {
             // pageSize: 20,
@@ -202,6 +202,7 @@ module.exports = {
             // result: {
             //     length: 19,
             // }
-        }
+        },
+        mkfile: true,
     }
 }
