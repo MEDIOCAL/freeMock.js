@@ -48,6 +48,5 @@ module.exports = function(impdata, req) {
         })
         result.mockData = mockData
     }
-
     return result
 }

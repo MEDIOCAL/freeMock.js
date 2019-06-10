@@ -17,6 +17,7 @@ module.exports = {
     "/test11/*": {
         status: 0,
         "result|@param.pageSize": [{
+            id: '@increment',
             name: "@name",
             age: "@integer(0, 100)",
         }]

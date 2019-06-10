@@ -81,11 +81,11 @@ module.exports = function(rest) {
             return 
         } 
 
-        const mockjsData = {}
+        let mockjsData = {}
 
         for(let key in md) {
             if(key.indexOf('data') >= 0) {
-                mockjsData[key] = md[key]
+                mockjsData = md[key]
                 data = mock(req, state)(mockjsData)
                 // loger.info(req.path + ': 已根据 data 属性，生成数据', 'Mock')
             }
