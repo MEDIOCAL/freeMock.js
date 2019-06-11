@@ -51,3 +51,5 @@ function normalizePort(val) {
 }
 
 app.listen(port)
+
+module.exports = app
