@@ -172,7 +172,11 @@ describe('Mock function', function() {
     app.use(freeMock({
         '/test/function1': function(req, state, res) {
             const param = req.body
-            res.json(state.mock({
+            res.set({
+                'ETag': '12345',
+                'UC-Asscess': 'ookk'
+            })
+            res.status(201).json(state.mock({
                 status: 0,
                 [`result|${param.pageParam.pageSize}`]: [{
                     pageSize: param.pageParam.pageSize,
@@ -181,8 +185,12 @@ describe('Mock function', function() {
                 }]
             }))
         },
-        "/test/function2": function(req, state) {
+        "/test/function2": function(req, state, res) {
             const param = req.body
+            res.set({
+                'ETag': '12345',
+                'UC-Asscess': 'ookk'
+            })
             return {
                 status: 0,
                 'result|@param.pageParam.pageSize': [{
@@ -200,7 +208,7 @@ describe('Mock function', function() {
         .post('/test/function1')
         .send({pageParam: { pageSize: 15}})
         .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
+        .expect('UC-Asscess', 'ookk')
         .expect(function(res) {
             res.body = {
                 status: res.body.status,
@@ -208,7 +216,7 @@ describe('Mock function', function() {
                 pageSize: res.body.result[0].pageSize
             }
           })
-        .expect(200, {
+        .expect(201, {
             status: 0,
             datalength: 15,
             pageSize: 15
@@ -221,6 +229,8 @@ describe('Mock function', function() {
         .send({pageParam: { pageSize: 15}})
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
+        .expect('ETag', '12345')
+        .expect('UC-Asscess', 'ookk')
         .expect(function(res) {
             res.body = {
                 status: res.body.status,
