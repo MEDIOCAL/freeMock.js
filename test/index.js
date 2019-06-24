@@ -168,3 +168,70 @@ describe('Mock Proxy', function() {
     })
 })
 
+describe('Mock function', function() {
+    app.use(freeMock({
+        '/test/function1': function(req, state, res) {
+            const param = req.body
+            res.json(state.mock({
+                status: 0,
+                [`result|${param.pageParam.pageSize}`]: [{
+                    pageSize: param.pageParam.pageSize,
+                    header: req.headers,
+                    Cookie: state.Cookie
+                }]
+            }))
+        },
+        "/test/function2": function(req, state) {
+            const param = req.body
+            return {
+                status: 0,
+                'result|@param.pageParam.pageSize': [{
+                    pageSize: param.pageParam.pageSize,
+                    header: req.headers,
+                    Cookie: state.Cookie
+                }]
+            }
+        },
+        Cookie: '1234'
+    }))
+
+    it('POST', function(done) {
+        request(app)
+        .post('/test/function1')
+        .send({pageParam: { pageSize: 15}})
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+            res.body = {
+                status: res.body.status,
+                datalength: res.body.result.length,
+                pageSize: res.body.result[0].pageSize
+            }
+          })
+        .expect(200, {
+            status: 0,
+            datalength: 15,
+            pageSize: 15
+          }, done);
+    })
+
+    it('POST', function(done) {
+        request(app)
+        .post('/test/function2')
+        .send({pageParam: { pageSize: 15}})
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(function(res) {
+            res.body = {
+                status: res.body.status,
+                datalength: res.body.result.length,
+                pageSize: res.body.result[0].pageSize
+            }
+          })
+        .expect(200, {
+            status: 0,
+            datalength: 15,
+            pageSize: 15
+          }, done);
+    })
+})

@@ -1,5 +1,5 @@
 const path = require('path')
-module.exports = function(impdata, req) {
+module.exports = function(impdata, req, res) {
     if(typeof impdata != 'object') {
         return impdata
     }
@@ -30,8 +30,7 @@ module.exports = function(impdata, req) {
             }
             // 路径
             if(typeof val === 'function') {
-                const param = Object.assign({}, req.query, req.body)
-                moc.data = val(param, req, result.state)
+                moc.data = val
             } else if(typeof val === 'object') {
                 moc.data = val 
             } else if(/^\/([\w-\.$]+){1}$/.test(val)) {

@@ -6,6 +6,7 @@ const swagger = require('./swagger')
 const requestDirFile = require("./requestFile.js")
 const writeFile = require("./writeFile.js")
 const resetConfig = require("./resetConfig")
+const mockjs = require('mockjs')
 
 module.exports = function(rest) {
     return async function (req, res, next) {   
@@ -30,7 +31,7 @@ module.exports = function(rest) {
         
 
         if(typeof impdata === 'object') {
-            impdata = resetConfig(impdata, req)
+            impdata = resetConfig(impdata, req, res)
             mockData = impdata && impdata.mockData || []
             state = Object.assign({}, state, impdata.state)
         }
@@ -86,7 +87,17 @@ module.exports = function(rest) {
         for(let key in md) {
             if(key.indexOf('data') >= 0) {
                 mockjsData = md[key]
-                data = mock(req, state)(mockjsData)
+                if(typeof mockjsData === 'function') {
+                    state.mock = mockjs.mock
+                    mockjsData = mockjsData(req, state, res)
+                    if(typeof mockjsData === 'object') {
+                        data = mock(req, state)(mockjsData)
+                    } else {
+                        return 
+                    }
+                } else {
+                    data = mock(req, state)(mockjsData)
+                }
                 // loger.info(req.path + ': 已根据 data 属性，生成数据', 'Mock')
             }
         }
