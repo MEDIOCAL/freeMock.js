@@ -226,7 +226,7 @@ function callBack(res, req, state, md) {
             const readFileData = requestDirFile(req, state, response, true)
             !deepCompare(readFileData, data) && writeFile(req, state, data) // 深度比较获取数据与文件数据，不一样才能写入
         }
-       
+        
         if(data || req.mockData) {
             // 读文件 或者 读 swagger 需要 mock
             data = isHttp ? data : mock(req, state)(data)
