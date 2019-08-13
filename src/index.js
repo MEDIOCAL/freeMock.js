@@ -158,15 +158,21 @@ module.exports = function(rest) {
             }
         } 
 
-        if(md.sse) {
+        if(md.sse || md.long) {
             const stream = new PassThrough()
             const mdata = req.fileData || req.mockData || {}
-            res.set('Content-Type', 'text/event-stream')
             res.set('Connection', 'keep-alive')
             res.set('Cache-Control', 'no-cache')
+            if(md.sse) {
+                res.set('Content-Type', 'text/event-stream')
+            }
             setInterval(() => {
                 const data = mock(req, state)(mdata)
-                stream.write("data: " + JSON.stringify(data) + "\n\n")
+                if(md.sse) {
+                    stream.write("data: " + JSON.stringify(data) + "\n\n")
+                } else {
+                    stream.write(JSON.stringify(data))
+                }
             }, 3000)
             stream.pipe(res)
         } else {

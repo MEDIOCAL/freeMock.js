@@ -34,6 +34,11 @@ module.exports = function(impdata, req, res) {
                 val = val.replace('SSE', '').trim()
             }
 
+            if(typeof val === 'string' && val.indexOf('LONG') === 0) {
+                moc.long = true
+                val = val.replace('LONG', '').trim()
+            }
+
             // 路径
             if(typeof val === 'function') {
                 moc.data = val
