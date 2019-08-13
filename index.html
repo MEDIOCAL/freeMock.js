@@ -107,18 +107,13 @@
             })
         })
         xw.addEventListener('click', function() {
-            var formdata = new FormData()
-            var files = file.files[0]
-            formdata.append("filename", files.name)
-            formdata.append("file", files)
-            formdata.append("name", "chenxuehui")
-            formdata.append("age", "17")
-
-            axios.post("/api/post.php", formdata,  {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-            })
+            if (window.EventSource) {
+                var source = new EventSource('/kehubao/downward?msgid=3')
+                source.onmessage = e => {
+                    var data = event.data
+                    console.log(data)
+                }
+            }
         })
     </script>
 </body>

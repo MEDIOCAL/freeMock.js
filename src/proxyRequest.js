@@ -211,7 +211,7 @@ function callBack(res, req, state, md) {
         
         // 读文件
         if(state.readFile && (!data || (state.md.getMockData && state.md.getMockData(data, req)))) {
-            const fileData = requestDirFile(req, state, response)
+            const fileData = requestDirFile(req, state)
             if(fileData) {
                 data = fileData
                 isHttp = false
@@ -223,7 +223,7 @@ function callBack(res, req, state, md) {
             state.writeFile && 
             state.md.validateWriteFile(data, req) 
         ) {
-            const readFileData = requestDirFile(req, state, response, true)
+            const readFileData = requestDirFile(req, state, true)
             !deepCompare(readFileData, data) && writeFile(req, state, data) // 深度比较获取数据与文件数据，不一样才能写入
         }
         

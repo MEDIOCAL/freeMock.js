@@ -1,4 +1,5 @@
 const fs = require('fs')
+const { PassThrough } = require('stream')
 const mock = require("./mock") 
 const proxyRequest = require("./proxyRequest")
 const loger = require('./loger')
@@ -145,18 +146,32 @@ module.exports = function(rest) {
         if(state.swagger || md.swagger) {
             const swaggerData = await swagger(req, state, md)
             if(swaggerData && !req.mockData) {
+                req.fileData = swaggerData
                 req.mockData = mock(req, state)(swaggerData)
             }
         } else if(state.readFile && !req.mockData) {
-            const fileData = requestDirFile(req, state)
+            const fileData = requestDirFile(req, state, false, false)
             if(fileData) {
+                req.fileData = fileData
                 const data = mock(req, state)(fileData)
                 data && (req.mockData = data)
             }
         } 
 
-        res.json(req.mockData)
-
+        if(md.sse) {
+            const stream = new PassThrough()
+            const mdata = req.fileData || req.mockData || {}
+            res.set('Content-Type', 'text/event-stream')
+            res.set('Connection', 'keep-alive')
+            res.set('Cache-Control', 'no-cache')
+            setInterval(() => {
+                const data = mock(req, state)(mdata)
+                stream.write("data: " + JSON.stringify(data) + "\n\n")
+            }, 3000)
+            stream.pipe(res)
+        } else {
+            res.json(req.mockData)
+        }
         return 
     }
 }

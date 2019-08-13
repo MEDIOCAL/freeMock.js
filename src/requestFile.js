@@ -4,7 +4,7 @@ const mock = require("./mock")
 const creatName = require('./createPathName.js')
 const loger = require('./loger')
 
-module.exports = function requestDirFile(req, state, response, isCompare = false) {
+module.exports = function requestDirFile(req, state, isCompare = false, isMock = true) {
     const dir_path = state.md.dirpath || state.dirpath
     const params = Object.assign({}, state.query, state.params)
     let rpath = req.path
@@ -37,7 +37,7 @@ module.exports = function requestDirFile(req, state, response, isCompare = false
     try {
         mockJson = JSON.parse(fs.readFileSync(name, 'utf-8'))
 
-        if(typeof mockJson === 'object' && mockJson != null) {
+        if(typeof mockJson === 'object' && mockJson != null && isMock) {
             mockJson = mock(req, state)(mockJson)
         }
     } catch(err) {

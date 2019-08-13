@@ -28,6 +28,12 @@ module.exports = function(impdata, req, res) {
             if(typeof val === 'string') {
                 val = val.trim()
             }
+
+            if(typeof val === 'string' && val.indexOf('SSE') === 0) {
+                moc.sse = true
+                val = val.replace('SSE', '').trim()
+            }
+
             // 路径
             if(typeof val === 'function') {
                 moc.data = val
