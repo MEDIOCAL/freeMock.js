@@ -90,14 +90,16 @@ module.exports = function(rest) {
                 mockjsData = md[key]
                 if(typeof mockjsData === 'function') {
                     state.mock = mockjs.mock
-                    mockjsData = mockjsData(req, state, res)
-                    if(typeof mockjsData === 'object') {
-                        data = mock(req, state)(mockjsData)
-                    } else {
-                        return 
-                    }
+                    mockjsData = mockjsData(req, state, res)   
+                }
+
+                if(typeof mockjsData === 'object') {
+                    const { SSE, LONG, ...tempdata } = mockjsData
+                    md.sse = SSE || false 
+                    md.long = LONG || false
+                    data = mock(req, state)(tempdata)
                 } else {
-                    data = mock(req, state)(mockjsData)
+                    return 
                 }
                 // loger.info(req.path + ': 已根据 data 属性，生成数据', 'Mock')
             }
@@ -158,7 +160,7 @@ module.exports = function(rest) {
             }
         } 
 
-        if(md.sse || md.long) {
+        if(md.sse === true || md.long === true) {
             const stream = new PassThrough()
             const mdata = req.fileData || req.mockData || {}
             res.set('Connection', 'keep-alive')

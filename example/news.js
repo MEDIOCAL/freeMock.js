@@ -1,7 +1,23 @@
 const path = require("path")
 
 module.exports = {
-    "/kehubao/downward": "SSE /mock",
+    // "/kehubao/downward": "SSE /mock",
+    "/kehubao/downward": function(param, req, state) {
+        return {
+            // LONG: true,
+            status: 0,
+            "messsage": "OK",
+            "data|1-5": [
+                {
+                    "eventId": 1,
+                    "eventType": "@integer(1, 3)",
+                    "eventContent": {
+                        "conversationId": "@integer(1, 999)",
+                    }
+                }
+            ]
+        }
+    },
     
     // 接入第三方 mock 平台。 （同样是 ncrm/* 下的接口，排在前面优先级更高）请求 https://mocks.alibaba-inc.com/mock/ncrm/promotionUser/siteUrlList
     "/ncrm/promotionUser/siteUrlList": "https://mocks.alibaba-inc.com/mock",
