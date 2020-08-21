@@ -3,21 +3,22 @@ const loger = require('./loger')
 const request = require('superagent')
 
 module.exports = async function(req, state, md) {
-    let swagger = md.swagger || state.swagger
-    if(typeof swagger != 'object') {
-        const swaggerapi = swagger
+    let swagger = {}
+    if(typeof state.swagger === 'object') {
+        swagger = state.swagger
+    } else {
         swagger = await new Promise(function(reslove) {
             try {
-                request.get(swaggerapi).set({'Cookie': (md.headers && md.headers.Cookie || state.Cookie || 'no')}).end(function(err, res) {
+                request.get(state.swagger).set({'Cookie': (md.headers && md.headers.Cookie || state.Cookie || 'no')}).end(function(err, res) {
                     if(err) {
-                        loger.error(err, 'Mock-swagger')
+                        loger(true, 'warn', '请求 swagger 出错', req.path)
                         reslove(null)
                     } else {
                         reslove(res.body)
                     }
                 })
             } catch(err) {
-                loger.error(err, 'Mock-swagger')
+                loger(true, 'warn', '请求 swagger 出错', req.path)
                 reslove(null)
             }
         })
@@ -38,10 +39,13 @@ module.exports = async function(req, state, md) {
         }, swaggerManualProps)
     }
     
+    loger(true, 'info', '开始生成 swagger', req.path)
     const data = swagger2mock(swagger)(req)
 
     if(!data) {
-        loger.warn(req.path + ': swagger 数据生成失败', 'Mock')
+        loger(true, 'warn', 'swagger 数据生成失败', req.path)
+    } else {
+        loger(true, 'info', '已根据 swagger 生成 mock 数据', req.path)
     }
     return data
 }

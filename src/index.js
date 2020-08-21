@@ -1,44 +1,37 @@
 const fs = require('fs')
-const { PassThrough } = require('stream')
 const mock = require("./mock") 
 const proxyRequest = require("./proxyRequest")
 const loger = require('./loger')
 const swagger = require('./swagger')
 const requestDirFile = require("./requestFile.js")
 const writeFile = require("./writeFile.js")
-const resetConfig = require("./resetConfig")
-const mockjs = require('mockjs')
 
 module.exports = function(rest) {
     return async function (req, res, next) {   
         let mockData = []
         let state = {}
-        let impdata = rest
+
         if(typeof rest === 'string') {
+            let data = {}
             try {
                 if(rest.indexOf('.json') > 0) {
-                    impdata = JSON.parse(fs.readFileSync(rest, 'utf-8'))
+                    data = JSON.parse(fs.readFileSync(rest, 'utf-8'))
                 } else {
-                    // impdata = eval(fs.readFileSync(rest, 'utf-8'))
-                    if(Object.keys(require.cache).includes(rest)) {
-                        delete require.cache[rest]
-                    }
-                    impdata = require(rest)
+                    data = eval(fs.readFileSync(rest, 'utf-8'))
                 }
             } catch(err) {
-                loger.error(err, 'Mock')
+                loger(true, 'error', '请求配置文件失败')
             }
-        }
-        
-
-        if(typeof impdata === 'object') {
-            impdata = resetConfig(impdata, req, res)
-            mockData = impdata && impdata.mockData || []
-            state = Object.assign({}, state, impdata.state)
+            mockData = data && data.mockData || []
+            state = Object.assign({}, state, data.state)
+        } else if(typeof rest === 'object') {
+            mockData = rest.mockData
+            state = Object.assign({}, state, rest.state)
+            
         }
 
         if(mockData.length === 0) {
-            loger.error('配置文件发生错误', 'Mock')
+            loger(true, 'warn', '配置文件发生错误')
             return next() 
         }
 
@@ -59,7 +52,10 @@ module.exports = function(rest) {
             return val.url === req.path
         })
         
+        loger(true, 'help', '\n\n\n' + req.path + ':')
+
         if(!md) {
+            loger(true, 'warn', '未匹配到连接', req.path)
             return next()
         } else {
             state.md = md
@@ -83,25 +79,12 @@ module.exports = function(rest) {
             return 
         } 
 
-        let mockjsData = {}
+        const mockjsData = {}
 
         for(let key in md) {
             if(key.indexOf('data') >= 0) {
-                mockjsData = md[key]
-                if(typeof mockjsData === 'function') {
-                    state.mock = mockjs.mock
-                    mockjsData = mockjsData(req, state, res)   
-                }
-
-                if(typeof mockjsData === 'object') {
-                    const { SSE, LONG, ...tempdata } = mockjsData
-                    md.sse = SSE || false 
-                    md.long = LONG || false
-                    data = mock(req, state)(tempdata)
-                } else {
-                    return 
-                }
-                // loger.info(req.path + ': 已根据 data 属性，生成数据', 'Mock')
+                mockjsData[key] = md[key]
+                data = mock(req, state)(mockjsData)
             }
         }
 
@@ -122,16 +105,22 @@ module.exports = function(rest) {
             state.debugger.path =  state.debugger.path || []
         }
 
-        if((state.mkfile === undefined || state.mkfile) && (state.dirpath || md.dirpath)) {
+        if(state.mkfile) {
             writeFile(req, state, `{\n\t"status": 0,\n\t"msg": "success",\n\t"result": {}\n}`, function(name, data) {
                 if(!fs.existsSync(name) || !fs.readFileSync(name, 'utf8')) {
-                    fs.writeFileSync(name, data, 'utf8')
+                    fs.writeFile(name, data, 'utf8', function(err) {
+                        if(err) {
+                            loger(true, 'error', '写文件时出错')
+                        } else {
+                            loger(true, 'info', '已创建：'+ name)
+                        }
+                    })
                 }
             })
         }
 
         if(md.proxy) {
-            // loger.info(req.path + ': 进入代理模式\n开始请求 ' + (typeof md.proxy === 'string' ? md.proxy : state.proxy) + req.path, 'Mock')
+            loger(true, 'info', '进入代理模式', '-->' + (typeof md.proxy === 'string' ? md.proxy : state.proxy))
             const query = req.query 
             const params = req.body
             const contentType = req.headers['content-type'] || req.headers['Content-Type']
@@ -145,41 +134,21 @@ module.exports = function(rest) {
             return 
         }
         
-        if(state.swagger || md.swagger) {
+        if(state.swagger) {
             const swaggerData = await swagger(req, state, md)
             if(swaggerData && !req.mockData) {
-                req.fileData = swaggerData
-                req.mockData = mock(req, state)(swaggerData)
+                req.mockData = swaggerData
             }
-        } else if(state.readFile && !req.mockData) {
-            const fileData = requestDirFile(req, state, false, false)
+        } else if(state.readFile) {
+            const fileData = requestDirFile(req, state)
             if(fileData) {
-                req.fileData = fileData
                 const data = mock(req, state)(fileData)
                 data && (req.mockData = data)
             }
         } 
 
-        if(md.sse === true || md.long === true) {
-            const stream = new PassThrough()
-            const mdata = req.fileData || req.mockData || {}
-            res.set('Connection', 'keep-alive')
-            res.set('Cache-Control', 'no-cache')
-            if(md.sse) {
-                res.set('Content-Type', 'text/event-stream')
-            }
-            setInterval(() => {
-                const data = mock(req, state)(mdata)
-                if(md.sse) {
-                    stream.write("data: " + JSON.stringify(data) + "\n\n")
-                } else {
-                    stream.write(JSON.stringify(data))
-                }
-            }, 3000)
-            stream.pipe(res)
-        } else {
-            res.json(req.mockData)
-        }
+        res.json(req.mockData)
+
         return 
     }
 }

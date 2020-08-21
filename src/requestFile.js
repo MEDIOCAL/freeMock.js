@@ -4,8 +4,8 @@ const mock = require("./mock")
 const creatName = require('./createPathName.js')
 const loger = require('./loger')
 
-module.exports = function requestDirFile(req, state, isCompare = false, isMock = true) {
-    const dir_path = state.md.dirpath || state.dirpath
+module.exports = function requestDirFile(req, state, response, isCompare = false) {
+    const dir_path = state.dirpath
     const params = Object.assign({}, state.query, state.params)
     let rpath = req.path
     let name = ''
@@ -24,7 +24,7 @@ module.exports = function requestDirFile(req, state, isCompare = false, isMock =
     } else if(typeof dir_path === 'string') {
         name = dir_path + rpath
     } else {
-       loger.warn(req.path + ': dirpath 必须是一个字符串或者长度为2的数组', 'Mock')
+       loger(true, 'warn', 'dirpath 必须是一个字符串或者长度为2的数组')
        name = path.resolve(__dirname, '../../../mock') + rpath 
     }
 
@@ -37,11 +37,17 @@ module.exports = function requestDirFile(req, state, isCompare = false, isMock =
     try {
         mockJson = JSON.parse(fs.readFileSync(name, 'utf-8'))
 
-        if(typeof mockJson === 'object' && mockJson != null && isMock) {
+        if(typeof mockJson === 'object' && mockJson != null) {
             mockJson = mock(req, state)(mockJson)
         }
+
+        if(isCompare) {
+            loger(true, 'info', "正在对比数据")
+        } else {
+            loger(true, 'info', "已读取：" + name + "的数据")
+        } 
     } catch(err) {
-        !isCompare && loger.error(err, 'Mock-readFile')
+        !isCompare && loger(true, 'error', '读文件出错')
     }
    
     data = mockJson || null
