@@ -119,15 +119,28 @@ function deepCompare(x, y) {
     return true;
 }
 
-function get(method, url, query, headers, cb) {
-    return request[method](url)
-    .query(query) 
+function http(method, url, state) {
+    if (state.https) {
+        if (state.https.key && state.https.cert) {
+            return request[method](url).key(key).cert(cert)
+        }
+
+        if (state.https.disableTLSCerts) {
+            return request[method](url).disableTLSCerts()
+        }
+    }
+
+    return request[method](url);
+}
+
+function get(req, query, headers, cb) {
+    return req.query(query) 
     .set(headers)
     .end(cb)
 }
 
-function postJson(method, url, data, query, headers, cb) {
-    return request[method](url)
+function postJson(req, data, query, headers, cb) {
+    return req
     .set(Object.assign({}, headers, {
         "content-type": "application/json",
     }))
@@ -136,8 +149,8 @@ function postJson(method, url, data, query, headers, cb) {
     .end(cb)
 }
 
-function postForm(method, url, data, query, headers, cb) {
-    return request[method](url)
+function postForm(req, data, query, headers, cb) {
+    return req
     .type('form')
     .set(headers)
     .query(query)
@@ -145,8 +158,8 @@ function postForm(method, url, data, query, headers, cb) {
     .end(cb)
 }
 
-function postFormData(method, url, fields, files, query, headers, cb) {
-    let rq = request[method](url).set(headers).query(query)
+function postFormData(req, fields, files, query, headers, cb) {
+    let rq = req.set(headers).query(query)
     
     for(let [key, value] of Object.entries(fields)) {
         rq = rq.field(key, value)
@@ -245,7 +258,7 @@ module.exports = function(md = {}, state = {},  req, res) {
     const headers = Object.assign({}, state.headers, md.headers, { 
         Cookie: md.headers && md.headers.Cookie || state.Cookie || req.headers['cookie'] || 'freemock'
     })
-    
+
     let proxy = '' 
    
     if(typeof md.proxy === 'string') {
@@ -267,19 +280,23 @@ module.exports = function(md = {}, state = {},  req, res) {
         loger.log(`当前api信息：\n\tmethod: ${method}\n\turl:${url}\n\tcontentType:${contentType}\n'当前api 传递的参数:\n`, 'Mock') 
         loger.log(postdata, 'Mock')
     }
+
+    if (state.getHeaders) {
+        Object.assign(headers, state.getHeaders(req));
+    }
     
     if(['get', 'delete', 'head'].includes(method)) {
-        return get(method, url, query, headers, callBack(res, req, state, md))
+        return get(http(method, url, state), query, headers, callBack(res, req, state, md))
     } else if(['post', 'put', 'patch'].includes(method)) {
         if(contentType && contentType.indexOf('x-www-form-urlencoded') >= 0) {
-            return postForm(method, url, postdata, query, headers, callBack(res, req, state, md))
+            return postForm(http(method, url, state), postdata, query, headers, callBack(res, req, state, md))
         } else if(contentType && contentType.indexOf('multipart/form-data') >= 0) {
             formData.acceptData(req, function(fields, files) {
-                postFormData(method, url, fields, files, query, headers, callBack(res, req, state, md))
+                postFormData(http(method, url, state), fields, files, query, headers, callBack(res, req, state, md))
             })
             return 
         } else {
-            return postJson(method, url, postdata,  query, headers, callBack(res, req, state, md)) 
+            return postJson(http(method, url, state), postdata,  query, headers, callBack(res, req, state, md)) 
         }  
     }
 

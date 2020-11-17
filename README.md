@@ -117,6 +117,39 @@ module.exports = {
  }
 ```
 
+# 设置 header
+
+
+```
+module.exports = {
+    '/pixiu/*': 'http://fronted-pixiu.ude.alibaba.net',
+    '/ssp/*': 'https://daily-pixiu-ssp.alibaba.net',
+    state: {
+        getHeaders(req) {
+            return {
+                'h-csrf': req.headers['h-csrf'],
+                'track': 'sssddd'
+            }
+        }
+    }
+};
+```
+
+# 设置 cert 或者取消证书
+
+```
+module.exports = {
+    '/pixiu/*': 'http://fronted-pixiu.ude.alibaba.net',
+    '/ssp/*': 'https://daily-pixiu-ssp.alibaba.net',
+    state: {
+        https: {
+            key: fs.readFileSync(path.resolve(CARootPath, 'key.pem')),
+            cert: fs.readFileSync(path.resolve(CARootPath, 'cert.pem')),
+            disableTLSCerts: true
+        },
+    }
+```
+
 # 接入非 cli 工具
 ```js
 npm install freemockjs --save-dev
