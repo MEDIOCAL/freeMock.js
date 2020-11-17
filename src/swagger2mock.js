@@ -11,14 +11,12 @@ function swagger({paths, definitions, basePath, manualProps = {}}) {
         const sw = paths[path]
         
         if(!sw) {
-            console.log('\t\t', 'swagger 文档中未查询到该路径')
             return null
         }
 
         const temp = sw[method.toLowerCase()]
         
         if(!temp) {
-            console.log('\t\t', '未找到' + method + '方法对应的描述')
             return null
         }
 
@@ -30,8 +28,6 @@ function swagger({paths, definitions, basePath, manualProps = {}}) {
             result = getMockTemp(definition)
             return mock(result, definitions, manualProps, req)
         }
-
-        console.log('\t\t', '未找到 status 为 200 的数据格式')
         return null
     }
 }

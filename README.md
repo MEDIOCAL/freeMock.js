@@ -9,12 +9,12 @@ module.exports = {
   
 	"/ncrm/*": "swagger https://imp-daily.uc.test/ncrm/v2/api-docs",  // swagger
   
-  "/cpt/*": "/mock",    // 读取本地 mock 文件夹的 *.json 文件
+    "/cpt/*": "/mock",    // 读取本地 mock 文件夹的 *.json 文件
 
-  "/test11/*":  {
-        status: 0,
-        message: 'success'
-    },
+    "/test11/*":  {
+            status: 0,
+            message: 'success'
+        },
 	"/test22/*": function(req, state) {
 	  	const param = req.query
         return {
@@ -26,7 +26,7 @@ module.exports = {
             }
         }
     },
-  // 手动设置响应值响应头
+    // 手动设置响应值响应头
 	"/test33/*": function(req, state, res) {
         const param = req.query
         res.set({

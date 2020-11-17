@@ -1,6 +1,6 @@
 {
     "name": "freemockjs",
-    "version": "2.1.9",
+    "version": "2.2.8",
     "description": "generates mock data quickly",
     "main": "src/index.js",
     "scripts": {

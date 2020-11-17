@@ -164,10 +164,7 @@ function callBack(res, req, state, md) {
         let data = null
         let isHttp = true
         if (!err && response && response.statusCode == 200) {
-            loger(true, 'info', '请求数据成功', req.path)
-            
             let body = response.body
-            
             let text = response.text
             if(
                 text && 
@@ -178,15 +175,18 @@ function callBack(res, req, state, md) {
                 data = body
             }
         } else if(state.pureProxy) {
-            if(err) {
-                loger(true, 'error', '向服务器请求发生错误', err)
+            if(response) {
+                res.set(response.header)
+                return res.status(response.status).send(response.text)
+            } else if(err) {
+                loger.error(err, 'Mock-proxy')
                 return res.send(err)
-            } else if(response) {
-                loger(true, 'error', '服务器返回错误', response)
-                return res.send(response)
-            }
+            } 
         } else {
-            let error = req.path
+            let error = { 
+                path: req.path,
+                ...err,
+            }
             if(
                 state.debugger &&
                 state.debugger.method.includes(req.method.toLowerCase()) && 
@@ -197,11 +197,11 @@ function callBack(res, req, state, md) {
             ) {
                 error = err
             }
-            loger(true, 'error', '向服务器请求发生错误', error)
+            loger.error(error, 'Mock-proxy')
         }
 
         // 读 swagger
-        if(state.swagger && (!data || (state.md.getMockData && state.md.getMockData(data, req)))) {
+        if((md.swagger || state.swagger) && (!data || (state.md.getMockData && state.md.getMockData(data, req)))) {
             const swdata = await swagger(req, state, md) 
             if(swdata) {
                 data = swdata
@@ -211,8 +211,7 @@ function callBack(res, req, state, md) {
         
         // 读文件
         if(state.readFile && (!data || (state.md.getMockData && state.md.getMockData(data, req)))) {
-            loger(true, 'info', '开始读取文件', req.path)
-            const fileData = requestDirFile(req, state, response)
+            const fileData = requestDirFile(req, state)
             if(fileData) {
                 data = fileData
                 isHttp = false
@@ -224,10 +223,10 @@ function callBack(res, req, state, md) {
             state.writeFile && 
             state.md.validateWriteFile(data, req) 
         ) {
-            const readFileData = requestDirFile(req, state, response, true)
+            const readFileData = requestDirFile(req, state, true)
             !deepCompare(readFileData, data) && writeFile(req, state, data) // 深度比较获取数据与文件数据，不一样才能写入
         }
-       
+        
         if(data || req.mockData) {
             // 读文件 或者 读 swagger 需要 mock
             data = isHttp ? data : mock(req, state)(data)
@@ -243,8 +242,8 @@ module.exports = function(md = {}, state = {},  req, res) {
     const postdata = state.params
     const query = state.query
     const method = req.method.toLowerCase()
-    const headers = Object.assign({}, state.headers, { 
-        Cookie: md.headers && md.headers.Cookie || state.Cookie || 'freemock'
+    const headers = Object.assign({}, state.headers, md.headers, { 
+        Cookie: md.headers && md.headers.Cookie || state.Cookie || req.headers['cookie'] || 'freemock'
     })
     
     let proxy = '' 
@@ -265,13 +264,8 @@ module.exports = function(md = {}, state = {},  req, res) {
             state.debugger.path.includes(req.path) 
         )
     ) {
-        loger(true, 'debug', '当前api信息：', {
-            method,
-            url,
-            contentType,
-            headers
-        }) 
-        loger(true, 'debug', '当前api 传递的参数:', postdata)
+        loger.log(`当前api信息：\n\tmethod: ${method}\n\turl:${url}\n\tcontentType:${contentType}\n'当前api 传递的参数:\n`, 'Mock') 
+        loger.log(postdata, 'Mock')
     }
     
     if(['get', 'delete', 'head'].includes(method)) {

@@ -12,13 +12,13 @@ function analysis(temp, req, state) {
         temp = JSON.stringify(temp)
         temp = temp.replace(reg, function($1) {
             const query = $1.split('.').splice(1)
-            let body = req.query || req.body || {}
+            let body = Object.assign({}, req.query, req.body)
             
             for(let q of query) {
                 body = body[q]
             }
 
-            return body
+            return body || ''
         })
 
         temp = temp.replace(func, function($1) {
