@@ -4,17 +4,19 @@ Mock 数据是前端开发过程中必不可少的一环，是分离前后端开
 
 ```js
 module.exports = {
-   // 代理,请求https://mocks.alibaba-inc.com/mock/ncrm/agent/list
-	"/ncrm/agent/list": "https://mocks.alibaba-inc.com/mock",   
-  
+        // 代理,请求https://mocks.alibaba-inc.com/mock/ncrm/agent/*
+	"/ncrm/agent/*": "https://mocks.alibaba-inc.com/mock",   
+  	
+	// 符合改规则的请求将匹配 swagger 文档中的格式
 	"/ncrm/*": "swagger https://imp-daily.uc.test/ncrm/v2/api-docs",  // swagger
-  
-    "/cpt/*": "/mock",    // 读取本地 mock 文件夹的 *.json 文件
-
-    "/test11/*":  {
+  	 // 读取本地文件夹 /mock/cpt/*.json 文件
+    	"/cpt/*": "/mock",   
+        // 符合test11/ 下的所有请求直接返回对象
+    	"/test11/*":  {
             status: 0,
             message: 'success'
         },
+	//  符合test2/ 下的所有请求执行此函数返回该函数的返回值
 	"/test22/*": function(req, state) {
 	  	const param = req.query
         return {
@@ -59,19 +61,27 @@ module.exports = {
     },
 }
 ```
-当浏览器发出 http://localhost:8080/api/test?pageSize=12 请求的时候，则返回的数据中 data 的长度为 12。
+当浏览器发出 http://localhost:8080/api/test?pageSize=12 请求的时候，则返回的数据中 data 的长度为 12。 data|@param.pageSize 代表data长度为传入的 pageSize。
 
-``` json
-{
-	status: 0,
-  	data: [    // 长度为 10
-	  {
-	  	name: 'mock',
-		 age: 11
-	  }
-	]
+# 设置 cookie
+如果使用代理，比如在本地调试请求测试环境的api。
+
+
+```js
+module.exports = {
+	"/api/*": "https://www.test.com", 
 }
 ```
+这样在请求 localhost:8080/api/a 的时候实际上是请求的 https://www.test.com/api/a。假如需要登录信息，则必须设置 cookie。
+
+```js
+module.exports = {
+	"/api/*": "https://www.test.com",
+	"Cookies": 'ssdasd'
+}
+
+```
+
 # 使用 swagger 
 如果后端能提前提供 swagger ，可以引入 swagger  生成数据。配置的时候在前面加上 swagger + 空格 即可。
 ```js
@@ -86,20 +96,22 @@ module.exports = {
 ```js
 module.exports = {
 	'/api/tags': {
-    		'list|100': [{ name: '@city', 'value|1-100': 50, 'type|0-2': 1 }],
+    		'list|2': [{ name: '@city', 'value|1-100': 50, 'type|0-2': 1 }],
      },
 }
 ```
 生成的数据
-```json
+```js
 {
 	list: [
-	  {
-	  	name: '北京市',
-		  value: 23,
-		  type: 1
-	  }
-	  ... // 此处长度为 100
+		{
+			name: '北京',
+			value: 50
+		},
+		{
+			name: '上海',
+			value: 58
+		},
 	]
 }
 ```
@@ -135,7 +147,7 @@ module.exports = {
 };
 ```
 
-# 设置 cert 或者取消证书
+# 设置 cert 或者禁用证书
 
 ```
 module.exports = {
@@ -149,6 +161,8 @@ module.exports = {
         },
     }
 ```
+
+#
 
 # 接入非 cli 工具
 ```js
